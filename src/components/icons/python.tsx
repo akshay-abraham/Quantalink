@@ -4,7 +4,7 @@
  */
 export const PythonIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
-    xmlns="https://commons.wikimedia.org/wiki/File:Python_icon_%28black_and_white%29.svg#/media/File:Python_icon_(black_and_white).svg"
+    xmlns=""
     width="24"
     height="24"
     viewBox="0 0 24 24"
