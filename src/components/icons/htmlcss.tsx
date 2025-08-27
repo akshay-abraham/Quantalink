@@ -1,6 +1,7 @@
 /**
  * @file src/components/icons/htmlcss.tsx
- * @description A custom SVG icon component representing HTML and CSS.
+ * @description A custom SVG icon component representing HTML and CSS. This file is DEPRECATED.
+ * Individual icons are now used.
  */
 export const HtmlCssIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
