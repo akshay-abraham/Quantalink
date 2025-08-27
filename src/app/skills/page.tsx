@@ -20,8 +20,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { skillsData, SkillCategory } from '@/lib/skills-data.tsx';
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
 
 /**
  * A small component to render a styled icon for a skill category.
@@ -89,18 +87,12 @@ export default function SkillsPage() {
     <>
       <AnimatedBackground />
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-4xl">
-          <header className="mb-8">
-             <Link href="/" className="inline-block mb-8">
-               <Button variant="outline" className="bg-card/30 border-border/40">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Home
-              </Button>
-            </Link>
-            <h1 className="text-4xl font-bold text-primary tracking-tight text-center">
+        <div className="w-full max-w-4xl flex-grow">
+          <header className="mb-8 pt-20 text-center">
+            <h1 className="text-4xl font-bold text-primary tracking-tight">
               My Skillset
             </h1>
-             <p className="text-center text-foreground/70 mt-2 max-w-2xl mx-auto">
+             <p className="text-foreground/70 mt-2 max-w-2xl mx-auto">
               A detailed look at my current technical abilities, leadership experience, and areas I'm excited to explore next.
             </p>
           </header>
@@ -111,8 +103,8 @@ export default function SkillsPage() {
           </main>
 
         </div>
+        <PageFooter />
       </div>
-      <PageFooter />
     </>
   );
 }

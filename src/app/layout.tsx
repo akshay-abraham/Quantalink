@@ -8,6 +8,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import AnimatedBackground from "@/components/animated-background"
+import MainNav from '@/components/main-nav';
 
 // Define metadata for the website, used for SEO and browser tab information.
 export const metadata: Metadata = {
@@ -107,6 +108,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
           {/* The AnimatedBackground component is rendered here to appear on all pages. */}
           <AnimatedBackground />
+          <MainNav />
           {/* Renders the active page content. */}
           {children}
           {/* The Toaster component handles pop-up notifications (e.g., for errors or confirmations). */}

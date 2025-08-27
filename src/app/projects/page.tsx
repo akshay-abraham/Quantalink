@@ -7,9 +7,6 @@
 import AnimatedBackground from "@/components/animated-background";
 import PageFooter from "@/components/page-footer";
 import Projects from "@/components/projects";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 
 /**
  * ProjectsPage component that displays a complete list of all projects.
@@ -22,16 +19,9 @@ export default function ProjectsPage() {
       <AnimatedBackground />
       {/* `relative z-10` ensures content is displayed above the background. */}
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-3xl">
-          <header className="mb-8">
-            {/* A navigation link to return to the homepage. */}
-            <Link href="/" className="inline-block mb-8">
-               <Button variant="outline" className="bg-card/30 border-border/40">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Home
-              </Button>
-            </Link>
-            <h1 className="text-4xl font-bold text-primary tracking-tight text-center">
+        <div className="w-full max-w-4xl flex-grow">
+          <header className="mb-8 pt-20 text-center">
+            <h1 className="text-4xl font-bold text-primary tracking-tight">
               Projects & Contributions
             </h1>
           </header>
@@ -45,8 +35,8 @@ export default function ProjectsPage() {
               so it displays all projects from the data source. */}
           <Projects />
         </div>
+        <PageFooter />
       </div>
-      <PageFooter />
     </>
   );
 }

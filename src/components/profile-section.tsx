@@ -22,7 +22,7 @@ export default function ProfileSection() {
   return (
     <section 
       ref={ref}
-      className="flex flex-col items-center space-y-4 text-center"
+      className="flex flex-col items-center space-y-4 text-center pt-20"
     >
       {/* The container for the avatar with its animation. */}
       <div 
