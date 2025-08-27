@@ -6,20 +6,33 @@
  * @note This file must have a `.tsx` extension because it imports and uses React components (icons).
  */
 
-import { Code, Briefcase, Target, Cpu, GitBranch, Lightbulb, Users, Atom } from 'lucide-react';
+import { Code, Server, Tool, Settings } from 'lucide-react';
 import { CPlusPlusIcon } from '@/components/icons/cplusplus';
 import { PythonIcon } from '@/components/icons/python';
-import { TypescriptIcon } from '@/components/icons/typescript';
+import { TypescriptIcon } from '@/componentsicons/typescript';
 import { ReactIcon } from '@/components/icons/react';
-import { HtmlCssIcon } from '@/components/icons/htmlcss';
+import { HtmlIcon } from '@/components/icons/html5';
+import { CssIcon } from '@/components/icons/css3';
+import { JavascriptIcon } from '@/components/icons/javascript';
+import { TailwindIcon } from '@/components/icons/tailwind';
+import { VscodeIcon } from '@/components/icons/vscode';
+import { ChatgptIcon } from '@/components/icons/chatgpt';
+import { GithubIcon } from '@/components/icons/github';
+import { GitIcon } from '@/components/icons/git';
+import { BashIcon } from '@/components/icons/bash';
+import { ZshIcon } from '@/components/icons/zsh';
+import { VercelIcon } from '@/components/icons/vercel';
+import { UbuntuIcon } from '@/components/icons/ubuntu';
+
 
 /**
  * Defines the structure for an individual skill.
  */
 export interface Skill {
   name: string;
-  note: React.ReactNode;
-  icon?: React.ReactNode;
+  description: string;
+  icon: React.ReactNode;
+  iconClassName?: string;
 }
 
 /**
@@ -37,85 +50,106 @@ export interface SkillCategory {
  */
 export const skillsData: SkillCategory[] = [
   {
-    title: 'Core Technical Skills',
+    title: 'Languages & Frameworks',
     icon: <Code size={32} />,
     skills: [
       {
-        name: 'C & C++',
-        icon: <CPlusPlusIcon className="w-5 h-5" />,
-        note: 'Strong foundation in computer science fundamentals through Harvard\'s CS50x course.',
-      },
-      {
-        name: 'Python',
-        icon: <PythonIcon className="w-5 h-5" />,
-        note: 'Completed Harvard\'s CS50P course and used Python for scripting, automation, and introductory AI projects.',
+        name: 'JavaScript',
+        description: 'The engine of the modern web, used to create dynamic and interactive user experiences.',
+        icon: <JavascriptIcon />,
+        iconClassName: 'bg-black p-1 rounded-sm'
       },
       {
         name: 'TypeScript',
-        icon: <TypescriptIcon className="w-5 h-5" />,
-        note: 'Building type-safe, maintainable front-end applications including this portfolio project.',
+        description: 'A superset of JavaScript that adds static typing, improving code quality and maintainability.',
+        icon: <TypescriptIcon />,
+        iconClassName: 'p-1'
+      },
+       {
+        name: 'Python',
+        description: 'A versatile language used for scripting, automation, data science, and introductory AI projects.',
+        icon: <PythonIcon />,
       },
       {
         name: 'React & Next.js',
-        icon: <ReactIcon className="w-5 h-5" />,
-        note: 'Developing modern, performant web interfaces with React and Next.js using a component-driven approach.',
+        description: 'A powerful combination for building modern, performant, and scalable web applications.',
+        icon: <ReactIcon />,
       },
       {
-        name: 'HTML & CSS',
-        icon: <HtmlCssIcon className="w-5 h-5" />,
-        note: 'Completed CS50W fundamentals module; proficient in creating responsive, accessible layouts with modern CSS and Tailwind.',
+        name: 'HTML5',
+        description: 'The standard markup language for creating the structure and content of web pages.',
+        icon: <HtmlIcon />,
       },
       {
-        name: 'Electronics & IoT',
-        icon: <Cpu className="w-5 h-5" />,
-        note: 'Three years of experience in Arduino, ESP8266/ESP32, and embedded systems, from basic DC circuits to IoT prototypes.',
+        name: 'CSS3',
+        description: 'The language for styling web pages, enabling responsive design and complex visual layouts.',
+        icon: <CssIcon />,
       },
       {
-        name: 'Git & Command Line',
-        icon: <GitBranch className="w-5 h-5" />,
-        note: 'Proficient in Git version control and Linux command-line workflows (WSL2 + VS Code). Developed through CS50 courses and practical projects.',
-      },
-    ],
-  },
-  {
-    title: 'Product & Leadership',
-    icon: <Briefcase size={32} />,
-    skills: [
-      {
-        name: 'Product Design',
-        icon: <Lightbulb className="w-5 h-5" />,
-        note: 'Focus on usability and detail-oriented design with inspiration from modern UI/UX practices.',
+        name: 'Tailwind CSS',
+        description: 'A utility-first CSS framework that enables rapid development of custom user interfaces.',
+        icon: <TailwindIcon />,
       },
       {
-        name: 'Leadership & Collaboration',
-        icon: <Users className="w-5 h-5" />,
-        note: 'Experience organizing academic and technical events, fostering teamwork, and managing responsibilities effectively.',
+        name: 'C & C++',
+        description: 'A strong foundation in computer science fundamentals, memory management, and performance.',
+        icon: <CPlusPlusIcon />,
       },
     ],
   },
   {
-    title: 'Future Deep Focus Areas',
-    icon: <Target size={32} />,
+    title: 'Developer Tools',
+    icon: <Tool size={32} />,
     skills: [
       {
-        name: 'AI with Python',
-        icon: <PythonIcon className="w-5 h-5" />,
-        note: 'Planning to complete Harvard\'s CS50AI for applied AI concepts including search algorithms and machine learning.',
+        name: 'Git',
+        description: 'A distributed version control system for tracking changes and collaborating on code.',
+        icon: <GitIcon />,
       },
       {
-        name: 'Full-Stack Web Dev',
-        icon: <HtmlCssIcon className="w-5 h-5" />,
-        note: 'Currently pursuing Harvard\'s CS50W to gain full-stack development skills for scalable web applications.',
+        name: 'GitHub',
+        description: 'A platform for hosting Git repositories and collaborating with other developers.',
+        icon: <GithubIcon />,
+        iconClassName: 'dark:invert'
       },
       {
-        name: 'Advanced Physics',
-        icon: <Atom className="w-5 h-5" />,
-        note: 'Focused on deepening knowledge in quantum and classical mechanics for future research goals.',
+        name: 'VS Code',
+        description: 'A lightweight but powerful source code editor that runs on your desktop.',
+        icon: <VscodeIcon />,
+      },
+       {
+        name: 'ChatGPT',
+        description: 'An AI-powered language model used for brainstorming, debugging, and accelerating development.',
+        icon: <ChatgptIcon />,
+      },
+    ],
+  },
+   {
+    title: 'Platforms & Environments',
+    icon: <Server size={32} />,
+    skills: [
+       {
+        name: 'Vercel',
+        description: 'A cloud platform for static sites and Serverless Functions that fits perfectly with Next.js.',
+        icon: <VercelIcon />,
+        iconClassName: 'dark:invert'
+      },
+       {
+        name: 'Ubuntu',
+        description: 'A popular Linux distribution used for development servers and the Windows Subsystem for Linux (WSL).',
+        icon: <UbuntuIcon />,
+      },
+       {
+        name: 'Bash',
+        description: 'The default shell on most Linux distributions, used for scripting and command-line automation.',
+        icon: <BashIcon />,
+        iconClassName: 'dark:invert'
       },
       {
-        name: 'Formal Electronics',
-        icon: <Cpu className="w-5 h-5" />,
-        note: 'Planning formal studies in circuit theory and electronics to complement practical experience.',
+        name: 'Zsh',
+        description: 'A powerful, highly customizable shell with advanced features, often used with "Oh My Zsh".',
+        icon: <ZshIcon />,
+        iconClassName: 'dark:invert'
       },
     ],
   },

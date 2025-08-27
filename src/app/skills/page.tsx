@@ -1,25 +1,18 @@
 /**
  * @file src/app/skills/page.tsx
  * @description The dedicated page for showcasing a detailed breakdown of skills.
- *              This page organizes skills into categories and provides detailed
- *              information for each skill in an interactive dialog.
+ *              This page organizes skills into categories and displays them
+ *              in a visually appealing card-based grid.
  * @note This is a client component because it uses hooks (`useState`, `useEffect`)
- *       for the dialog interactions.
+ *       for animations.
  */
 'use client';
 
 import AnimatedBackground from '@/components/animated-background';
 import PageFooter from '@/components/page-footer';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { skillsData, SkillCategory } from '@/lib/skills-data.tsx';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 /**
  * A small component to render a styled icon for a skill category.
@@ -40,7 +33,7 @@ const CategoryIcon = ({ icon }: { icon: React.ReactNode }) => (
 export default function SkillsPage() {
 
   /**
-   * Renders a single skill category, including its title, icon, and a list of skill buttons.
+   * Renders a single skill category, including its title, icon, and a grid of skill cards.
    * @param {SkillCategory} category - The category data object.
    * @param {number} index - The index of the category, used for animation delay.
    * @returns {JSX.Element} A div containing the rendered category.
@@ -48,37 +41,32 @@ export default function SkillsPage() {
   const renderCategory = (category: SkillCategory, index: number) => (
     <div 
       key={category.title}
-      className="bg-card/30 border border-border/40 rounded-2xl p-6 md:p-8 shadow-lg animate-fade-in-up"
+      className="space-y-6 animate-fade-in-up"
       style={{ animationDelay: `${200 + index * 150}ms` }}
     >
       <div className="flex flex-col items-center text-center">
         <CategoryIcon icon={category.icon} />
         <h2 className="text-2xl font-bold text-primary mb-4">{category.title}</h2>
-        <div className="flex flex-wrap justify-center gap-3">
-          {/* Map over each skill in the category to create a button and dialog. */}
-          {category.skills.map((skill) => (
-            <Dialog key={skill.name}>
-              <DialogTrigger asChild>
-                <Button 
-                  variant="outline"
-                  className="rounded-full px-5 py-2 text-base transition-all duration-300 ease-out transform hover:scale-105 hover:bg-primary/10 hover:border-primary/50 bg-background/30 border-input flex items-center gap-2"
-                >
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {category.skills.map((skill, skillIndex) => (
+          <Card 
+            key={skill.name}
+            className="bg-card/30 border-border/40 shadow-lg text-left flex flex-col transition-transform duration-300 hover:scale-105 hover:border-primary/50"
+          >
+            <CardHeader className="flex-grow">
+              <div className="flex items-center gap-4 mb-3">
+                 <div className={cn("h-10 w-10 flex items-center justify-center", skill.iconClassName)}>
                   {skill.icon}
-                  {skill.name}
-                </Button>
-              </DialogTrigger>
-              {/* The content of the dialog, which is hidden until triggered. */}
-              <DialogContent className="bg-card/70 backdrop-blur-md">
-                <DialogHeader>
-                  <DialogTitle className="text-primary text-2xl">{skill.name}</DialogTitle>
-                  <DialogDescription className="text-foreground/80 pt-4 text-base leading-relaxed">
-                    {skill.note}
-                  </DialogDescription>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
-          ))}
-        </div>
+                </div>
+                <CardTitle className="text-xl text-primary">{skill.name}</CardTitle>
+              </div>
+              <CardDescription className="text-foreground/80 pt-1">
+                {skill.description}
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        ))}
       </div>
     </div>
   );
@@ -87,18 +75,17 @@ export default function SkillsPage() {
     <>
       <AnimatedBackground />
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-4xl flex-grow">
-          <header className="mb-8 pt-20 text-center">
+        <div className="w-full max-w-5xl flex-grow">
+          <header className="mb-12 pt-20 text-center">
             <h1 className="text-4xl font-bold text-primary tracking-tight">
               My Skillset
             </h1>
              <p className="text-foreground/70 mt-2 max-w-2xl mx-auto">
-              A detailed look at my current technical abilities, leadership experience, and areas I'm excited to explore next.
+              A detailed look at the languages, frameworks, tools, and platforms I work with.
             </p>
           </header>
 
-          <main className="space-y-12">
-            {/* Map over the skills data to render each category. */}
+          <main className="space-y-16">
             {skillsData.map(renderCategory)}
           </main>
 
