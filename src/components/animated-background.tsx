@@ -186,7 +186,8 @@ const AnimatedBackground = () => {
     // --- Vacuum Fluctuations ---
     // Simulates the quantum foam by briefly spawning pairs of virtual particles.
     const spawnVirtualPair = () => {
-        if (activeParticles.filter(p => p.isVirtual).length > 40) return; // Cap virtual particles.
+        // **FIX:** Cap the number of active virtual particles to prevent performance degradation.
+        if (activeParticles.filter(p => p.isVirtual).length > 40) return;
         const x = Math.random() * width;
         const y = Math.random() * height;
         const p1 = getParticle(true).reset(x, y, 1);

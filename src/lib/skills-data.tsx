@@ -6,10 +6,10 @@
  * @note This file must have a `.tsx` extension because it imports and uses React components (icons).
  */
 
-import { Code, Server, Tool, Settings } from 'lucide-react';
+import { Code, Server, Wrench } from 'lucide-react';
 import { CPlusPlusIcon } from '@/components/icons/cplusplus';
 import { PythonIcon } from '@/components/icons/python';
-import { TypescriptIcon } from '@/componentsicons/typescript';
+import { TypescriptIcon } from '@/components/icons/typescript';
 import { ReactIcon } from '@/components/icons/react';
 import { HtmlIcon } from '@/components/icons/html5';
 import { CssIcon } from '@/components/icons/css3';
@@ -99,7 +99,7 @@ export const skillsData: SkillCategory[] = [
   },
   {
     title: 'Developer Tools',
-    icon: <Tool size={32} />,
+    icon: <Wrench size={32} />,
     skills: [
       {
         name: 'Git',
