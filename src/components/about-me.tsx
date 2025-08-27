@@ -1,7 +1,7 @@
 /**
  * @file src/components/about-me.tsx
- * @description A component that displays the "About Me" section with a fade-in-on-scroll animation.
- * @note This is a client component because it uses the `useInView` hook, which relies on browser APIs.
+ * @description This file is now unused and can be deleted. The content has been moved to src/app/about/page.tsx.
+ * @note This component is no longer used in the application.
  */
 "use client"
 
