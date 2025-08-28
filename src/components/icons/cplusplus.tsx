@@ -1,10 +1,185 @@
 /**
- * @file src/components/icons/cplusplus.tsx
- * @description A custom SVG icon component for the C++ programming language.
+ * @file /src/lib/skills-data.tsx
+ * @description This file contains the data for all skills, organized into categories.
+ *              To add a new skill or category, modify the `skillsData` array.
+ *              This structure makes it easy to render the skills page dynamically.
+ * @note This file must have a `.tsx` extension because it imports and uses React components (icons).
  */
-export const CPlusPlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" {...props}>
-    <title>C++</title>
-    <path d="M22.394 6c-.167-.29-.398-.543-.652-.69L12.926.22c-.509-.294-1.34-.294-1.848 0L2.26 5.31c-.508.293-.923 1.013-.923 1.6v10.18c0 .294.104.62.271.91.167.29.398.543.652.69l8.816 5.09c.508.293 1.34.293 1.848 0l8.816-5.09c.254-.147.485-.4.652-.69.167-.29.27-.616.27-.91V6.91c.003-.294-.1-.62-.268-.91zM12 19.11c-3.92 0-7.109-3.19-7.109-7.11 0-3.92 3.19-7.11 7.11-7.11a7.133 7.133 0 016.156 3.553l-3.076 1.78a3.567 3.567 0 00-3.08-1.78A3.56 3.56 0 008.444 12 3.56 3.56 0 0012 15.555a3.57 3.57 0 003.08-1.778l3.078 1.78A7.135 7.135 0 0112 19.11zm7.11-6.715h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79zm2.962 0h-.79v.79h-.79v-.79h-.79v-.79h.79v-.79h.79v.79h.79z"/>
-  </svg>
-);
+
+import { BrainCircuit, Code, Server, Wrench } from 'lucide-react';
+import { PythonIcon } from '@/components/icons/python';
+import { TypescriptIcon } from '@/components/icons/typescript';
+import { ReactIcon } from '@/components/icons/react';
+import { HtmlIcon } from '@/components/icons/html5';
+import { CssIcon } from '@/components/icons/css3';
+import { JavascriptIcon } from '@/components/icons/javascript';
+import { TailwindIcon } from '@/components/icons/tailwind';
+import { VscodeIcon } from '@/components/icons/vscode';
+import { ChatgptIcon } from '@/components/icons/chatgpt';
+import { GithubIcon } from '@/components/icons/github';
+import { GitIcon } from '@/components/icons/git';
+import { BashIcon } from '@/components/icons/bash';
+import { ZshIcon } from '@/components/icons/zsh';
+import { VercelIcon } from '@/components/icons/vercel';
+import { UbuntuIcon } from '@/components/icons/ubuntu';
+import { CIcon } from '@/components/icons/c';
+import { NextjsIcon } from '@/components/icons/nextdotjs';
+import { NumpyIcon } from '@/components/icons/numpy';
+import { PandasIcon } from '@/components/icons/pandas';
+import { SciktLearnIcon } from '@/components/icons/scikt-learn';
+import { SqliteIcon } from '@/components/icons/sqlite';
+import { TensorflowIcon } from '@/components/icons/tensorflow';
+import { GeminiIcon } from '@/components/icons/gemini';
+import { ArduinoIcon } from '@/components/icons/arduino';
+import { EspressifIcon } from '@/components/icons/espressif';
+
+
+/**
+ * Defines the structure for an individual skill.
+ */
+export interface Skill {
+  name: string;
+  icon: React.ReactNode;
+  iconClassName?: string;
+}
+
+/**
+ * Defines the structure for a category of skills.
+ */
+export interface SkillCategory {
+  title: string;
+  icon: React.ReactNode;
+  skills: Skill[];
+}
+
+/**
+ * Data for all skills, organized by category.
+ * To add more, simply add to the existing arrays or create a new category object.
+ */
+export const skillsData: SkillCategory[] = [
+  {
+    title: 'Frontend Development',
+    icon: <Code size={32} />,
+    skills: [
+      {
+        name: 'HTML5',
+        icon: <HtmlIcon />,
+      },
+      {
+        name: 'CSS3',
+        icon: <CssIcon />,
+      },
+      {
+        name: 'Tailwind CSS',
+        icon: <TailwindIcon />,
+      },
+      {
+        name: 'JavaScript',
+        icon: <JavascriptIcon />,
+        iconClassName: 'p-1'
+      },
+      {
+        name: 'TypeScript',
+        icon: <TypescriptIcon />,
+        iconClassName: 'p-1'
+      },
+      {
+        name: 'React',
+        icon: <ReactIcon />,
+      },
+      {
+        name: 'Next.js',
+        icon: <NextjsIcon />,
+        iconClassName: 'dark:invert'
+      },
+    ],
+  },
+  {
+    title: 'Backend & Data Science',
+    icon: <BrainCircuit size={32} />,
+    skills: [
+      {
+        name: 'Python',
+        icon: <PythonIcon />,
+      },
+       {
+        name: 'NumPy',
+        icon: <NumpyIcon />,
+      },
+       {
+        name: 'Pandas',
+        icon: <PandasIcon />,
+      },
+      {
+        name: 'Scikit-learn',
+        icon: <SciktLearnIcon />,
+      },
+      {
+        name: 'TensorFlow',
+        icon: <TensorflowIcon />,
+      },
+      {
+        name: 'C',
+        icon: <CIcon />,
+      },
+       {
+        name: 'SQLite',
+        icon: <SqliteIcon />,
+      },
+    ]
+  },
+  {
+    title: 'Tools & Platforms',
+    icon: <Wrench size={32} />,
+    skills: [
+       {
+        name: 'Git',
+        icon: <GitIcon />,
+      },
+      {
+        name: 'GitHub',
+        icon: <GithubIcon />,
+        iconClassName: 'dark:invert'
+      },
+      {
+        name: 'VS Code',
+        icon: <VscodeIcon />,
+      },
+       {
+        name: 'ChatGPT',
+        icon: <ChatgptIcon />,
+      },
+       {
+        name: 'Gemini',
+        icon: <GeminiIcon />,
+      },
+       {
+        name: 'Bash',
+        icon: <BashIcon />,
+        iconClassName: 'dark:invert'
+      },
+      {
+        name: 'Zsh',
+        icon: <ZshIcon />,
+        iconClassName: 'dark:invert'
+      },
+       {
+        name: 'Ubuntu',
+        icon: <UbuntuIcon />,
+      },
+       {
+        name: 'Vercel',
+        icon: <VercelIcon />,
+        iconClassName: 'dark:invert'
+      },
+      {
+        name: 'Arduino',
+        icon: <ArduinoIcon />,
+      },
+      {
+        name: 'ESP32/ESP8266',
+        icon: <EspressifIcon />,
+      },
+    ],
+  },
+];

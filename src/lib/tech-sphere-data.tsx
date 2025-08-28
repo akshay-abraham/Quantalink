@@ -6,7 +6,6 @@
  */
 import { ReactIcon } from "@/components/icons/react";
 import { PythonIcon } from "@/components/icons/python";
-import { CPlusPlusIcon } from "@/components/icons/cplusplus";
 import { GitIcon } from "@/components/icons/git";
 import { GithubIcon } from "@/components/icons/github";
 import { TypescriptIcon } from "@/components/icons/typescript";
@@ -20,7 +19,6 @@ import { VercelIcon } from "@/components/icons/vercel";
 export const ICONS = [
     <ReactIcon key="react" />,
     <PythonIcon key="python" />,
-    <CPlusPlusIcon key="cplusplus" />,
     <GitIcon key="git" />,
     <GithubIcon key="github" className="dark:invert" />,
     <TypescriptIcon key="typescript" />,
@@ -36,14 +34,13 @@ export const ICONS = [
 export const ICON_NAME_MAP = new Map<React.ReactNode, string>([
     [ICONS[0], 'React'],
     [ICONS[1], 'Python'],
-    [ICONS[2], 'C++'],
-    [ICONS[3], 'Git'],
-    [ICONS[4], 'GitHub'],
-    [ICONS[5], 'TypeScript'],
-    [ICONS[6], 'JavaScript'],
-    [ICONS[7], 'HTML5'],
-    [ICONS[8], 'CSS3'],
-    [ICONS[9], 'Tailwind CSS'],
-    [ICONS[10], 'Next.js'],
-    [ICONS[11], 'Vercel'],
+    [ICONS[2], 'Git'],
+    [ICONS[3], 'GitHub'],
+    [ICONS[4], 'TypeScript'],
+    [ICONS[5], 'JavaScript'],
+    [ICONS[6], 'HTML5'],
+    [ICONS[7], 'CSS3'],
+    [ICONS[8], 'Tailwind CSS'],
+    [ICONS[9], 'Next.js'],
+    [ICONS[10], 'Vercel'],
 ]);
