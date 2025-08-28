@@ -23,11 +23,11 @@ export const InfiniteScroller = ({
   pauseOnHover = true,
 }: InfiniteScrollerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const scrollerRef = useRef<HTMLDivElement>(null);
+  const scrollerRef = useRef<HTMLUListElement>(null);
   const [isMounted, setIsMounted] = useState(false);
 
   const speedMap = {
-    slow: '60s',
+    slow: '80s',
     normal: '40s',
     fast: '20s',
   };
@@ -35,15 +35,18 @@ export const InfiniteScroller = ({
   useEffect(() => {
     // This hook ensures the logic runs only on the client side after mounting.
     setIsMounted(true);
+  }, []);
 
-    if (containerRef.current && scrollerRef.current) {
-      const scrollerContent = Array.from(scrollerRef.current.children);
+  useEffect(() => {
+    if (isMounted && containerRef.current && scrollerRef.current) {
+        const scrollerContent = Array.from(scrollerRef.current.children);
 
-      // Duplicate the content to create the seamless scroll effect.
-      scrollerContent.forEach((item) => {
-        const duplicatedItem = item.cloneNode(true) as HTMLElement;
-        scrollerRef.current?.appendChild(duplicatedItem);
-      });
+        scrollerContent.forEach((item) => {
+            const duplicatedItem = item.cloneNode(true) as HTMLElement;
+            // Add an aria-hidden attribute to the cloned items for accessibility
+            duplicatedItem.setAttribute('aria-hidden', 'true');
+            scrollerRef.current?.appendChild(duplicatedItem);
+        });
       
       // Set CSS variables for animation control.
       containerRef.current.style.setProperty('--animation-duration', speedMap[speed]);
@@ -52,7 +55,7 @@ export const InfiniteScroller = ({
         direction === 'left' ? 'normal' : 'reverse'
       );
     }
-  }, [speed, direction]);
+  }, [isMounted, speed, direction]);
   
   // Render nothing on the server to avoid hydration mismatches with duplicated content.
   if (!isMounted) {
@@ -68,7 +71,7 @@ export const InfiniteScroller = ({
         '[mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)]'
       )}
     >
-      <div
+      <ul
         ref={scrollerRef}
         className={cn(
           'flex min-w-full shrink-0 gap-6 py-4 w-max flex-nowrap',
@@ -77,8 +80,10 @@ export const InfiniteScroller = ({
           pauseOnHover && 'hover:[animation-play-state:paused]'
         )}
       >
-        {children}
-      </div>
+        {React.Children.map(children, (child, idx) => (
+            <li key={idx} className="flex-shrink-0">{child}</li>
+        ))}
+      </ul>
     </div>
   );
 };
