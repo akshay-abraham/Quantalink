@@ -64,11 +64,11 @@ body {
 
   @keyframes scrolling-logos {
     from { transform: translateX(0); }
-    to { transform: translateX(-100%); }
+    to { transform: translateX(-50%); }
   }
   
   .animate-scrolling-logos {
-    animation: scrolling-logos 40s linear infinite;
+    animation: scrolling-logos var(--animation-duration, 40s) linear infinite var(--animation-direction, normal);
   }
 
 

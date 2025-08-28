@@ -6,7 +6,7 @@
  * @note This file must have a `.tsx` extension because it imports and uses React components (icons).
  */
 
-import { BrainCircuit, Code, Server, Wrench } from 'lucide-react';
+import { BrainCircuit, Code, Wrench } from 'lucide-react';
 import { PythonIcon } from '@/components/icons/python';
 import { TypescriptIcon } from '@/components/icons/typescript';
 import { ReactIcon } from '@/components/icons/react';
@@ -58,6 +58,40 @@ export interface SkillCategory {
  */
 export const skillsData: SkillCategory[] = [
   {
+    title: 'Backend & Data Science',
+    icon: <BrainCircuit size={32} />,
+    skills: [
+      {
+        name: 'Python',
+        icon: <PythonIcon />,
+      },
+       {
+        name: 'NumPy',
+        icon: <NumpyIcon />,
+      },
+       {
+        name: 'Pandas',
+        icon: <PandasIcon />,
+      },
+      {
+        name: 'Scikit-learn',
+        icon: <SciktLearnIcon />,
+      },
+      {
+        name: 'TensorFlow',
+        icon: <TensorflowIcon />,
+      },
+      {
+        name: 'C',
+        icon: <CIcon />,
+      },
+       {
+        name: 'SQLite',
+        icon: <SqliteIcon />,
+      },
+    ]
+  },
+  {
     title: 'Frontend Development',
     icon: <Code size={32} />,
     skills: [
@@ -93,40 +127,6 @@ export const skillsData: SkillCategory[] = [
         iconClassName: 'dark:invert'
       },
     ],
-  },
-  {
-    title: 'Backend & Data Science',
-    icon: <BrainCircuit size={32} />,
-    skills: [
-      {
-        name: 'Python',
-        icon: <PythonIcon />,
-      },
-       {
-        name: 'NumPy',
-        icon: <NumpyIcon />,
-      },
-       {
-        name: 'Pandas',
-        icon: <PandasIcon />,
-      },
-      {
-        name: 'Scikit-learn',
-        icon: <SciktLearnIcon />,
-      },
-      {
-        name: 'TensorFlow',
-        icon: <TensorflowIcon />,
-      },
-      {
-        name: 'C',
-        icon: <CIcon />,
-      },
-       {
-        name: 'SQLite',
-        icon: <SqliteIcon />,
-      },
-    ]
   },
   {
     title: 'Tools & Platforms',
