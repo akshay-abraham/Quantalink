@@ -1,6 +1,6 @@
 /**
  * @file /src/lib/skills-data.tsx
- * @description This file contains the data for all skills, organized into categories.
+ * @description This file contains the data for all technical skills, organized into categories.
  *              To add a new skill or category, modify the `skillsData` array.
  *              This structure makes it easy to render the skills page dynamically.
  * @note This file must have a `.tsx` extension because it imports and uses React components (icons).
@@ -33,9 +33,11 @@ import { GeminiIcon } from '@/components/icons/gemini';
 import { ArduinoIcon } from '@/components/icons/arduino';
 import { EspressifIcon } from '@/components/icons/espressif';
 
-
 /**
  * Defines the structure for an individual skill.
+ * @property {string} name - The name of the skill (e.g., "Python").
+ * @property {React.ReactNode} icon - The React component for the skill's logo.
+ * @property {string} [iconClassName] - Optional CSS classes to apply to the icon container, e.g., for dark mode adjustments.
  */
 export interface Skill {
   name: string;
@@ -45,6 +47,10 @@ export interface Skill {
 
 /**
  * Defines the structure for a category of skills.
+ * @property {string} title - The title of the category (e.g., "Frontend Development").
+ * @property {React.ReactNode} icon - The icon representing the category.
+ * @property {Skill[]} skills - An array of `Skill` objects belonging to this category.
+ * @property {string} [note] - An optional descriptive note for the category.
  */
 export interface SkillCategory {
   title: string;
@@ -54,8 +60,8 @@ export interface SkillCategory {
 }
 
 /**
- * Data for all skills, organized by category.
- * To add more, simply add to the existing arrays or create a new category object.
+ * Data for all technical skills, organized by category.
+ * The order is Backend, Frontend, then Tools, reflecting a professional focus.
  */
 export const skillsData: SkillCategory[] = [
   {
@@ -63,34 +69,13 @@ export const skillsData: SkillCategory[] = [
     icon: <BrainCircuit size={32} />,
     note: "Currently exploring these technologies with a focus on their applications in theoretical physics and data analysis.",
     skills: [
-      {
-        name: 'Python',
-        icon: <PythonIcon />,
-      },
-       {
-        name: 'NumPy',
-        icon: <NumpyIcon />,
-      },
-       {
-        name: 'Pandas',
-        icon: <PandasIcon />,
-      },
-      {
-        name: 'Scikit-learn',
-        icon: <SciktLearnIcon />,
-      },
-      {
-        name: 'TensorFlow',
-        icon: <TensorflowIcon />,
-      },
-      {
-        name: 'C',
-        icon: <CIcon />,
-      },
-       {
-        name: 'SQLite',
-        icon: <SqliteIcon />,
-      },
+      { name: 'Python', icon: <PythonIcon /> },
+      { name: 'NumPy', icon: <NumpyIcon /> },
+      { name: 'Pandas', icon: <PandasIcon /> },
+      { name: 'Scikit-learn', icon: <SciktLearnIcon /> },
+      { name: 'TensorFlow', icon: <TensorflowIcon /> },
+      { name: 'C', icon: <CIcon /> },
+      { name: 'SQLite', icon: <SqliteIcon /> },
     ]
   },
   {
@@ -98,91 +83,30 @@ export const skillsData: SkillCategory[] = [
     icon: <Code size={32} />,
     note: "I have a theoretical foundation from courses like CS50W. I primarily 'vibe code' for frontend tasks, using Gemini for initial generation and ChatGPT for debugging.",
     skills: [
-      {
-        name: 'HTML5',
-        icon: <HtmlIcon />,
-      },
-      {
-        name: 'CSS3',
-        icon: <CssIcon />,
-      },
-      {
-        name: 'Tailwind CSS',
-        icon: <TailwindIcon />,
-      },
-      {
-        name: 'JavaScript',
-        icon: <JavascriptIcon />,
-        iconClassName: 'p-1'
-      },
-      {
-        name: 'TypeScript',
-        icon: <TypescriptIcon />,
-        iconClassName: 'p-1'
-      },
-      {
-        name: 'React',
-        icon: <ReactIcon />,
-      },
-      {
-        name: 'Next.js',
-        icon: <NextjsIcon />,
-        iconClassName: 'dark:invert'
-      },
+      { name: 'HTML5', icon: <HtmlIcon /> },
+      { name: 'CSS3', icon: <CssIcon /> },
+      { name: 'Tailwind CSS', icon: <TailwindIcon /> },
+      { name: 'JavaScript', icon: <JavascriptIcon />, iconClassName: 'p-1' },
+      { name: 'TypeScript', icon: <TypescriptIcon />, iconClassName: 'p-1' },
+      { name: 'React', icon: <ReactIcon /> },
+      { name: 'Next.js', icon: <NextjsIcon />, iconClassName: 'dark:invert' },
     ],
   },
   {
     title: 'Tools & Platforms',
     icon: <Wrench size={32} />,
     skills: [
-       {
-        name: 'Git',
-        icon: <GitIcon />,
-      },
-      {
-        name: 'GitHub',
-        icon: <GithubIcon />,
-        iconClassName: 'dark:invert'
-      },
-      {
-        name: 'VS Code',
-        icon: <VscodeIcon />,
-      },
-       {
-        name: 'ChatGPT',
-        icon: <ChatgptIcon />,
-      },
-       {
-        name: 'Gemini',
-        icon: <GeminiIcon />,
-      },
-       {
-        name: 'Bash',
-        icon: <BashIcon />,
-        iconClassName: 'dark:invert'
-      },
-      {
-        name: 'Zsh',
-        icon: <ZshIcon />,
-        iconClassName: 'dark:invert'
-      },
-       {
-        name: 'Ubuntu',
-        icon: <UbuntuIcon />,
-      },
-       {
-        name: 'Vercel',
-        icon: <VercelIcon />,
-        iconClassName: 'dark:invert'
-      },
-      {
-        name: 'Arduino',
-        icon: <ArduinoIcon />,
-      },
-      {
-        name: 'ESP32/ESP8266',
-        icon: <EspressifIcon />,
-      },
+       { name: 'Git', icon: <GitIcon /> },
+       { name: 'GitHub', icon: <GithubIcon />, iconClassName: 'dark:invert' },
+       { name: 'VS Code', icon: <VscodeIcon /> },
+       { name: 'ChatGPT', icon: <ChatgptIcon /> },
+       { name: 'Gemini', icon: <GeminiIcon /> },
+       { name: 'Bash', icon: <BashIcon />, iconClassName: 'dark:invert' },
+       { name: 'Zsh', icon: <ZshIcon />, iconClassName: 'dark:invert' },
+       { name: 'Ubuntu', icon: <UbuntuIcon /> },
+       { name: 'Vercel', icon: <VercelIcon />, iconClassName: 'dark:invert' },
+       { name: 'Arduino', icon: <ArduinoIcon /> },
+       { name: 'ESP32/ESP8266', icon: <EspressifIcon /> },
     ],
   },
 ];
