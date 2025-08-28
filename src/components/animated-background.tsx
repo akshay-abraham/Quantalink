@@ -227,17 +227,20 @@ const AnimatedBackground = () => {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           // If particles are close, draw a prominent, wavy line between them.
-          if (dist < 130) {
+          if (dist < 150) { // Increased interaction distance slightly
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             // Use a quadratic curve to make the line wavy and organic.
-            const midX = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * 20;
-            const midY = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * 20;
+            const midX = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * 30;
+            const midY = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * 30;
             ctx.quadraticCurveTo(midX, midY, p2.x, p2.y);
             // The line's visibility fades with distance.
-            ctx.strokeStyle = `hsla(50, 100%, 70%, ${0.8 - dist / 130})`;
-            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = `hsla(50, 100%, 70%, ${0.9 - dist / 150})`;
+            ctx.lineWidth = 2; // Made the line thicker
+            ctx.shadowColor = 'hsl(50, 100%, 80%)';
+            ctx.shadowBlur = 10;
             ctx.stroke();
+            ctx.shadowBlur = 0;
           }
         }
       }
