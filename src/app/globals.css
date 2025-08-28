@@ -62,6 +62,15 @@ body {
       animation: ghost-float 2.5s ease-in-out infinite;
   }
 
+  @keyframes scrolling-logos {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+  }
+  
+  .animate-scrolling-logos {
+    animation: scrolling-logos 40s linear infinite;
+  }
+
 
   @keyframes fade-in {
     from {

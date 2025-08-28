@@ -2,7 +2,7 @@
  * @file src/app/skills/page.tsx
  * @description The dedicated page for showcasing a detailed breakdown of skills.
  *              This page organizes skills into categories and displays them
- *              in a visually appealing card-based grid.
+ *              in visually appealing, infinitely scrolling rows.
  * @note This is a client component because it uses hooks (`useState`, `useEffect`)
  *       for animations.
  */
@@ -13,6 +13,7 @@ import PageFooter from '@/components/page-footer';
 import { skillsData, SkillCategory } from '@/lib/skills-data.tsx';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { InfiniteScroller } from '@/components/infinite-scroller';
 
 /**
  * A small component to render a styled icon for a skill category.
@@ -48,11 +49,11 @@ export default function SkillsPage() {
         <CategoryIcon icon={category.icon} />
         <h2 className="text-2xl font-bold text-primary mb-4">{category.title}</h2>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {category.skills.map((skill, skillIndex) => (
+       <InfiniteScroller speed={index % 2 === 0 ? "slow" : "normal"}>
+        {category.skills.map((skill) => (
           <Card 
             key={skill.name}
-            className="bg-card/30 border-border/40 shadow-lg text-left flex flex-col transition-transform duration-300 hover:scale-105 hover:border-primary/50"
+            className="bg-card/40 border-border/40 shadow-lg text-left flex flex-col w-[350px] shrink-0"
           >
             <CardHeader className="flex-grow">
               <div className="flex items-center gap-4 mb-3">
@@ -67,7 +68,7 @@ export default function SkillsPage() {
             </CardHeader>
           </Card>
         ))}
-      </div>
+      </InfiniteScroller>
     </div>
   );
 
@@ -75,7 +76,7 @@ export default function SkillsPage() {
     <>
       <AnimatedBackground />
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-5xl flex-grow">
+        <div className="w-full max-w-7xl flex-grow">
           <header className="mb-12 pt-20 text-center">
             <h1 className="text-4xl font-bold text-primary tracking-tight">
               My Skillset
