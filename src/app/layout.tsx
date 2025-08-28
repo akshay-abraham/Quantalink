@@ -110,7 +110,7 @@ export default function RootLayout({
           <AnimatedBackground />
           <MainNav />
           {/* Renders the active page content. */}
-          {children}
+          <main>{children}</main>
           {/* The Toaster component handles pop-up notifications (e.g., for errors or confirmations). */}
           <Toaster />
       </body>

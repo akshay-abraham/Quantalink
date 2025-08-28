@@ -70,11 +70,11 @@ export const skillsData: SkillCategory[] = [
     note: "Currently exploring these technologies with a focus on their applications in theoretical physics and data analysis.",
     skills: [
       { name: 'Python', icon: <PythonIcon /> },
+      { name: 'C', icon: <CIcon /> },
       { name: 'NumPy', icon: <NumpyIcon /> },
       { name: 'Pandas', icon: <PandasIcon /> },
       { name: 'Scikit-learn', icon: <SciktLearnIcon /> },
       { name: 'TensorFlow', icon: <TensorflowIcon /> },
-      { name: 'C', icon: <CIcon /> },
       { name: 'SQLite', icon: <SqliteIcon /> },
     ]
   },
