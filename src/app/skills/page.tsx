@@ -48,16 +48,23 @@ export default function SkillsPage() {
       <div className="flex flex-col items-center text-center">
         <CategoryIcon icon={category.icon} />
         <h2 className="text-2xl font-bold text-primary mb-2">{category.title}</h2>
+        {category.note && (
+           <p className="text-sm text-foreground/70 mt-1 max-w-2xl mx-auto italic">
+            {category.note}
+          </p>
+        )}
       </div>
        <InfiniteScroller speed={index % 2 === 0 ? "slow" : "normal"}>
         {category.skills.map((skill) => (
           <Card 
             key={skill.name}
-            className="bg-card/40 border-border/40 shadow-lg text-center flex flex-col items-center justify-center w-[180px] h-[120px] shrink-0 p-4"
+            className="bg-card/40 border-border/40 shadow-lg text-center flex flex-col items-center justify-center w-[160px] h-[120px] shrink-0 p-4"
           >
             <CardHeader className="p-0 flex-grow flex flex-col items-center justify-center gap-2">
                <div className={cn("h-12 w-12 flex items-center justify-center text-foreground", skill.iconClassName)}>
-                {skill.icon}
+                 <div className="h-10 w-10 flex items-center justify-center">
+                   {skill.icon}
+                 </div>
               </div>
               <p className="text-sm font-medium text-foreground/90">{skill.name}</p>
             </CardHeader>

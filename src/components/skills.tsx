@@ -10,19 +10,21 @@ import { useInView } from '@/hooks/use-in-view';
 import { useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Badge } from './ui/badge';
-import { GitBranch, Users, ArrowRight, Atom, BrainCircuit } from 'lucide-react';
+import { Users, ArrowRight, Atom, BrainCircuit } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from './ui/button';
 import { CIcon } from './icons/c';
 import { PythonIcon } from './icons/python';
+import { GitIcon } from './icons/git';
+
 
 // A summary of key skills to be displayed on the homepage.
 const skills = [
-  { name: 'C', icon: CIcon },
   { name: 'Python', icon: PythonIcon },
+  { name: 'C', icon: CIcon },
   { name: 'Electronics & IoT', icon: BrainCircuit },
   { name: 'Theoretical Physics', icon: Atom },
-  { name: 'Git & GitHub', icon: GitBranch },
+  { name: 'Git & GitHub', icon: GitIcon },
   { name: 'Leadership', icon: Users }
 ];
 

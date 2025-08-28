@@ -50,6 +50,7 @@ export interface SkillCategory {
   title: string;
   icon: React.ReactNode;
   skills: Skill[];
+  note?: string;
 }
 
 /**
@@ -60,6 +61,7 @@ export const skillsData: SkillCategory[] = [
   {
     title: 'Backend & Data Science',
     icon: <BrainCircuit size={32} />,
+    note: "Currently exploring these technologies with a focus on their applications in theoretical physics and data analysis.",
     skills: [
       {
         name: 'Python',
@@ -94,6 +96,7 @@ export const skillsData: SkillCategory[] = [
   {
     title: 'Frontend Development',
     icon: <Code size={32} />,
+    note: "I have a theoretical foundation from courses like CS50W. I primarily 'vibe code' for frontend tasks, using Gemini for initial generation and ChatGPT for debugging.",
     skills: [
       {
         name: 'HTML5',
