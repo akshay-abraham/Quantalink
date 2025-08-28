@@ -10,7 +10,7 @@ import { useInView } from '@/hooks/use-in-view';
 import { useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Badge } from './ui/badge';
-import { Code, Cpu, GitBranch, Lightbulb, Users, ArrowRight } from 'lucide-react';
+import { Code, GitBranch, Users, ArrowRight, Atom, BrainCircuit } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from './ui/button';
 import { CPlusPlusIcon } from './icons/cplusplus';
@@ -20,9 +20,9 @@ import { PythonIcon } from './icons/python';
 const skills = [
   { name: 'C/C++', icon: CPlusPlusIcon },
   { name: 'Python', icon: PythonIcon },
-  { name: 'Electronics & IoT', icon: Cpu },
-  { name: 'Git & Bash', icon: GitBranch },
-  { name: 'Product Design', icon: Lightbulb },
+  { name: 'Electronics & IoT', icon: BrainCircuit },
+  { name: 'Theoretical Physics', icon: Atom },
+  { name: 'Git & GitHub', icon: GitBranch },
   { name: 'Leadership', icon: Users }
 ];
 
@@ -49,7 +49,7 @@ export default function Skills() {
           "text-2xl font-bold text-primary tracking-tight transition-all duration-700",
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         )}>
-          Skills
+          Skills & Technologies
       </h2>
       <div className="flex flex-wrap justify-center gap-3">
         {/* Map over the skills to render a badge for each one. */}
@@ -83,7 +83,7 @@ export default function Skills() {
       >
         <Link href="/skills">
           <Button variant="outline" className="bg-card/30 border-border/40">
-            See Full Skillset
+            See Full Technical Skillset
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
