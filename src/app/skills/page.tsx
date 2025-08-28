@@ -1,14 +1,13 @@
 /**
  * @file src/app/skills/page.tsx
- * @description The dedicated page for showcasing a detailed breakdown of skills.
+ * @description The dedicated page for showcasing a detailed breakdown of technical skills.
  *              This page organizes skills into categories and displays them
  *              in visually appealing, infinitely scrolling rows.
- * @note This is a client component because it uses hooks (`useState`, `useEffect`)
- *       for animations.
+ * @note This is a client component because it uses hooks for its entrance animations.
  */
 'use client';
 
-import AnimatedBackground from '@/components/animated-background';
+import { useEffect, useState } from 'react';
 import PageFooter from '@/components/page-footer';
 import { skillsData, SkillCategory } from '@/lib/skills-data';
 import { Card, CardHeader } from '@/components/ui/card';
@@ -32,6 +31,12 @@ const CategoryIcon = ({ icon }: { icon: React.ReactNode }) => (
  * @returns {JSX.Element} The rendered skills page.
  */
 export default function SkillsPage() {
+  const [isMounted, setIsMounted] = useState(false);
+
+  // useEffect ensures animations only play on the client after the component has mounted.
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   /**
    * Renders a single skill category, including its title, icon, and a grid of skill cards.
@@ -42,7 +47,10 @@ export default function SkillsPage() {
   const renderCategory = (category: SkillCategory, index: number) => (
     <div 
       key={category.title}
-      className="space-y-6 animate-fade-in-up"
+      className={cn(
+        "space-y-6 transition-all duration-700 ease-out",
+        isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+      )}
       style={{ animationDelay: `${200 + index * 150}ms` }}
     >
       <div className="flex flex-col items-center text-center">
@@ -75,26 +83,23 @@ export default function SkillsPage() {
   );
 
   return (
-    <>
-      <AnimatedBackground />
-      <div className="relative z-10 flex min-h-screen w-full flex-col items-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-7xl flex-grow">
-          <header className="mb-12 pt-20 text-center">
-            <h1 className="text-4xl font-bold text-primary tracking-tight">
-              Skills & Technologies
-            </h1>
-             <p className="text-foreground/70 mt-2 max-w-2xl mx-auto">
-              A detailed look at the languages, frameworks, tools, and platforms I work with.
-            </p>
-          </header>
+    <div className="relative z-10 flex min-h-screen w-full flex-col items-center p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-7xl flex-grow">
+        <header className="mb-12 pt-20 text-center">
+          <h1 className="text-4xl font-bold text-primary tracking-tight">
+            Skills & Technologies
+          </h1>
+           <p className="text-foreground/70 mt-2 max-w-2xl mx-auto">
+            A detailed look at the languages, frameworks, tools, and platforms I work with.
+          </p>
+        </header>
 
-          <main className="space-y-16">
-            {skillsData.map(renderCategory)}
-          </main>
+        <main className="space-y-16">
+          {skillsData.map(renderCategory)}
+        </main>
 
-        </div>
-        <PageFooter />
       </div>
-    </>
+      <PageFooter />
+    </div>
   );
 }

@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
  * It uses a custom `useInView` hook to trigger a fade-in animation when the
  * component scrolls into the viewport, enhancing the user experience.
  * @returns {JSX.Element} The rendered "About Me" section.
+ * @deprecated This component is no longer in use.
  */
 export default function AboutMe() {
   // A ref to the main section element to track its visibility.
