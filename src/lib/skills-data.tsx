@@ -6,8 +6,7 @@
  * @note This file must have a `.tsx` extension because it imports and uses React components (icons).
  */
 
-import { BrainCircuit, Code, Cpu, Database, Server, Wrench } from 'lucide-react';
-import { CPlusPlusIcon } from '@/components/icons/cplusplus';
+import { BrainCircuit, Code, Server, Wrench } from 'lucide-react';
 import { PythonIcon } from '@/components/icons/python';
 import { TypescriptIcon } from '@/components/icons/typescript';
 import { ReactIcon } from '@/components/icons/react';
@@ -25,7 +24,6 @@ import { VercelIcon } from '@/components/icons/vercel';
 import { UbuntuIcon } from '@/components/icons/ubuntu';
 import { CIcon } from '@/components/icons/c';
 import { NextjsIcon } from '@/components/icons/nextdotjs';
-import { DjangoIcon } from '@/components/icons/django';
 import { NumpyIcon } from '@/components/icons/numpy';
 import { PandasIcon } from '@/components/icons/pandas';
 import { SciktLearnIcon } from '@/components/icons/scikt-learn';
@@ -60,32 +58,9 @@ export interface SkillCategory {
  */
 export const skillsData: SkillCategory[] = [
   {
-    title: 'Languages & Frameworks',
+    title: 'Frontend Development',
     icon: <Code size={32} />,
     skills: [
-      {
-        name: 'JavaScript',
-        icon: <JavascriptIcon />,
-        iconClassName: 'p-1'
-      },
-      {
-        name: 'TypeScript',
-        icon: <TypescriptIcon />,
-        iconClassName: 'p-1'
-      },
-      {
-        name: 'Python',
-        icon: <PythonIcon />,
-      },
-      {
-        name: 'React',
-        icon: <ReactIcon />,
-      },
-      {
-        name: 'Next.js',
-        icon: <NextjsIcon />,
-        iconClassName: 'dark:invert'
-      },
       {
         name: 'HTML5',
         icon: <HtmlIcon />,
@@ -99,64 +74,65 @@ export const skillsData: SkillCategory[] = [
         icon: <TailwindIcon />,
       },
       {
-        name: 'C++',
-        icon: <CPlusPlusIcon />,
+        name: 'JavaScript',
+        icon: <JavascriptIcon />,
+        iconClassName: 'p-1'
       },
       {
-        name: 'C',
-        icon: <CIcon />,
+        name: 'TypeScript',
+        icon: <TypescriptIcon />,
+        iconClassName: 'p-1'
       },
       {
-        name: 'Django',
-        icon: <DjangoIcon />,
+        name: 'React',
+        icon: <ReactIcon />,
+      },
+      {
+        name: 'Next.js',
+        icon: <NextjsIcon />,
+        iconClassName: 'dark:invert'
       },
     ],
   },
   {
-    title: 'Data Science & AI',
+    title: 'Backend & Data Science',
     icon: <BrainCircuit size={32} />,
     skills: [
-       {
-        name: 'Gemini',
-        icon: <GeminiIcon />,
-      },
       {
-        name: 'TensorFlow',
-        icon: <TensorflowIcon />,
+        name: 'Python',
+        icon: <PythonIcon />,
+      },
+       {
+        name: 'NumPy',
+        icon: <NumpyIcon />,
+      },
+       {
+        name: 'Pandas',
+        icon: <PandasIcon />,
       },
       {
         name: 'Scikit-learn',
         icon: <SciktLearnIcon />,
       },
       {
-        name: 'Pandas',
-        icon: <PandasIcon />,
+        name: 'TensorFlow',
+        icon: <TensorflowIcon />,
       },
       {
-        name: 'NumPy',
-        icon: <NumpyIcon />,
+        name: 'C',
+        icon: <CIcon />,
       },
-    ]
-  },
-    {
-    title: 'Hardware & IoT',
-    icon: <Cpu size={32} />,
-    skills: [
-      {
-        name: 'Arduino',
-        icon: <ArduinoIcon />,
-      },
-      {
-        name: 'ESP32/ESP8266',
-        icon: <EspressifIcon />,
+       {
+        name: 'SQLite',
+        icon: <SqliteIcon />,
       },
     ]
   },
   {
-    title: 'Developer Tools',
+    title: 'Tools & Platforms',
     icon: <Wrench size={32} />,
     skills: [
-      {
+       {
         name: 'Git',
         icon: <GitIcon />,
       },
@@ -173,24 +149,9 @@ export const skillsData: SkillCategory[] = [
         name: 'ChatGPT',
         icon: <ChatgptIcon />,
       },
-    ],
-  },
-   {
-    title: 'Platforms & Databases',
-    icon: <Server size={32} />,
-    skills: [
        {
-        name: 'Vercel',
-        icon: <VercelIcon />,
-        iconClassName: 'dark:invert'
-      },
-       {
-        name: 'Ubuntu',
-        icon: <UbuntuIcon />,
-      },
-      {
-        name: 'SQLite',
-        icon: <SqliteIcon />,
+        name: 'Gemini',
+        icon: <GeminiIcon />,
       },
        {
         name: 'Bash',
@@ -201,6 +162,23 @@ export const skillsData: SkillCategory[] = [
         name: 'Zsh',
         icon: <ZshIcon />,
         iconClassName: 'dark:invert'
+      },
+       {
+        name: 'Ubuntu',
+        icon: <UbuntuIcon />,
+      },
+       {
+        name: 'Vercel',
+        icon: <VercelIcon />,
+        iconClassName: 'dark:invert'
+      },
+      {
+        name: 'Arduino',
+        icon: <ArduinoIcon />,
+      },
+      {
+        name: 'ESP32/ESP8266',
+        icon: <EspressifIcon />,
       },
     ],
   },
