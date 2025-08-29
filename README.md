@@ -32,7 +32,7 @@ Production: **[https://akshayabraham.vercel.app](https://akshayabraham.vercel.ap
 
 ---
 
-## 🚧 Work in Progress for v2.2
+## 🚧 Work in Progress for v2.3
 
 ### **Responsive Layout**
 
