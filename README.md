@@ -1,4 +1,66 @@
-# **[https://akshayabraham.vercel.app](https://akshayabraham.vercel.app)**
+# **Full Beta Version:** [https://betaakshayabraham.vercel.app/skills](https://betaakshayabraham.vercel.app/skills)
+
+Production: **[https://akshayabraham.vercel.app](https://akshayabraham.vercel.app)**
+
+# Quantalink v2.2 Dev Log
+
+## ✅ Updates: v2.1 → v2.2
+
+### **Skills Section Revamp**
+
+- Replaced old, broken programming language logos with **high-quality SVGs** from [SimpleIcons](https://simpleicons.org).
+- Reorganized skills into three clear categories:
+  1. **Data Science**
+  2. **Frontend Development**
+  3. **Tools & Platforms**
+
+---
+
+### **Animation & UI Enhancements**
+
+- Fixed the **particle clutter issue** by introducing a hard limit on particle count.
+- Added **moving banner animations** (like news channels or tech websites) to:
+  - Skills Page
+  - Skills Section
+- Implemented **multi-page navigation** with a top menu bar that gracefully **collapses into a hamburger menu** on mobile devices.
+
+---
+
+### **SEO & Accessibility**
+
+- Added the **main webpage** to **Google Index** for improved discoverability.
+
+---
+
+## 🚧 Work in Progress for v2.2
+
+### **Responsive Layout**
+
+- Optimize **horizontal space usage** on desktop for a more polished UI.
+- Fix spacing issues when the **hamburger menu** hides on mobile devices.
+- Redesign hamburger menu with a **minimal acrylic style**.
+
+---
+
+### **Performance & Animation**
+
+- Maintain **high-end animations** on desktop while optimizing performance for Android devices.
+- Add **interactive info elements** to explain the **quantum-inspired background animations**.
+- Introduce a **new glow animation** moving along the edges of each project box in:
+  - Projects Pane
+  - Projects Page
+
+---
+
+### **SEO & Branding**
+
+- Further **SEO improvements** for better visibility.
+- Friendlier **README** with:
+  - Behind-the-scenes insights
+  - Physics inspiration behind each design element
+- Update **favicon** with a fresh, modern look.
+
+---
 
 ## [Checkout Beta v2.2](https://github.com/akshay-abraham/Quantalink/tree/beta)
 
