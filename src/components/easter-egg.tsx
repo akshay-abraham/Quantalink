@@ -24,6 +24,12 @@ import { Progress } from '@/components/ui/progress';
 type GameState = 'idle' | 'playing' | 'revealing' | 'result' | 'failed';
 type CatState = 'alive' | 'ghost' | null;
 
+interface Orb {
+  id: number;
+  x: number;
+  y: number;
+}
+
 const PARTICLE_COLORS = {
   popper: ['#facc15', '#fb923c', '#f87171', '#4ade80', '#22d3ee', '#a78bfa', '#f472b6', '#818cf8'],
   ghost: ['#a5f3fc', '#67e8f9', '#c4b5fd', '#a78bfa', '#f0abfc', '#bae6fd'],
@@ -51,15 +57,28 @@ const FunParticles = ({ type, count }: { type: 'popper' | 'ghost', count: number
     </div>
 );
 
+const QuantumOrb = ({ orb, onCollect }: { orb: Orb; onCollect: (id: number) => void }) => (
+  <button
+    onClick={() => onCollect(orb.id)}
+    className="absolute w-8 h-8 rounded-full bg-primary/50 border-2 border-primary shadow-lg animate-orb-pop-in"
+    style={{ left: `${orb.x}%`, top: `${orb.y}%` }}
+  >
+    <div className="w-full h-full rounded-full bg-primary animate-pulse"></div>
+  </button>
+);
+
+
 export default function EasterEgg() {
   const [gameState, setGameState] = useState<GameState>('idle');
   const [catState, setCatState] = useState<CatState>(null);
   const [progress, setProgress] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(5);
+  const [timeLeft, setTimeLeft] = useState(10);
   const [stats, setStats] = useState({ alive: 0, ghost: 0 });
+  const [orbs, setOrbs] = useState<Orb[]>([]);
 
   const ref = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const orbSpawnerRef = useRef<NodeJS.Timeout | null>(null);
   const isVisible = useInView(ref);
 
   useEffect(() => {
@@ -84,29 +103,49 @@ export default function EasterEgg() {
     }
   }, [stats]);
   
+  const cleanupTimers = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (orbSpawnerRef.current) clearInterval(orbSpawnerRef.current);
+  };
+  
   const startExperiment = () => {
     setProgress(0);
-    setTimeLeft(5);
+    setTimeLeft(10);
+    setOrbs([]);
     setGameState('playing');
     
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
-          clearInterval(timerRef.current!);
+          cleanupTimers();
           setGameState('failed');
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
+
+    orbSpawnerRef.current = setInterval(() => {
+      setOrbs(prevOrbs => {
+        const newOrb: Orb = {
+          id: Date.now(),
+          x: Math.random() * 90, // Keep within bounds
+          y: Math.random() * 90,
+        };
+        // Remove the oldest orb if we have too many
+        const updatedOrbs = prevOrbs.length > 5 ? prevOrbs.slice(1) : prevOrbs;
+        return [...updatedOrbs, newOrb];
+      });
+    }, 700);
   };
 
-  const chargeMeter = () => {
+  const collectOrb = (id: number) => {
     if (gameState !== 'playing') return;
+    setOrbs(orbs.filter(orb => orb.id !== id));
     setProgress(prev => {
-      const newProgress = prev + 15;
+      const newProgress = prev + 25; // Each orb gives a good boost
       if (newProgress >= 100) {
-        clearInterval(timerRef.current!);
+        cleanupTimers();
         observe();
         return 100;
       }
@@ -125,9 +164,11 @@ export default function EasterEgg() {
   };
 
   const reset = () => {
+    cleanupTimers();
     setGameState('idle');
     setCatState(null);
     setProgress(0);
+    setOrbs([]);
   };
   
   useEffect(() => {
@@ -136,13 +177,17 @@ export default function EasterEgg() {
         0% { transform: translate(0, 0) scale(0); opacity: 1; }
         100% { transform: translate(${(Math.random() - 0.5) * 400}px, ${(Math.random() - 0.5) * 400}px) scale(1); opacity: 0; }
       }
+       @keyframes orb-pop-in {
+        0% { transform: scale(0); opacity: 0; }
+        50% { transform: scale(1.1); opacity: 1; }
+        100% { transform: scale(1); opacity: 1; }
+      }
     `;
     if (typeof window !== 'undefined') {
       const styleSheet = document.styleSheets[0];
       if (styleSheet) {
           try {
-              const ruleExists = Array.from(styleSheet.cssRules).some(rule => (rule as CSSKeyframesRule).name === 'fly-out');
-              if (!ruleExists) {
+              if (!Array.from(styleSheet.cssRules).some(rule => (rule as CSSKeyframesRule).name === 'fly-out')) {
                  styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
               }
           } catch (e) {
@@ -150,6 +195,9 @@ export default function EasterEgg() {
           }
       }
     }
+    
+    // Cleanup on unmount
+    return cleanupTimers;
   }, []);
 
   return (
@@ -173,12 +221,12 @@ export default function EasterEgg() {
                   An interactive thought experiment. Your observation collapses the wave function.
                 </CardDescription>
             </CardHeader>
-            <CardContent className="min-h-[260px] flex flex-col items-center justify-center space-y-6 p-6">
+            <CardContent className="min-h-[300px] flex flex-col items-center justify-center space-y-6 p-6">
                 
                 {gameState === 'idle' && (
                     <div className="space-y-6 animate-fade-in w-full max-w-sm px-4">
                         <blockquote className='space-y-2'>
-                          <p className="font-medium text-foreground/90">"Charge the observation meter to collapse the superposition. Only then will my fate be decided."</p>
+                          <p className="font-medium text-foreground/90">"My fate is in superposition. Stabilize the quantum field to observe the outcome."</p>
                           <cite className="text-sm text-foreground/70 not-italic">- The Cat (probably)</cite>
                         </blockquote>
                          <div className="text-sm text-foreground/80">
@@ -194,8 +242,8 @@ export default function EasterEgg() {
                 )}
                 
                 {(gameState === 'playing' || gameState === 'failed') && (
-                    <div className="space-y-6 animate-fade-in w-full max-w-sm px-4">
-                        <h3 className="font-bold text-lg text-primary">{gameState === 'failed' ? 'Experiment Failed!' : 'Charging Meter...'}</h3>
+                    <div className="space-y-4 animate-fade-in w-full max-w-sm h-full flex flex-col">
+                        <h3 className="font-bold text-lg text-primary">{gameState === 'failed' ? 'Experiment Failed!' : 'Collecting Quantum Orbs...'}</h3>
                         <div className="space-y-2">
                            <Progress value={progress} className="w-full" />
                            <div className="flex justify-between items-center text-sm text-foreground/70">
@@ -203,15 +251,16 @@ export default function EasterEgg() {
                                <span className="flex items-center gap-1"><Timer className="h-4 w-4" />{timeLeft}s</span>
                            </div>
                         </div>
-                        <p className="text-sm text-foreground/80">
-                          {gameState === 'failed' ? 'The quantum state destabilized. Reset to try again.' : 'Repeatedly click to charge the meter before time runs out!'}
+                        <div className="relative w-full flex-grow bg-primary/5 border border-primary/20 rounded-lg mt-2">
+                            {orbs.map(orb => (
+                              <QuantumOrb key={orb.id} orb={orb} onCollect={collectOrb} />
+                            ))}
+                        </div>
+                         <p className="text-xs text-foreground/80 pt-2">
+                          {gameState === 'failed' ? 'The quantum state destabilized. Reset to try again.' : 'Click the spawning quantum orbs to charge the meter!'}
                         </p>
-                        <div className="w-full pt-4">
-                            {gameState === 'playing' ? (
-                               <Button onClick={chargeMeter} size="lg" className="w-full sm:w-auto">
-                                   <Zap className="mr-2 h-4 w-4" /> Charge
-                               </Button>
-                            ) : (
+                        <div className="w-full pt-2">
+                            {gameState === 'failed' && (
                                 <Button onClick={reset} variant="outline">Reset Experiment</Button>
                             )}
                         </div>
