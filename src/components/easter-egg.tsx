@@ -31,7 +31,7 @@ const ANOMALY_ICONS = [Atom, Dna, Biohazard, FlaskConical];
 const ANOMALY_COLORS = ['#ff00ff', '#00ffff', '#ffb700', '#00ff00', '#ff5252', '#ad52ff', '#f472b6', '#3b82f6'];
 
 interface Anomaly {
-  id: number;
+  id: string;
   x: number;
   y: number;
   Icon: React.ElementType;
@@ -65,8 +65,8 @@ type ParticleType = keyof typeof PARTICLE_COLORS;
 
 /** A single particle that animates flying outwards from a central point. */
 const Particle = ({ type }: { type: ParticleType }) => {
-  const tx = (Math.random() - 0.5) * 250;
-  const ty = (Math.random() - 0.5) * 250;
+  const tx = (Math.random() - 0.5) * 150;
+  const ty = (Math.random() - 0.5) * 150;
   const color = PARTICLE_COLORS[type][Math.floor(Math.random() * PARTICLE_COLORS[type].length)];
   const Icon = PARTICLE_ICONS[type];
 
@@ -74,7 +74,7 @@ const Particle = ({ type }: { type: ParticleType }) => {
     position: 'absolute',
     left: `50%`,
     top: `50%`,
-    animation: `fly-out ${0.8 + Math.random() * 1.2}s ease-out forwards`,
+    animation: `fly-out ${0.6 + Math.random() * 0.8}s ease-out forwards`,
     opacity: 0,
     transform: `rotate(${Math.random() * 360}deg) scale(${0.5 + Math.random()})`,
     animationDelay: `${Math.random() * 0.1}s`,
@@ -94,7 +94,7 @@ const FunParticles = ({ type, count }: { type: ParticleType, count: number }) =>
 );
 
 /** The clickable "anomaly" component. */
-const QuantumAnomaly = ({ anomaly, onClick }: { anomaly: Anomaly, onClick: (id: number, x: number, y: number) => void }) => (
+const QuantumAnomaly = ({ anomaly, onClick }: { anomaly: Anomaly, onClick: (id: string, x: number, y: number) => void }) => (
   <button
     onClick={() => onClick(anomaly.id, anomaly.x, anomaly.y)}
     className="absolute w-12 h-12 rounded-full flex items-center justify-center animate-orb-pop-in transition-transform duration-200 hover:scale-110"
@@ -190,7 +190,7 @@ export default function EasterEgg() {
   const spawnAnomaly = useCallback(() => {
       setAnomalies(prevAnomalies => {
           const newAnomaly: Anomaly = {
-            id: Date.now(),
+            id: `${Date.now()}-${Math.random()}`, // Use a more unique ID
             x: 5 + Math.random() * 85,
             y: 5 + Math.random() * 85,
             Icon: ANOMALY_ICONS[Math.floor(Math.random() * ANOMALY_ICONS.length)],
@@ -230,7 +230,7 @@ export default function EasterEgg() {
   };
 
   /** Handles the click event on a quantum anomaly. */
-  const handleAnomalyClick = (id: number, x: number, y: number) => {
+  const handleAnomalyClick = (id: string, x: number, y: number) => {
     setAnomalies(prev => prev.filter(a => a.id !== id));
     
     // Create a particle burst at the anomaly's location.
@@ -347,7 +347,6 @@ export default function EasterEgg() {
                       <div className="space-y-6 animate-fade-in w-full max-w-sm px-4">
                           <blockquote className='space-y-2'>
                             <p className="font-medium text-foreground/90">"My fate is in superposition. Collect quantum anomalies to observe the outcome."</p>
-                            <cite className="text-sm text-foreground/70 not-italic">- The Cat (probably)</cite>
                           </blockquote>
                            <div className="text-sm text-foreground/80">
                              <p>Timeline #{stats.plays + 1}</p>
@@ -467,10 +466,10 @@ export default function EasterEgg() {
               {/* A subtle button to reset all stats and progress. */}
               <button 
                 onClick={factoryReset} 
-                className="absolute bottom-1 right-2 text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-[8px] p-0.5 rounded-sm hover:bg-muted/50"
+                className="absolute bottom-1 right-1 text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-[6px] p-0.5 rounded-sm hover:bg-muted/50"
                 title="Reset all game statistics"
               >
-                Factory Reset
+                Reset
               </button>
           </Card>
       </section>
