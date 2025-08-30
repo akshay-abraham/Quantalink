@@ -7,11 +7,21 @@
  */
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import { Cat, Ghost } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PetState, setPet } from '@/lib/pet-state';
+
+// Defines the ghost's possible movement states.
+type GhostState = 'stalking' | 'swooshing' | 'hiding';
+
+/** A speech bubble component for the cat's "Meow!". */
+const MeowBubble = () => (
+  <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-card border border-border rounded-lg text-sm text-foreground shadow-lg whitespace-nowrap animate-fade-in">
+    Meow!
+  </div>
+);
 
 /**
  * PagePet component renders a pet that moves around the screen.
@@ -27,21 +37,20 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   });
   const [isMounted, setIsMounted] = useState(false);
   const [isAnimatingIn, setIsAnimatingIn] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+  
+  // --- Ghost-specific state ---
+  const [ghostState, setGhostState] = useState<GhostState>('stalking');
+  const [isVisible, setIsVisible] = useState(true);
+  const ghostStateTimeout = useRef<NodeJS.Timeout | null>(null);
+
   const mousePos = useRef({ x: 0, y: 0 });
   const petRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const animationFrameId = useRef<number>();
 
-  // This effect runs once to indicate the component is ready to be rendered in a portal.
-  // It also sets a timeout to automatically dismiss the pet after 2 minutes.
   useEffect(() => {
     setIsMounted(true);
-
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      setPet(null); // This will trigger the global state update and unmount the pet.
-    }, 120000); // 2 minutes in milliseconds.
     
-    // Disable the intro animation after it has played.
     const animTimeout = setTimeout(() => {
       if (petRef.current) {
         const rect = petRef.current.getBoundingClientRect();
@@ -51,12 +60,12 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     }, 1000);
 
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
       clearTimeout(animTimeout);
+      if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
+      if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
     };
-  }, [type]);
+  }, []);
   
-  // This effect tracks the user's mouse position.
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
@@ -65,53 +74,87 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // This is the main animation loop for the pet's movement.
-  useEffect(() => {
-    if (isAnimatingIn) return; // Don't apply physics during the fly-in animation.
+  /** Ghost AI: Manages state transitions for spooky behavior. */
+  const runGhostAI = useCallback(() => {
+    const changeState = () => {
+      // Determine the next state
+      const rand = Math.random();
+      if (rand < 0.6) { // 60% chance to stalk
+        setGhostState('stalking');
+        setIsVisible(true);
+        ghostStateTimeout.current = setTimeout(changeState, Math.random() * 4000 + 3000); // Stalk for 3-7s
+      } else if (rand < 0.85) { // 25% chance to hide
+        setGhostState('hiding');
+        setIsVisible(false);
+        ghostStateTimeout.current = setTimeout(changeState, Math.random() * 2000 + 1000); // Hide for 1-3s
+      } else { // 15% chance to swoosh
+        setGhostState('swooshing');
+        setIsVisible(true);
+        ghostStateTimeout.current = setTimeout(changeState, 700); // Swoosh is a short burst
+      }
+    };
+    changeState();
+  }, []);
 
-    let animationFrameId: number;
+  useEffect(() => {
+    if (type === 'ghost' && !isAnimatingIn) {
+      runGhostAI();
+    }
+    return () => {
+      if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
+    };
+  }, [type, isAnimatingIn, runGhostAI]);
+
+  useEffect(() => {
+    if (isAnimatingIn) return;
 
     const animate = () => {
-      setPosition((prevPos) => {
-        let { vx, vy } = velocity;
-        
-        if (petRef.current) {
-            const rect = petRef.current.getBoundingClientRect();
-            const petX = rect.left + rect.width / 2;
-            const petY = rect.top + rect.height / 2;
-            const dx = mousePos.current.x - petX;
-            const dy = mousePos.current.y - petY;
-            const distance = Math.sqrt(dx*dx + dy*dy);
+      let { vx, vy } = velocity;
+      
+      if (petRef.current) {
+          const rect = petRef.current.getBoundingClientRect();
+          const petX = rect.left + rect.width / 2;
+          const petY = rect.top + rect.height / 2;
+          const dx = mousePos.current.x - petX;
+          const dy = mousePos.current.y - petY;
+          const distance = Math.sqrt(dx*dx + dy*dy);
 
-            // **Interaction Logic:**
-            // The live cat is attracted to the cursor.
-            if (type === 'alive') {
-              if (distance > 50) { // Don't get too close.
-                vx += dx * 0.0005;
-                vy += dy * 0.0005;
-              }
-            // The ghost is repelled by the cursor.
-            } else if (type === 'ghost') {
-                if (distance < 150) { // Only when cursor is near.
-                    vx -= dx * 0.0008;
-                    vy -= dy * 0.0008;
-                }
-                // Add some random, spooky drift.
-                vx += (Math.random() - 0.5) * 0.1;
-                vy += (Math.random() - 0.5) * 0.1;
+          if (type === 'alive') {
+            if (distance > 50) {
+              vx += dx * 0.0005;
+              vy += dy * 0.0005;
             }
-        }
-        
-        // Clamp velocity to prevent it from getting too fast.
-        vx = Math.max(-1.5, Math.min(1.5, vx));
-        vy = Math.max(-1.5, Math.min(1.5, vy));
-        
-        setVelocity({vx, vy}); // Update velocity state for the next frame.
+          } else if (type === 'ghost') {
+              if (distance < 150) { // Repel from cursor
+                  vx -= dx * 0.0008;
+                  vy -= dy * 0.0008;
+              }
+              if (ghostState === 'stalking') {
+                  vx += (Math.random() - 0.5) * 0.1; // Slow drift
+                  vy += (Math.random() - 0.5) * 0.1;
+              } else if (ghostState === 'swooshing') {
+                  vx += (Math.random() - 0.5) * 2; // FAST, erratic movement
+                  vy += (Math.random() - 0.5) * 2;
+              }
+          }
+      }
+      
+      // Apply friction/drag
+      vx *= 0.98;
+      vy *= 0.98;
 
+      // Clamp velocity based on pet type and state
+      const maxSpeed = type === 'ghost' && ghostState === 'swooshing' ? 8 : 1.5;
+      vx = Math.max(-maxSpeed, Math.min(maxSpeed, vx));
+      vy = Math.max(-maxSpeed, Math.min(maxSpeed, vy));
+      
+      setVelocity({vx, vy});
+
+      setPosition(prevPos => {
         let newX = prevPos.x + vx;
         let newY = prevPos.y + vy;
-
-        // Wall bouncing logic.
+        
+        // Wall bouncing logic
         if (newX <= 0 || newX >= window.innerWidth - 50) {
             vx *= -1;
             newX = prevPos.x + vx;
@@ -121,26 +164,26 @@ const PagePet = ({ type, startX, startY }: PetState) => {
             newY = prevPos.y + vy;
         }
         
-        newX = Math.max(0, Math.min(window.innerWidth - 50, newX));
-        newY = Math.max(0, Math.min(window.innerHeight - 50, newY));
-
         return { x: newX, y: newY };
       });
 
-      animationFrameId = requestAnimationFrame(animate);
+      animationFrameId.current = requestAnimationFrame(animate);
     };
 
-    animationFrameId = requestAnimationFrame(animate);
+    animationFrameId.current = requestAnimationFrame(animate);
 
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [type, velocity, isAnimatingIn]);
+    return () => {
+      if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
+    };
+  }, [type, velocity, isAnimatingIn, ghostState]);
 
   if (!isMounted || !type) return null;
 
   const PetIcon = type === 'alive' ? Cat : Ghost;
-  const petClasses = type === 'alive' ? 'text-green-500' : 'text-sky-400 opacity-80';
+  const petClasses = type === 'alive' 
+    ? 'text-green-500' 
+    : 'text-sky-400 opacity-80';
 
-  // Use a Portal to render the pet at the root of the body, allowing it to float above all other content.
   const container = document.getElementById('pet-container');
   if (!container) return null;
 
@@ -166,13 +209,13 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         width: '48px',
         height: '48px',
         zIndex: 9999,
-        pointerEvents: 'none',
+        pointerEvents: 'auto', // Allow hover events on the pet
         top: 0,
         left: 0,
         transform: `translate(${position.x}px, ${position.y}px) scale(1.2) rotate(${velocity.vx * 10}deg)`,
-        transition: 'transform 0.5s ease-out',
+        transition: 'transform 0.5s ease-out, opacity 0.5s ease-in-out',
+        opacity: isVisible ? (type === 'ghost' ? 0.8 : 1) : 0,
       };
-
 
   return ReactDOM.createPortal(
     <div
@@ -182,7 +225,12 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         isAnimatingIn && 'animate-fly-in'
       )}
       style={style}
+      onMouseEnter={() => type === 'alive' && setIsHovered(true)}
+      onMouseLeave={() => type === 'alive' && setIsHovered(false)}
+      onClick={() => setPet(null)} // Click to dismiss
+      title="Click to dismiss"
     >
+      {isHovered && type === 'alive' && <MeowBubble />}
       <PetIcon className="w-full h-full" />
     </div>,
     container
@@ -190,3 +238,5 @@ const PagePet = ({ type, startX, startY }: PetState) => {
 };
 
 export default PagePet;
+
+    

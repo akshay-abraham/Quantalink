@@ -106,12 +106,20 @@ const QuantumAnomaly = ({ anomaly, onClick }: { anomaly: Anomaly, onClick: (id: 
 
 /** Calculates game difficulty based on the number of times played. */
 const getDifficulty = (playCount: number) => {
-    // Cap difficulty scaling at run 3 to prevent it from becoming truly impossible.
-    const run = Math.min(playCount, 3);
+    // Linear increase up to play 3
+    if (playCount <= 3) {
+      return {
+          time: 15 - playCount * 3, // 15s -> 12s -> 9s -> 6s
+          anomalies: 5 + playCount * 2, // 5 -> 7 -> 9 -> 11
+          spawnRate: 900 - playCount * 150 // 900ms -> 750ms -> 600ms -> 450ms
+      }
+    }
+    // After play 3, the difficulty increases at a compounding rate.
+    const compoundFactor = Math.pow(1.1, playCount - 3);
     return {
-        time: 15 - run * 3,      // 15s -> 12s -> 9s -> 6s
-        anomalies: 5 + run * 2,  // 5 -> 7 -> 9 -> 11
-        spawnRate: 900 - run * 150 // 900ms -> 750ms -> 600ms -> 450ms
+        time: Math.max(4, 6 / compoundFactor), // Time decreases but won't go below 4s
+        anomalies: 11 + Math.floor(2 * compoundFactor), // Anomalies increase
+        spawnRate: Math.max(250, 450 / compoundFactor) // Spawn rate gets faster but won't go below 250ms
     }
 }
 
@@ -174,6 +182,21 @@ export default function EasterEgg() {
     if (anomalySpawnerRef.current) clearInterval(anomalySpawnerRef.current);
   };
   
+  /** Function to spawn a new anomaly. */
+  const spawnAnomaly = useCallback(() => {
+      setAnomalies(prevAnomalies => {
+          const newAnomaly: Anomaly = {
+            id: Date.now(),
+            x: 5 + Math.random() * 85,
+            y: 5 + Math.random() * 85,
+            Icon: ANOMALY_ICONS[Math.floor(Math.random() * ANOMALY_ICONS.length)],
+            color: ANOMALY_COLORS[Math.floor(Math.random() * ANOMALY_COLORS.length)],
+          };
+          const updatedAnomalies = prevAnomalies.length > 7 ? prevAnomalies.slice(1) : prevAnomalies;
+          return [...updatedAnomalies, newAnomaly];
+      });
+  }, []);
+
   /** Starts a new game session. */
   const startExperiment = () => {
     updateStats(null, true);
@@ -198,21 +221,6 @@ export default function EasterEgg() {
       });
     }, 1000);
 
-    // Function to spawn a new anomaly.
-    const spawnAnomaly = () => {
-        setAnomalies(prevAnomalies => {
-            const newAnomaly: Anomaly = {
-              id: Date.now(),
-              x: 5 + Math.random() * 85,
-              y: 5 + Math.random() * 85,
-              Icon: ANOMALY_ICONS[Math.floor(Math.random() * ANOMALY_ICONS.length)],
-              color: ANOMALY_COLORS[Math.floor(Math.random() * ANOMALY_COLORS.length)],
-            };
-            const updatedAnomalies = prevAnomalies.length > 7 ? prevAnomalies.slice(1) : prevAnomalies;
-            return [...updatedAnomalies, newAnomaly];
-        });
-    }
-
     anomalySpawnerRef.current = setInterval(spawnAnomaly, currentDifficulty.spawnRate);
     spawnAnomaly();
   };
@@ -220,6 +228,7 @@ export default function EasterEgg() {
   /** Handles the click event on a quantum anomaly. */
   const handleAnomalyClick = (id: number, x: number, y: number) => {
     setAnomalies(prev => prev.filter(a => a.id !== id));
+    spawnAnomaly(); // Spawn a new one immediately for a faster pace.
     
     // Create a particle burst at the anomaly's location.
     const newEffect: ParticleEffect = { id: Date.now(), x, y, type: 'anomaly' };
@@ -243,7 +252,7 @@ export default function EasterEgg() {
   const observe = () => {
     setGameState('revealing');
     setTimeout(() => {
-      const result: PetType = Math.random() > 0.4 ? 'alive' : 'ghost';
+      const result: PetType = Math.random() > 0.5 ? 'alive' : 'ghost'; // True 50/50 chance
       setCatState(result);
       updateStats(result, false);
       setIsResultIconVisible(true); // Ensure icon is visible initially
@@ -370,7 +379,7 @@ export default function EasterEgg() {
                                         </>
                                     )}
                                 </span>
-                                <span className="flex items-center gap-1 text-red-500"><Timer className="h-4 w-4" />{timeLeft}s</span>
+                                <span className="flex items-center gap-1 text-red-500"><Timer className="h-4 w-4" />{Math.round(timeLeft)}s</span>
                              </div>
                           </div>
                           <div 
@@ -393,12 +402,12 @@ export default function EasterEgg() {
                               {/* Container for particle effects on anomaly click */}
                               {particleEffects.map(effect => (
                                 <div key={effect.id} className="absolute" style={{left: `${effect.x}%`, top: `${effect.y}%`, width: '50px', height: '50px', transform: 'translate(-50%, -50%)'}}>
-                                   <FunParticles type={effect.type} count={30} />
+                                   <FunParticles type={effect.type} count={20} />
                                 </div>
                                ))}
                           </div>
                            <p className="text-xs text-foreground/80 pt-2 flex items-center justify-center gap-2">
-                            {gameState === 'failed' ? 'The quantum state destabilized. The timeline has been purged.' : `Collect ${difficulty.anomalies} anomalies in ${difficulty.time} seconds!`}
+                            {gameState === 'failed' ? 'The quantum state destabilized. The timeline has been purged.' : `Collect ${difficulty.anomalies} anomalies in ${Math.round(difficulty.time)} seconds!`}
                           </p>
                           <div className="w-full pt-2">
                               {gameState === 'failed' && (
@@ -453,7 +462,7 @@ export default function EasterEgg() {
               {/* A subtle button to reset all stats and progress. */}
               <button 
                 onClick={factoryReset} 
-                className="absolute bottom-1 right-2 text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-[10px] p-1 rounded-md hover:bg-muted/50"
+                className="absolute bottom-1 right-2 text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-[8px] p-0.5 rounded-sm hover:bg-muted/50"
                 title="Reset all game statistics"
               >
                 Factory Reset
@@ -463,3 +472,5 @@ export default function EasterEgg() {
     </>
   )
 }
+
+    
