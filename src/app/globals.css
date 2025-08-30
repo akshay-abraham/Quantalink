@@ -116,21 +116,21 @@ body {
   }
 
   .animate-border-glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    /* position: absolute; */
+    /* top: 50%; */
+    /* left: 50%; */
     width: 200%;
     height: 200%;
-    transform: translate(-50%, -50%);
+    /* transform: translate(-50%, -50%); */
     background: conic-gradient(
       from 180deg at 50% 50%,
       hsla(var(--primary), 0) 0%,
-      hsla(var(--primary), 0.5) 20%,
-      hsla(var(--primary), 0) 25%
+      hsla(var(--primary), 0.5) 30%,
+      hsla(var(--primary), 0) 35%
     );
     animation: animated-border-glow 4s linear infinite;
-    opacity: 0.3;
-    transition: opacity 0.3s ease-in-out;
+    /* opacity: 0.3; */
+    /* transition: opacity 0.3s ease-in-out; */
   }
 }
 
