@@ -122,6 +122,7 @@ export default function EasterEgg() {
   const [stats, setStats] = useState({ alive: 0, ghost: 0, plays: 0 });
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
   const [particleEffects, setParticleEffects] = useState<ParticleEffect[]>([]);
+  const [isResultIconVisible, setIsResultIconVisible] = useState(true);
   
   const [difficulty, setDifficulty] = useState(getDifficulty(0));
   const [anomaliesToClick, setAnomaliesToClick] = useState(difficulty.anomalies);
@@ -245,12 +246,14 @@ export default function EasterEgg() {
       const result: PetType = Math.random() > 0.4 ? 'alive' : 'ghost';
       setCatState(result);
       updateStats(result, false);
+      setIsResultIconVisible(true); // Ensure icon is visible initially
       setGameState('result');
       // Delay setting the pet to create the illusion of it "coming from" the card.
       setTimeout(() => {
         if (resultIconRef.current) {
           const rect = resultIconRef.current.getBoundingClientRect();
           setPet(result, rect.left + rect.width / 2, rect.top + rect.height / 2);
+          setIsResultIconVisible(false); // Hide the icon as the pet spawns
         }
       }, 250);
     }, 2500); // 2.5 second reveal animation.
@@ -421,7 +424,7 @@ export default function EasterEgg() {
                                   <div className="relative flex-1 p-4 border border-green-500/30 bg-green-500/10 rounded-lg space-y-3 text-center w-full max-w-sm">
                                       <FunParticles type="popper" count={150} />
                                       <h3 className="font-bold text-green-500">Observation Complete!</h3>
-                                      <div ref={resultIconRef}>
+                                      <div ref={resultIconRef} className={cn("transition-opacity duration-300", !isResultIconVisible && "opacity-0")}>
                                         <Cat className="h-16 w-16 mx-auto text-green-500 animate-popper" />
                                       </div>
                                       <p className="text-xl font-bold text-green-500">The cat is ALIVE!</p>
@@ -432,7 +435,7 @@ export default function EasterEgg() {
                                   <div className="relative flex-1 p-4 border border-sky-400/30 bg-sky-400/10 rounded-lg space-y-3 text-center w-full max-w-sm">
                                       <FunParticles type="ghost" count={80} />
                                       <h3 className="font-bold text-destructive">You Monster.</h3>
-                                      <div ref={resultIconRef}>
+                                      <div ref={resultIconRef} className={cn("transition-opacity duration-300", !isResultIconVisible && "opacity-0")}>
                                         <Ghost className="h-16 w-16 mx-auto text-sky-400 animate-ghost" />
                                       </div>
                                       <p className="text-xl font-bold text-sky-400">The cat has decohered.</p>
