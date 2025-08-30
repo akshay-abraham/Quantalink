@@ -82,7 +82,7 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
               transitionDelay: isVisible ? `${200 + index * 100}ms` : '0ms',
             }}
           >
-            <div className="animate-border-glow group-hover:opacity-100"></div>
+            <div className="absolute inset-0 animate-border-glow opacity-30 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="relative z-10">
               <CardHeader>
                 <CardTitle className="text-xl text-primary">{project.title}</CardTitle>
