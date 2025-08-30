@@ -42,7 +42,13 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     }, 120000); // 2 minutes in milliseconds.
     
     // Disable the intro animation after it has played.
-    const animTimeout = setTimeout(() => setIsAnimatingIn(false), 1000);
+    const animTimeout = setTimeout(() => {
+      if (petRef.current) {
+        const rect = petRef.current.getBoundingClientRect();
+        setPosition({ x: rect.left, y: rect.top });
+      }
+      setIsAnimatingIn(false);
+    }, 1000);
 
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -141,23 +147,31 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   const initialRandomX = Math.random() * (window.innerWidth - 100) + 50;
   const initialRandomY = Math.random() * (window.innerHeight - 100) + 50;
   
-  const style: React.CSSProperties = {
-    position: 'fixed',
-    width: '48px',
-    height: '48px',
-    zIndex: 9999,
-    pointerEvents: 'none',
-    '--start-x': `${startX}px`,
-    '--start-y': `${startY}px`,
-    '--end-x': `${position.x}px`,
-    '--end-y': `${position.y}px`,
-    '--final-x': `${initialRandomX}px`,
-    '--final-y': `${initialRandomY}px`,
-    top: 0,
-    left: 0,
-    transform: `translate(${position.x}px, ${position.y}px) scale(1.2) rotate(${velocity.vx * 10}deg)`,
-    transition: 'transform 0.5s ease-out',
-  };
+  const style: React.CSSProperties = isAnimatingIn
+    ? {
+        position: 'fixed',
+        width: '48px',
+        height: '48px',
+        zIndex: 9999,
+        pointerEvents: 'none',
+        '--start-x': `${startX}px`,
+        '--start-y': `${startY}px`,
+        '--final-x': `${initialRandomX}px`,
+        '--final-y': `${initialRandomY}px`,
+        top: 0,
+        left: 0,
+      }
+    : {
+        position: 'fixed',
+        width: '48px',
+        height: '48px',
+        zIndex: 9999,
+        pointerEvents: 'none',
+        top: 0,
+        left: 0,
+        transform: `translate(${position.x}px, ${position.y}px) scale(1.2) rotate(${velocity.vx * 10}deg)`,
+        transition: 'transform 0.5s ease-out',
+      };
 
 
   return ReactDOM.createPortal(
@@ -168,10 +182,6 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         isAnimatingIn && 'animate-fly-in'
       )}
       style={style}
-      onAnimationEnd={() => {
-        setPosition({x: initialRandomX, y: initialRandomY})
-        setIsAnimatingIn(false);
-      }}
     >
       <PetIcon className="w-full h-full" />
     </div>,
