@@ -1,29 +1,11 @@
 /**
  * @file src/components/icons/cplusplus.tsx
- * @description A custom SVG icon component for the C++ programming language.
+ * @description The official logo for C++ as an SVG component.
+ *              This provides a scalable, high-quality vector graphic for use in the UI.
  */
-export const CPlusPlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M14.5 7.5c0 .63-.04 1.25-.11 1.85" />
-    <path d="M18.89 11.89c.12-.3.21-.62.21-.94 0-1.66-1.34-3-3-3s-3 1.34-3 3c0 .66.21 1.26.58 1.75" />
-    <path d="M12 12h8" />
-    <path d="M16 8v8" />
-    <path d="M12 18h8" />
-    <path d="M16 14v8" />
-    <path d="M12.5 7.5c0 .63-.04 1.25-.11 1.85" />
-    <path d="M8.89 11.89c.12-.3.21-.62.21-.94 0-1.66-1.34-3-3-3s-3 1.34-3 3c0 .66.21 1.26.58 1.75" />
-    <path d="M2 12h8" />
-    <path d="M6 8v8" />
-  </svg>
+export const CplusplusIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" {...props}>
+        <title>C++</title>
+        <path d="M16.5921 9.1962s-.354-3.298-3.627-3.39c-3.2741-.09-4.9552 2.474-4.9552 6.14 0 3.6651 1.858 6.5972 5.0451 6.5972 3.184 0 3.5381-3.665 3.5381-3.665l6.1041.365s.36 3.31-2.196 5.836c-2.552 2.5241-5.6901 2.9371-7.8762 2.9201-2.19-.017-5.2261.034-8.1602-2.97-2.938-3.0101-3.436-5.9302-3.436-8.8002 0-2.8701.556-6.6702 4.047-9.5502C7.444.72 9.849 0 12.254 0c10.0422 0 10.7172 9.2602 10.7172 9.2602zM21.583 8.356h2.25v2.25h-2.25v2.25h-2.25v-2.25h-2.25v-2.25h2.25v-2.25h2.25z"/>
+    </svg>
 );

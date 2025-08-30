@@ -2,8 +2,7 @@
  * @file src/components/ui/dialog.tsx
  * @description A set of accessible Dialog (modal) components, based on ShadCN UI.
  *              It includes the trigger, content, overlay, and other parts needed
- *              to create a fully functional modal window. The dialog content has
- *              a semi-transparent "Acrylic" effect.
+ *              to create a fully functional modal window.
  * @note This is a client component as it's built on Radix UI, which manages state and interactions.
  */
 "use client"
@@ -52,7 +51,7 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        // Base styles for the dialog window, including the acrylic background effect.
+        // Base styles for the dialog window.
         "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background/80 p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg backdrop-blur-md",
         className
       )}

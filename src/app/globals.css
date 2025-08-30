@@ -61,6 +61,23 @@ body {
   .animate-ghost {
       animation: ghost-float 2.5s ease-in-out infinite;
   }
+  
+  .animate-orb-pop-in {
+    animation: orb-pop-in 0.4s ease-out forwards;
+  }
+
+  .animate-collector-pulse {
+    animation: collector-pulse 3s linear infinite;
+  }
+
+  @keyframes scrolling-logos {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  
+  .animate-scrolling-logos {
+    animation: scrolling-logos var(--animation-duration, 40s) linear infinite var(--animation-direction, normal);
+  }
 
 
   @keyframes fade-in {
@@ -93,8 +110,54 @@ body {
     50% { transform: translateY(-10px) scale(1.05); }
   }
 
+  @keyframes orb-pop-in {
+    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+    50% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  @keyframes collector-pulse {
+    0% { border-color: #ff00ff; box-shadow: 0 0 15px #ff00ff; }
+    25% { border-color: #00ffff; box-shadow: 0 0 15px #00ffff; }
+    50% { border-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
+    75% { border-color: #00ff00; box-shadow: 0 0 15px #00ff00; }
+    100% { border-color: #ff00ff; box-shadow: 0 0 15px #ff00ff; }
+  }
+  
+  @keyframes fly-out {
+      0% { transform: translate(0, 0) scale(0); opacity: 1; }
+      100% { transform: translate(var(--tx, 0), var(--ty, 0)) scale(1); opacity: 0; }
+  }
+
   .text-shadow {
     text-shadow: 0 1px 2px hsl(var(--foreground) / 0.1);
+  }
+  
+  @keyframes animated-border-glow {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animate-border-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    transform: translate(-50%, -50%);
+    background: conic-gradient(
+      from 180deg at 50% 50%,
+      hsla(var(--primary), 0) 0%,
+      hsla(var(--primary), 0.5) 30%,
+      hsla(var(--primary), 0) 35%
+    );
+    animation: animated-border-glow 4s linear infinite;
+    opacity: 0.3;
+    transition: opacity 0.3s ease-in-out;
   }
 }
 
