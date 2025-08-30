@@ -10,15 +10,13 @@ import { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { Cat, Ghost } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-type PetType = 'alive' | 'ghost';
+import { PetState, setPet } from '@/lib/pet-state';
 
 interface PagePetProps {
-  type: PetType;
-  onReset: () => void;
+  type: PetState;
 }
 
-const PagePet = ({ type, onReset }: PagePetProps) => {
+const PagePet = ({ type }: PagePetProps) => {
   const [position, setPosition] = useState({ x: 50, y: 50 });
   const [velocity, setVelocity] = useState({
     vx: Math.random() * 2 - 1,
@@ -33,16 +31,17 @@ const PagePet = ({ type, onReset }: PagePetProps) => {
   useEffect(() => {
     setIsMounted(true);
     // Set a timeout to automatically reset the pet after 10 minutes (600,000 ms)
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      onReset();
-    }, 600000);
+      setPet(null);
+    }, 600000); // 10 minutes
 
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [onReset]);
+  }, [type]); // Rerun this effect if the pet type changes (e.g., from cat to null)
   
   // Track mouse movement
   useEffect(() => {
@@ -112,12 +111,15 @@ const PagePet = ({ type, onReset }: PagePetProps) => {
     return () => cancelAnimationFrame(animationFrameId);
   }, [type, velocity]);
 
-  if (!isMounted) return null;
+  if (!isMounted || !type) return null;
 
   const PetIcon = type === 'alive' ? Cat : Ghost;
   const petClasses = type === 'alive' ? 'text-green-500' : 'text-sky-400 opacity-80';
 
   // Use a Portal to render the pet at the root of the body
+  const container = document.getElementById('pet-container');
+  if (!container) return null;
+
   return ReactDOM.createPortal(
     <div
       ref={petRef}
@@ -134,7 +136,7 @@ const PagePet = ({ type, onReset }: PagePetProps) => {
     >
       <PetIcon className="w-full h-full" />
     </div>,
-    document.getElementById('pet-container')!
+    container
   );
 };
 

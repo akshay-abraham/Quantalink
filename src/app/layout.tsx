@@ -9,6 +9,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import AnimatedBackground from "@/components/animated-background"
 import MainNav from '@/components/main-nav';
+import GlobalPetRenderer from '@/components/global-pet-renderer';
 
 // Define metadata for the website, used for SEO and browser tab information.
 export const metadata: Metadata = {
@@ -108,6 +109,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
           {/* The AnimatedBackground component is rendered here to appear on all pages. */}
           <AnimatedBackground />
+          <GlobalPetRenderer />
           <div id="pet-container"></div>
           <MainNav />
           {/* Renders the active page content. */}
