@@ -85,30 +85,29 @@ const PagePet = ({ type, startX, startY }: PetState) => {
           if (rand < 0.6) { // 60% chance to stalk
               setGhostState('stalking');
               setIsVisible(true);
-              ghostStateTimeout.current = setTimeout(changeState, Math.random() * 4000 + 3000); // Stalk for 3-7s
+              ghostStateTimeout.current = setTimeout(changeState, Math.random() * 5000 + 5000); // Stalk for 5-10s
           } else if (rand < 0.85) { // 25% chance to hide
               setGhostState('hiding');
               setIsVisible(false);
-              ghostStateTimeout.current = setTimeout(changeState, Math.random() * 2000 + 1000); // Hide for 1-3s
+              ghostStateTimeout.current = setTimeout(changeState, Math.random() * 2000 + 2000); // Hide for 2-4s
           } else { // 15% chance to swoosh
               setGhostState('swooshing');
               setIsVisible(true);
               
-              // New Swoosh Logic: Set a high, directed velocity.
               const targetX = Math.random() * window.innerWidth;
               const targetY = Math.random() * window.innerHeight;
               const angle = Math.atan2(targetY - position.y, targetX - position.x);
-              const swooshSpeed = 15; // Much higher speed for the dash.
+              const swooshSpeed = 15;
               setVelocity({
                   vx: Math.cos(angle) * swooshSpeed,
                   vy: Math.sin(angle) * swooshSpeed,
               });
 
-              ghostStateTimeout.current = setTimeout(changeState, 700); // Swoosh is a short burst
+              ghostStateTimeout.current = setTimeout(changeState, 1500); // Swoosh is a longer dash
           }
       };
       changeState();
-  }, [position.x, position.y]);
+  }, [position.y, position.x]);
 
   useEffect(() => {
     if (type === 'ghost' && !isAnimatingIn) {
@@ -150,14 +149,9 @@ const PagePet = ({ type, startX, startY }: PetState) => {
           }
       }
       
-      // Apply friction/drag unless it's a swoosh
-      if (ghostState !== 'swooshing') {
-        vx *= 0.98; 
-        vy *= 0.98;
-      } else {
-        vx *= 0.99; // Less friction during swoosh to maintain speed
-        vy *= 0.99;
-      }
+      // Apply friction/drag
+      vx *= ghostState === 'swooshing' ? 0.99 : 0.98;
+      vy *= ghostState === 'swooshing' ? 0.99 : 0.98;
 
       const maxSpeed = ghostState === 'swooshing' ? 20 : 1.5;
       vx = Math.max(-maxSpeed, Math.min(maxSpeed, vx));
