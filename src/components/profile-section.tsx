@@ -22,7 +22,7 @@ export default function ProfileSection() {
   return (
     <section 
       ref={ref}
-      className="flex flex-col items-center space-y-4 text-center pt-20"
+      className="flex flex-col items-center space-y-4 text-center pt-12 md:pt-20"
     >
       {/* The container for the avatar with its animation. */}
       <div 
@@ -38,7 +38,7 @@ export default function ProfileSection() {
             Next.js automatically serves files from the `/public` directory at the root level.
             To change the image, replace the `profile.webp` file in the `/public` folder.
           */}
-          <AvatarImage src="/profile.webp" alt="Akshay Abraham" data-ai-hint="galaxy avatar" />
+          <AvatarImage src="/profile.webp" alt="Akshay Abraham Profile Picture" />
           <AvatarFallback>AA</AvatarFallback>
         </Avatar>
       </div>

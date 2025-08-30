@@ -71,26 +71,27 @@ This document outlines the high-level structure and logic of the Next.js portfol
 
 ### 3.2. Quantum Conundrum (`src/components/easter-egg.tsx`)
 
-- **Purpose:** A client-side, game-like interactive component.
+- **Purpose:** A client-side, game-like interactive component based on the Schrödinger's Cat thought experiment.
 - **State:**
-  - `isObserved`: boolean (has the game finished?)
-  - `catState`: 'alive' | 'ghost' | null
+  - `isObserved`: `boolean` - Tracks if the user has "collapsed the wave function." `false` = intro screen, `true` = result screen.
+  - `catState`: `'alive' | 'ghost' | null` - Stores the outcome of the experiment. `null` = superposition (initial state).
 - **Logic:**
   - `observe()`:
-    - Set `catState` to 'alive' or 'ghost' randomly (50/50 chance).
-    - Set `isObserved` to `true`.
+    - This function is called when the user clicks the "Collapse the wave function" button.
+    - It simulates the quantum event by using `Math.random()` to set `catState` to either `'alive'` or `'ghost'` (a 50/50 chance).
+    - It then sets `isObserved` to `true`, which switches the UI to show the result.
   - `reset()`:
-    - Set `isObserved` to `false`.
-    - Set `catState` to `null`.
+    - This function is called by the "Reset" button on the results screen.
+    - It sets `isObserved` back to `false` and `catState` back to `null`, returning the component to its initial superposition state.
   - **Rendering:**
     - If `!isObserved`:
-      - Show intro text and "Collapse the wave function" button.
+      - Show the introduction text and the primary "Collapse the wave function" button.
     - If `isObserved`:
       - If `catState === 'alive'`:
-        - Show "Alive" card with a `Cat` icon and celebratory `<FunParticles type="popper" />`.
+        - Show the "Alive" result card, which includes a `Cat` icon and a celebratory `<FunParticles type="popper" />` effect.
       - If `catState === 'ghost'`:
-        - Show "Decohered" card with a `Ghost` icon and spooky `<FunParticles type="ghost" />`.
-      - Show "Reset" button.
+        - Show the "Decohered" result card, which includes a `Ghost` icon and a spooky `<FunParticles type="ghost" />` effect.
+      - In either outcome, also show the "Reset Superposition" button.
 
 ### 3.3. Profile & Links (`profile-section.tsx`, `link-cards.tsx`)
 

@@ -1,6 +1,6 @@
 /**
  * @file src/components/icons/zsh.tsx
- * @description A logo for Zsh as an SVG component.
+ * @description A logo for Zsh (Z Shell) as an SVG component.
  */
 export const ZshIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" {...props}>
