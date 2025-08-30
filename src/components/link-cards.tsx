@@ -6,18 +6,21 @@
 "use client"
 
 import LinkCard from './link-card';
-import { Github, Linkedin, Instagram, Mail } from 'lucide-react';
+import { Linkedin } from 'lucide-react';
 import { useInView } from '@/hooks/use-in-view';
 import { useRef } from 'react';
 import { WhatsappIcon } from '@/components/icons/whatsapp';
+import { InstagramIcon } from '@/components/icons/instagram';
+import { GithubIcon } from '@/components/icons/github';
+import { MailIcon } from '@/components/icons/mail';
 
 // An array of link objects, defining the properties for each card.
 const links = [
   { href: 'https://www.linkedin.com/in/akshayabraham37/', title: 'LinkedIn', Icon: Linkedin },
-  { href: 'https://www.instagram.com/akshay.abraham/', title: 'Instagram', Icon: Instagram },
-  { href: 'https://github.com/akshay-abraham/', title: 'GitHub', Icon: Github },
+  { href: 'https://www.instagram.com/akshay.abraham/', title: 'Instagram', Icon: InstagramIcon },
+  { href: 'https://github.com/akshay-abraham/', title: 'GitHub', Icon: GithubIcon },
   { href: 'https://wa.me/919946141445', title: 'WhatsApp', Icon: WhatsappIcon },
-  { href: 'mailto:akshaykroobenabraham@gmail.com', title: 'Mail', Icon: Mail },
+  { href: 'mailto:akshaykroobenabraham@gmail.com', title: 'Mail', Icon: MailIcon },
 ];
 
 /**
