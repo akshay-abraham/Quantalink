@@ -27,7 +27,7 @@ export default function Home() {
     // `relative z-10` is used to make sure the content appears on top of the animated background.
     <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-between p-4 sm:p-6 lg:p-8">
       {/* This wrapper constrains the width of the content for better readability on larger screens. */}
-      <div className="w-full max-w-4xl flex-grow flex flex-col justify-center">
+      <div className="w-full max-w-3xl flex-grow flex flex-col justify-center">
         {/* The `space-y-*` classes add vertical spacing between each child component. */}
         <div className="w-full space-y-6 md:space-y-8">
           <ProfileSection />
