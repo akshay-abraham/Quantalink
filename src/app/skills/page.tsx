@@ -8,10 +8,11 @@ import PageFooter from '@/components/page-footer';
 import SkillsClientPage from '@/components/skills-client-page';
 import type { Metadata } from 'next';
 
-// Page-specific metadata, correctly exported from a Server Component.
+// Page-specific metadata for SEO.
 export const metadata: Metadata = {
   title: 'Skills & Technologies | Akshay K Rooben Abraham',
   description: 'A detailed look at the languages, frameworks, tools, and platforms I work with, including Python, React, Next.js, and various developer tools.',
+  // Provides the canonical URL for this page.
   alternates: {
     canonical: '/skills',
   },

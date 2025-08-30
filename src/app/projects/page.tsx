@@ -9,10 +9,11 @@ import PageFooter from "@/components/page-footer";
 import Projects from "@/components/projects";
 import type { Metadata } from 'next';
 
-// Page-specific metadata
+// Page-specific metadata for SEO.
 export const metadata: Metadata = {
   title: 'Projects & Contributions | Akshay K Rooben Abraham',
   description: 'A complete list of Akshay K Rooben Abraham\'s open-source projects and contributions, including NEPHRA and Quantalink.',
+  // Provides the canonical URL for this page.
   alternates: {
     canonical: '/projects',
   },

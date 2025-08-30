@@ -1,7 +1,8 @@
 /**
  * @file src/components/skills.tsx
  * @description A component that displays a dynamic, two-row infinite scroller
- *              of technical skill logos on the homepage.
+ *              of technical skill logos on the homepage. This provides a quick,
+ *              visually engaging overview of the user's capabilities.
  * @note This is a client component because it uses the `useInView` hook for animations.
  */
 "use client"
@@ -18,15 +19,17 @@ import { InfiniteScroller } from './infinite-scroller';
 
 /**
  * A visually engaging component that showcases a wide range of technical skills
- * using a two-row, infinitely scrolling logo animation.
+ * using a two-row, infinitely scrolling logo animation. It also includes a
+ * call-to-action to view the full skillset.
  * @returns {JSX.Element} A section containing the animated skills showcase.
  */
 export default function Skills() {
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useInView(ref, { once: true });
 
-  // Split skills into two halves for the two scrolling rows.
+  // Flatten all skills from all categories into a single array.
   const allSkills = skillsData.flatMap(category => category.skills);
+  // Split the skills into two halves for the two scrolling rows.
   const midPoint = Math.ceil(allSkills.length / 2);
   const firstRowSkills = allSkills.slice(0, midPoint);
   const secondRowSkills = allSkills.slice(midPoint);
@@ -49,7 +52,7 @@ export default function Skills() {
           Skills & Technologies
       </h2>
 
-      {/* Two-row infinite scroller for logos */}
+      {/* Container for the two-row infinite scroller. */}
       <div className="space-y-4">
         <InfiniteScroller speed="slow">
           {firstRowSkills.map((skill) => (
@@ -88,7 +91,7 @@ export default function Skills() {
         </InfiniteScroller>
       </div>
 
-      {/* Button to navigate to the full skills page */}
+      {/* Button to navigate to the full skills page. */}
       <div 
         className={cn(
           "text-center transition-all duration-700 pt-2",

@@ -2,7 +2,7 @@
  * @file src/app/layout.tsx
  * @description The root layout for the entire application.
  *              This component wraps all pages, providing a consistent HTML structure,
- *              loading global stylesheets, and setting up fonts.
+ *              loading global stylesheets and fonts, and setting up metadata for SEO.
  */
 import type { Metadata } from 'next';
 import './globals.css';
@@ -55,11 +55,13 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  // Sets the canonical URL for the root of the site.
   alternates: {
     canonical: 'https://akshayabraham.vercel.app',
   },
 };
 
+// JSON-LD structured data for rich search results (Google).
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
@@ -100,7 +102,7 @@ export default function RootLayout({
         {/* Import the "Space Grotesk" font stylesheet. */}
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
         <meta name="google-site-verification" content="-ggF-eMSfmD9YH-4yLzcQDEjUmv9WBmZuwxjsFAHifA" />
-         {/* Add JSON-LD to the head */}
+         {/* Add JSON-LD to the head to provide structured data to search engines. */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -109,12 +111,14 @@ export default function RootLayout({
       <body className="font-body antialiased">
           {/* The AnimatedBackground component is rendered here to appear on all pages. */}
           <AnimatedBackground />
+          {/* This component renders the roaming pet if one is active in the global state. */}
           <GlobalPetRenderer />
+          {/* This div is the portal target for the roaming pet. */}
           <div id="pet-container"></div>
           <MainNav />
           {/* Renders the active page content. */}
           <main>{children}</main>
-          {/* The Toaster component handles pop-up notifications (e.g., for errors or confirmations). */}
+          {/* The Toaster component handles pop-up notifications. */}
           <Toaster />
       </body>
     </html>
