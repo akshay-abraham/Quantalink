@@ -23,7 +23,6 @@ import { ZshIcon } from '@/components/icons/zsh';
 import { VercelIcon } from '@/components/icons/vercel';
 import { UbuntuIcon } from '@/components/icons/ubuntu';
 import { CIcon } from '@/components/icons/c';
-import { CplusplusIcon } from '@/components/icons/cplusplus';
 import { NextjsIcon } from '@/components/icons/nextdotjs';
 import { NumpyIcon } from '@/components/icons/numpy';
 import { PandasIcon } from '@/components/icons/pandas';
@@ -68,11 +67,10 @@ export const skillsData: SkillCategory[] = [
   {
     title: 'Backend & Data Science',
     icon: <BrainCircuit size={32} />,
-    subtitle: 'I am currently exploring these for my future physics research integration.',
+    subtitle: 'Backend and data science tools leveraged for future physics research integration and computational analysis.',
     skills: [
       { name: 'Python', icon: <PythonIcon /> },
       { name: 'C', icon: <CIcon /> },
-      { name: 'C++', icon: <CplusplusIcon /> },
       { name: 'NumPy', icon: <NumpyIcon /> },
       { name: 'Pandas', icon: <PandasIcon /> },
       { name: 'Scikit-learn', icon: <SciktLearnIcon /> },
@@ -83,7 +81,7 @@ export const skillsData: SkillCategory[] = [
   {
     title: 'Frontend Development',
     icon: <Code size={32} />,
-    subtitle: 'I have learned theory from CS50W and YT, but I mainly focus on "vibe coding" using Gemini for generation and ChatGPT for debugging.',
+    subtitle: 'Frontend technologies applied with a foundation in computer science principles, utilizing generative AI for rapid prototyping and debugging.',
     skills: [
       { name: 'HTML5', icon: <HtmlIcon /> },
       { name: 'CSS3', icon: <CssIcon /> },

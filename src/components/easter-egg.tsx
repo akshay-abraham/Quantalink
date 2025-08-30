@@ -13,7 +13,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -441,13 +440,10 @@ export default function EasterEgg() {
                       </div>
                   )}
               </CardContent>
-              <CardFooter className="flex justify-center text-xs text-muted-foreground pb-4">
-                  <p className="text-center">A game by Akshay Abraham</p>
-              </CardFooter>
-              {/* More prominent reset button, moved to the bottom right for less conflict */}
+              {/* A subtle button to reset all stats and progress. */}
               <button 
                 onClick={factoryReset} 
-                className="absolute bottom-2 right-2 text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-xs p-2 rounded-md hover:bg-muted/50"
+                className="absolute bottom-1 right-2 text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-[10px] p-1 rounded-md hover:bg-muted/50"
                 title="Reset all game statistics"
               >
                 Factory Reset

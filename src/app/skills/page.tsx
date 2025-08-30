@@ -30,9 +30,6 @@ export default function SkillsPage() {
           <h1 className="text-4xl font-bold text-primary tracking-tight">
             Skills & Technologies
           </h1>
-           <p className="text-foreground/70 mt-4 max-w-3xl mx-auto text-sm md:text-base leading-relaxed">
-            I am currently learning backend technologies to integrate with my future physics aspirations. On the frontend, I have a strong theoretical foundation from courses like CS50W, but I primarily engage in "vibe coding" with significant help from Gemini for generation and ChatGPT for debugging.
-          </p>
         </header>
 
         <main className="space-y-16">
