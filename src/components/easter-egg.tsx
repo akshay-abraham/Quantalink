@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Box, Cat, Ghost, PartyPopper, Timer, X, Atom, Dna, Biohazard, FlaskConical, Move } from 'lucide-react';
+import { Box, Cat, Ghost, PartyPopper, Timer, X, Atom, Dna, Biohazard, FlaskConical } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
@@ -33,11 +33,6 @@ interface Anomaly {
   y: number;
   Icon: React.ElementType;
   color: string;
-}
-
-interface Collector {
-  x: number;
-  y: number;
 }
 
 const PARTICLE_COLORS = {
@@ -67,13 +62,14 @@ const FunParticles = ({ type, count }: { type: 'popper' | 'ghost', count: number
     </div>
 );
 
-const QuantumAnomaly = ({ anomaly }: { anomaly: Anomaly }) => (
-  <div
-    className="absolute w-8 h-8 rounded-full flex items-center justify-center animate-orb-pop-in"
-    style={{ left: `${anomaly.x}%`, top: `${anomaly.y}%`, color: anomaly.color }}
+const QuantumAnomaly = ({ anomaly, onClick }: { anomaly: Anomaly, onClick: (id: number) => void }) => (
+  <button
+    onClick={() => onClick(anomaly.id)}
+    className="absolute w-12 h-12 rounded-full flex items-center justify-center animate-orb-pop-in transition-transform duration-200 hover:scale-110"
+    style={{ left: `${anomaly.x}%`, top: `${anomaly.y}%`, color: anomaly.color, backgroundColor: `${anomaly.color}20` }}
   >
-    <anomaly.Icon className="w-6 h-6" />
-  </div>
+    <anomaly.Icon className="w-8 h-8" />
+  </button>
 );
 
 export default function EasterEgg() {
@@ -83,10 +79,8 @@ export default function EasterEgg() {
   const [timeLeft, setTimeLeft] = useState(10);
   const [stats, setStats] = useState({ alive: 0, ghost: 0 });
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
-  const [collector, setCollector] = useState<Collector>({ x: 50, y: 50 });
 
   const ref = useRef<HTMLDivElement>(null);
-  const gameAreaRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const anomalySpawnerRef = useRef<NodeJS.Timeout | null>(null);
   const isVisible = useInView(ref);
@@ -124,7 +118,6 @@ export default function EasterEgg() {
     setProgress(0);
     setTimeLeft(10);
     setAnomalies([]);
-    setCollector({ x: 50, y: 50 });
     setGameState('playing');
     
     timerRef.current = setInterval(() => {
@@ -147,56 +140,23 @@ export default function EasterEgg() {
           Icon: ANOMALY_ICONS[Math.floor(Math.random() * ANOMALY_ICONS.length)],
           color: ANOMALY_COLORS[Math.floor(Math.random() * ANOMALY_COLORS.length)],
         };
-        const updatedAnomalies = prevAnomalies.length > 8 ? prevAnomalies.slice(1) : prevAnomalies;
+        const updatedAnomalies = prevAnomalies.length > 5 ? prevAnomalies.slice(1) : prevAnomalies;
         return [...updatedAnomalies, newAnomaly];
       });
-    }, 600);
+    }, 800);
   };
-  
-  const checkCollisions = useCallback(() => {
-    const collectorRadius = 24; // approx half of collector size (48px)
-    let collectedCount = 0;
-    
-    setAnomalies(prevAnomalies =>
-      prevAnomalies.filter(anomaly => {
-        const anomalyRadius = 16; // approx half of anomaly size (32px)
-        const dx = (collector.x / 100) * (gameAreaRef.current?.clientWidth || 0) - (anomaly.x / 100) * (gameAreaRef.current?.clientWidth || 0);
-        const dy = (collector.y / 100) * (gameAreaRef.current?.clientHeight || 0) - (anomaly.y / 100) * (gameAreaRef.current?.clientHeight || 0);
-        const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < collectorRadius + anomalyRadius) {
-          collectedCount++;
-          return false; // remove from array
-        }
-        return true;
-      })
-    );
-
-    if (collectedCount > 0) {
-      setProgress(prev => {
-        const newProgress = prev + collectedCount * 20;
-        if (newProgress >= 100) {
-          cleanupTimers();
-          observe();
-          return 100;
-        }
-        return newProgress;
-      });
-    }
-  }, [collector.x, collector.y]);
-
-  useEffect(() => {
-    if (gameState === 'playing') {
-      checkCollisions();
-    }
-  }, [gameState, checkCollisions]);
-
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (gameState !== 'playing' || !gameAreaRef.current) return;
-    const rect = gameAreaRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setCollector({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) });
+  const handleAnomalyClick = (id: number) => {
+    setAnomalies(prev => prev.filter(a => a.id !== id));
+    setProgress(prev => {
+      const newProgress = prev + 25;
+      if (newProgress >= 100) {
+        cleanupTimers();
+        observe();
+        return 100;
+      }
+      return newProgress;
+    });
   };
 
   const observe = () => {
@@ -300,7 +260,7 @@ export default function EasterEgg() {
                   
                   {(gameState === 'playing' || gameState === 'failed') && (
                       <div className="space-y-4 animate-fade-in w-full h-full flex flex-col">
-                          <h3 className="font-bold text-lg text-primary">{gameState === 'failed' ? 'Experiment Failed!' : 'Collecting Anomalies...'}</h3>
+                          <h3 className="font-bold text-lg text-primary">{gameState === 'failed' ? 'Experiment Failed!' : 'Tap the Anomalies!'}</h3>
                           <div className="space-y-2">
                              <Progress value={progress} className="w-full" />
                              <div className="flex justify-between items-center text-sm text-foreground/70">
@@ -309,25 +269,14 @@ export default function EasterEgg() {
                              </div>
                           </div>
                           <div 
-                            ref={gameAreaRef}
                             className="relative w-full flex-grow bg-primary/5 border border-primary/20 rounded-lg mt-2 min-h-[250px] md:min-h-[400px] touch-none"
-                            onPointerMove={handlePointerMove}
                           >
                               {anomalies.map(item => (
-                                <QuantumAnomaly key={item.id} anomaly={item} />
+                                <QuantumAnomaly key={item.id} anomaly={item} onClick={handleAnomalyClick} />
                               ))}
-                              <div
-                                className="absolute w-12 h-12 rounded-full border-2 animate-collector-pulse"
-                                style={{
-                                  left: `${collector.x}%`,
-                                  top: `${collector.y}%`,
-                                  transform: 'translate(-50%, -50%)',
-                                }}
-                              />
                           </div>
                            <p className="text-xs text-foreground/80 pt-2 flex items-center justify-center gap-2">
-                             <Move className="h-4 w-4" />
-                            {gameState === 'failed' ? 'The quantum state destabilized. Reset to try again.' : 'Drag to move the collector and capture the anomalies!'}
+                            {gameState === 'failed' ? 'The quantum state destabilized. Reset to try again.' : 'Quickly! Tap the anomalies to charge the meter!'}
                           </p>
                           <div className="w-full pt-2">
                               {gameState === 'failed' && (
@@ -381,3 +330,5 @@ export default function EasterEgg() {
     </>
   )
 }
+
+    
