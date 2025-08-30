@@ -49,16 +49,16 @@ export default function AboutPage() {
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-5xl">
           <header className="mb-12 text-center">
-             <Link href="/" className="inline-block mb-8">
+             <Link href="/" className="inline-block mb-8 animate-fade-in" style={{ animationDelay: '100ms' }}>
                <Button variant="outline" className="bg-card/30 border-border/40">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Home
               </Button>
             </Link>
-            <h1 className="text-4xl font-bold text-primary tracking-tight">
+            <h1 className="text-4xl font-bold text-primary tracking-tight animate-fade-in-up" style={{ animationDelay: '200ms' }}>
               My Story
             </h1>
-            <p className="text-foreground/70 mt-2 max-w-2xl mx-auto">
+            <p className="text-foreground/70 mt-2 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '350ms' }}>
               A brief look into my academic, technical, and personal journey.
             </p>
           </header>
@@ -67,11 +67,14 @@ export default function AboutPage() {
               {aboutSections.map((section, index) => (
                 <Card 
                   key={section.title}
-                  className="bg-card/30 border-border/40 rounded-2xl p-6 text-center shadow-lg animate-fade-in-up"
-                  style={{ animationDelay: `${200 + index * 150}ms`}}
+                  className={cn(
+                    "bg-card/30 border-border/40 rounded-2xl p-6 text-center shadow-lg animate-fade-in-up",
+                    "transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl hover:shadow-primary/20"
+                  )}
+                  style={{ animationDelay: `${500 + index * 150}ms`}}
                 >
                   <CardHeader className="flex flex-col items-center gap-4">
-                    <div className="text-primary bg-primary/10 p-3 rounded-full">
+                    <div className="text-primary bg-primary/10 p-3 rounded-full transition-transform duration-300 group-hover:scale-110">
                       {section.icon}
                     </div>
                     <CardTitle className="text-xl text-primary">{section.title}</CardTitle>
