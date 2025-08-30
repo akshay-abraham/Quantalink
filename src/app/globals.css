@@ -61,6 +61,10 @@ body {
   .animate-ghost {
       animation: ghost-float 2.5s ease-in-out infinite;
   }
+  
+  .animate-orb-pop-in {
+    animation: orb-pop-in 0.3s ease-out forwards;
+  }
 
   @keyframes scrolling-logos {
     from { transform: translateX(0); }
@@ -100,6 +104,12 @@ body {
   @keyframes ghost-float {
     0%, 100% { transform: translateY(0) scale(1); }
     50% { transform: translateY(-10px) scale(1.05); }
+  }
+
+  @keyframes orb-pop-in {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
   }
 
   .text-shadow {
