@@ -65,8 +65,8 @@ type ParticleType = keyof typeof PARTICLE_COLORS;
 
 /** A single particle that animates flying outwards from a central point. */
 const Particle = ({ type }: { type: ParticleType }) => {
-  const tx = (Math.random() - 0.5) * 400;
-  const ty = (Math.random() - 0.5) * 400;
+  const tx = (Math.random() - 0.5) * 250;
+  const ty = (Math.random() - 0.5) * 250;
   const color = PARTICLE_COLORS[type][Math.floor(Math.random() * PARTICLE_COLORS[type].length)];
   const Icon = PARTICLE_ICONS[type];
 
@@ -74,10 +74,10 @@ const Particle = ({ type }: { type: ParticleType }) => {
     position: 'absolute',
     left: `50%`,
     top: `50%`,
-    animation: `fly-out ${1 + Math.random() * 2}s ease-out forwards`,
+    animation: `fly-out ${0.8 + Math.random() * 1.2}s ease-out forwards`,
     opacity: 0,
     transform: `rotate(${Math.random() * 360}deg) scale(${0.5 + Math.random()})`,
-    animationDelay: `${Math.random() * 0.2}s`,
+    animationDelay: `${Math.random() * 0.1}s`,
     color: color,
     '--tx': `${tx}px`,
     '--ty': `${ty}px`,
@@ -106,6 +106,10 @@ const QuantumAnomaly = ({ anomaly, onClick }: { anomaly: Anomaly, onClick: (id: 
 
 /** Calculates game difficulty based on the number of times played. */
 const getDifficulty = (playCount: number) => {
+    // Capped difficulty after many plays to prevent it being impossible.
+    if (playCount > 10) {
+      return { time: 4, anomalies: 15, spawnRate: 250 };
+    }
     // Linear increase up to play 3
     if (playCount <= 3) {
       return {
@@ -228,7 +232,6 @@ export default function EasterEgg() {
   /** Handles the click event on a quantum anomaly. */
   const handleAnomalyClick = (id: number, x: number, y: number) => {
     setAnomalies(prev => prev.filter(a => a.id !== id));
-    spawnAnomaly(); // Spawn a new one immediately for a faster pace.
     
     // Create a particle burst at the anomaly's location.
     const newEffect: ParticleEffect = { id: Date.now(), x, y, type: 'anomaly' };
@@ -244,6 +247,8 @@ export default function EasterEgg() {
         observe(); // All anomalies collected, trigger the reveal.
         return 0;
       }
+      // Spawn a new one immediately after a click to keep the pace up.
+      spawnAnomaly(); 
       return newCount;
     });
   };
@@ -402,7 +407,7 @@ export default function EasterEgg() {
                               {/* Container for particle effects on anomaly click */}
                               {particleEffects.map(effect => (
                                 <div key={effect.id} className="absolute" style={{left: `${effect.x}%`, top: `${effect.y}%`, width: '50px', height: '50px', transform: 'translate(-50%, -50%)'}}>
-                                   <FunParticles type={effect.type} count={20} />
+                                   <FunParticles type={effect.type} count={15} />
                                 </div>
                                ))}
                           </div>
@@ -419,7 +424,7 @@ export default function EasterEgg() {
 
                   {gameState === 'revealing' && (
                       <div className="space-y-4 animate-fade-in text-center relative w-full h-full flex flex-col items-center justify-center">
-                          <FunParticles type="revealing" count={300} />
+                          <FunParticles type="revealing" count={200} />
                           <h3 className="text-xl font-bold text-primary">Wave Function Collapsing...</h3>
                           <p className="text-foreground/80">Determining final state...</p>
                           <Progress value={100} className="w-1/2 animate-pulse" />
@@ -431,7 +436,7 @@ export default function EasterEgg() {
                           <div className="relative flex flex-col items-center justify-center gap-4">
                               {catState === 'alive' && (
                                   <div className="relative flex-1 p-4 border border-green-500/30 bg-green-500/10 rounded-lg space-y-3 text-center w-full max-w-sm">
-                                      <FunParticles type="popper" count={150} />
+                                      <FunParticles type="popper" count={100} />
                                       <h3 className="font-bold text-green-500">Observation Complete!</h3>
                                       <div ref={resultIconRef} className={cn("transition-opacity duration-300", !isResultIconVisible && "opacity-0")}>
                                         <Cat className="h-16 w-16 mx-auto text-green-500 animate-popper" />
@@ -442,7 +447,7 @@ export default function EasterEgg() {
                               )}
                               {catState === 'ghost' && (
                                   <div className="relative flex-1 p-4 border border-sky-400/30 bg-sky-400/10 rounded-lg space-y-3 text-center w-full max-w-sm">
-                                      <FunParticles type="ghost" count={80} />
+                                      <FunParticles type="ghost" count={50} />
                                       <h3 className="font-bold text-destructive">You Monster.</h3>
                                       <div ref={resultIconRef} className={cn("transition-opacity duration-300", !isResultIconVisible && "opacity-0")}>
                                         <Ghost className="h-16 w-16 mx-auto text-sky-400 animate-ghost" />
@@ -472,5 +477,3 @@ export default function EasterEgg() {
     </>
   )
 }
-
-    

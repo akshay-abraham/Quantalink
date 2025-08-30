@@ -43,7 +43,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   const [ghostState, setGhostState] = useState<GhostState>('stalking');
   const [isVisible, setIsVisible] = useState(true);
   const ghostStateTimeout = useRef<NodeJS.Timeout | null>(null);
-
+  
   const mousePos = useRef({ x: 0, y: 0 });
   const petRef = useRef<HTMLDivElement>(null);
   const animationFrameId = useRef<number>();
@@ -51,8 +51,9 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   useEffect(() => {
     setIsMounted(true);
     
+    // After the initial "fly-in" animation, set the pet's position and start physics.
     const animTimeout = setTimeout(() => {
-      if (petRef.current) {
+      if (petRef.current && isAnimatingIn) {
         const rect = petRef.current.getBoundingClientRect();
         setPosition({ x: rect.left, y: rect.top });
       }
@@ -64,6 +65,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
       if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   useEffect(() => {
@@ -76,26 +78,37 @@ const PagePet = ({ type, startX, startY }: PetState) => {
 
   /** Ghost AI: Manages state transitions for spooky behavior. */
   const runGhostAI = useCallback(() => {
-    const changeState = () => {
-      if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
-      
-      const rand = Math.random();
-      if (rand < 0.6) { // 60% chance to stalk
-        setGhostState('stalking');
-        setIsVisible(true);
-        ghostStateTimeout.current = setTimeout(changeState, Math.random() * 4000 + 3000); // Stalk for 3-7s
-      } else if (rand < 0.85) { // 25% chance to hide
-        setGhostState('hiding');
-        setIsVisible(false);
-        ghostStateTimeout.current = setTimeout(changeState, Math.random() * 2000 + 1000); // Hide for 1-3s
-      } else { // 15% chance to swoosh
-        setGhostState('swooshing');
-        setIsVisible(true);
-        ghostStateTimeout.current = setTimeout(changeState, 700); // Swoosh is a short burst
-      }
-    };
-    changeState();
-  }, []);
+      const changeState = () => {
+          if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
+          
+          const rand = Math.random();
+          if (rand < 0.6) { // 60% chance to stalk
+              setGhostState('stalking');
+              setIsVisible(true);
+              ghostStateTimeout.current = setTimeout(changeState, Math.random() * 4000 + 3000); // Stalk for 3-7s
+          } else if (rand < 0.85) { // 25% chance to hide
+              setGhostState('hiding');
+              setIsVisible(false);
+              ghostStateTimeout.current = setTimeout(changeState, Math.random() * 2000 + 1000); // Hide for 1-3s
+          } else { // 15% chance to swoosh
+              setGhostState('swooshing');
+              setIsVisible(true);
+              
+              // New Swoosh Logic: Set a high, directed velocity.
+              const targetX = Math.random() * window.innerWidth;
+              const targetY = Math.random() * window.innerHeight;
+              const angle = Math.atan2(targetY - position.y, targetX - position.x);
+              const swooshSpeed = 15; // Much higher speed for the dash.
+              setVelocity({
+                  vx: Math.cos(angle) * swooshSpeed,
+                  vy: Math.sin(angle) * swooshSpeed,
+              });
+
+              ghostStateTimeout.current = setTimeout(changeState, 700); // Swoosh is a short burst
+          }
+      };
+      changeState();
+  }, [position.x, position.y]);
 
   useEffect(() => {
     if (type === 'ghost' && !isAnimatingIn) {
@@ -122,28 +135,31 @@ const PagePet = ({ type, startX, startY }: PetState) => {
 
           if (type === 'alive') {
             if (distance > 50) {
-              vx += dx * 0.0005;
+              vx += dx * 0.0005; // Gently follow cursor
               vy += dy * 0.0005;
             }
-          } else if (type === 'ghost') {
+          } else if (type === 'ghost' && ghostState !== 'swooshing') {
               if (distance < 150) { // Repel from cursor
                   vx -= dx * 0.0008;
                   vy -= dy * 0.0008;
               }
               if (ghostState === 'stalking') {
-                  vx += (Math.random() - 0.5) * 0.1; // Slow drift
+                  vx += (Math.random() - 0.5) * 0.1; // Slow, random drift
                   vy += (Math.random() - 0.5) * 0.1;
-              } else if (ghostState === 'swooshing') {
-                  vx += (Math.random() - 0.5) * 2; // FAST, erratic movement
-                  vy += (Math.random() - 0.5) * 2;
               }
           }
       }
       
-      vx *= 0.98;
-      vy *= 0.98;
+      // Apply friction/drag unless it's a swoosh
+      if (ghostState !== 'swooshing') {
+        vx *= 0.98; 
+        vy *= 0.98;
+      } else {
+        vx *= 0.99; // Less friction during swoosh to maintain speed
+        vy *= 0.99;
+      }
 
-      const maxSpeed = type === 'ghost' && ghostState === 'swooshing' ? 15 : 1.5;
+      const maxSpeed = ghostState === 'swooshing' ? 20 : 1.5;
       vx = Math.max(-maxSpeed, Math.min(maxSpeed, vx));
       vy = Math.max(-maxSpeed, Math.min(maxSpeed, vy));
       
@@ -154,11 +170,11 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         let newY = prevPos.y + vy;
         
         // Wall bouncing logic
-        if (newX <= 0 || newX >= window.innerWidth - 50) {
+        if (newX <= 0 || newX >= window.innerWidth - 48) {
             vx *= -1;
             newX = prevPos.x + vx;
         }
-        if (newY <= 0 || newY >= window.innerHeight - 50) {
+        if (newY <= 0 || newY >= window.innerHeight - 48) {
             vy *= -1;
             newY = prevPos.y + vy;
         }
@@ -186,6 +202,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   const container = document.getElementById('pet-container');
   if (!container) return null;
 
+  // Generate a random destination for the fly-in animation that is within the viewport.
   const initialRandomX = Math.random() * (window.innerWidth - 100) + 50;
   const initialRandomY = Math.random() * (window.innerHeight - 100) + 50;
   
