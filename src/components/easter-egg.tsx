@@ -415,7 +415,7 @@ export default function EasterEgg() {
                           </p>
                           <div className="w-full pt-2">
                               {gameState === 'failed' && (
-                                  <Button onClick={reset} variant="outline">Reset Experiment</Button>
+                                  <Button onClick={reset} variant="outline" size="lg">Reset Experiment</Button>
                               )}
                           </div>
                       </div>

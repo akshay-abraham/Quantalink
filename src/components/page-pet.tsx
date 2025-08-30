@@ -11,7 +11,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import { Cat, Ghost } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { PetState, setPet } from '@/lib/pet-state';
+import { PetState } from '@/lib/pet-state';
 
 // Defines the ghost's possible movement states.
 type GhostState = 'stalking' | 'swooshing' | 'hiding';
@@ -38,6 +38,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isAnimatingIn, setIsAnimatingIn] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
+  const [showMeow, setShowMeow] = useState(false);
   
   // --- Ghost-specific state ---
   const [ghostState, setGhostState] = useState<GhostState>('stalking');
@@ -53,7 +54,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     
     // After the initial "fly-in" animation, set the pet's position and start physics.
     const animTimeout = setTimeout(() => {
-      if (petRef.current && isAnimatingIn) {
+      if (petRef.current) {
         const rect = petRef.current.getBoundingClientRect();
         setPosition({ x: rect.left, y: rect.top });
       }
@@ -185,6 +186,16 @@ const PagePet = ({ type, startX, startY }: PetState) => {
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
     };
   }, [type, velocity, isAnimatingIn, ghostState]);
+  
+  // Effect to handle the "Meow!" bubble display on click
+  useEffect(() => {
+    if (showMeow) {
+      const timer = setTimeout(() => {
+        setShowMeow(false);
+      }, 1000); // Show bubble for 1 second
+      return () => clearTimeout(timer);
+    }
+  }, [showMeow]);
 
   if (!isMounted || !type) return null;
 
@@ -227,6 +238,12 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         opacity: isVisible ? (type === 'ghost' ? 0.8 : 1) : 0,
       };
 
+  const handlePetInteraction = () => {
+    if (type === 'alive') {
+      setShowMeow(true);
+    }
+  };
+
   return ReactDOM.createPortal(
     <div
       ref={petRef}
@@ -235,12 +252,16 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         isAnimatingIn && 'animate-fly-in'
       )}
       style={style}
-      onMouseEnter={() => type === 'alive' && setIsHovered(true)}
-      onMouseLeave={() => type === 'alive' && setIsHovered(false)}
-      onClick={() => setPet(null)}
-      title="Click to dismiss"
+      onMouseEnter={() => {
+        if (type === 'alive') setIsHovered(true);
+      }}
+      onMouseLeave={() => {
+        if (type === 'alive') setIsHovered(false);
+      }}
+      onClick={handlePetInteraction}
+      title={type === 'ghost' ? "A vengeful spirit" : "A friendly cat"}
     >
-      {isHovered && type === 'alive' && <MeowBubble />}
+      {(isHovered || showMeow) && type === 'alive' && <MeowBubble />}
       <PetIcon className="w-full h-full" />
     </div>,
     container
