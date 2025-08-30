@@ -1,76 +1,22 @@
 # Quantalink Portfolio - Pseudocode & Architecture Overview
 
-This document outlines the high-level structure and logic of the Next.js portfolio application.
+This document outlines the high-level structure and logic of the key interactive components of the Next.js portfolio application, reflecting the final implementation.
 
-## 1. Global Structure (`src/app/layout.tsx`)
+## 1. Global State Management (`src/lib/pet-state.ts`)
 
-- **Purpose:** The root layout for the entire application.
-- **Logic:**
-  - `RootLayout(children)`:
-    - Set HTML language to "en".
-    - Load global CSS (`globals.css`).
-    - Load "Space Grotesk" font from Google Fonts.
-    - Define global metadata for SEO (title, description, keywords, Open Graph tags).
-    - Inject JSON-LD structured data for personal schema.
-    - Render `<AnimatedBackground />` so it appears on all pages.
-    - Render the `{children}` (the current page).
-    - Render the `<Toaster />` for notifications.
-
-## 2. Main Page (`src/app/page.tsx`)
-
-- **Purpose:** The homepage/landing page.
-- **Logic:**
-  - `Home()`:
-    - Render a main container `div`.
-    - Render components in a vertical stack:
-      - `<ProfileSection />`
-      - `<LinkCards />`
-      - `<Separator />`
-      - `<AboutMe />`
-      - `<Separator />`
-      - `<Projects featuredOnly={true} />`
-      - `<Separator />`
-      - `<Skills />`
-      - `<Separator />`
-      - `<EasterEgg />`
-    - Render `<PageFooter />`.
-
-## 3. Core Components
-
-### 3.1. Animated Background (`src/components/animated-background.tsx`)
-
-- **Purpose:** A client-side component to render a dynamic, QED-inspired canvas animation.
+- **Purpose:** A global state store (using Zustand) to manage the page pet's existence and initial animation coordinates.
 - **State:**
-  - `canvasRef`: Reference to the canvas element.
-  - `animationFrameId`: ID for the animation loop.
-- **Logic:**
-  - `useEffect()`: Runs once on component mount.
-    - Get canvas context.
-    - **Device Adaptation:**
-      - Check `window.innerWidth`.
-      - If mobile (`<= 768px`):
-        - `maxParticles` = 20
-        - `virtualPairSpawnRate` = 0.15
-      - Else (desktop):
-        - `maxParticles` = 30
-        - `virtualPairSpawnRate` = 0.25
-    - **Particle Class:**
-      - `constructor(isVirtual)`
-      - `reset()`: Initialize position, velocity, charge, color.
-      - `update()`: Update position, bounce off edges, handle decay for virtual particles.
-      - `draw()`: Draw particle core and aura.
-    - **Animation Loop `animate()`:**
-      - Clear canvas.
-      - Randomly call `spawnVirtualPair()` to create virtual particles.
-      - Loop through real particles to draw "Photon Exchange" lines between them if they are close.
-      - Update and draw all active particles.
-      - Remove dead virtual particles.
-    - **Cleanup:**
-      - Add `resize` event listener to re-initialize the animation on window resize.
-      - Return a cleanup function to cancel the animation frame and remove the event listener.
+  - `pet`: object | null
+    - `type`: 'cat' | 'ghost'
+    - `startX`: number (initial screen X position)
+    - `startY`: number (initial screen Y position)
+- **Actions:**
+  - `setPet(type, startX, startY)`: Sets the pet's data, spawning it.
+  - `clearPet()`: Resets the pet state to `null`, removing it.
 
-### 3.2. Quantum Conundrum (`src/components/easter-egg.tsx`)
+## 2. The Quantum Conundrum Mini-Game (`src/components/easter-egg.tsx`)
 
+<<<<<<< HEAD
 - **Purpose:** A client-side, game-like interactive component based on the Schrödinger's Cat thought experiment.
 - **State:**
   - `isObserved`: `boolean` - Tracks if the user has "collapsed the wave function." `false` = intro screen, `true` = result screen.
@@ -92,44 +38,104 @@ This document outlines the high-level structure and logic of the Next.js portfol
       - If `catState === 'ghost'`:
         - Show the "Decohered" result card, which includes a `Ghost` icon and a spooky `<FunParticles type="ghost" />` effect.
       - In either outcome, also show the "Reset Superposition" button.
+=======
+- **Purpose:** A client-side, fully-fledged mini-game that determines which page pet spawns.
+- **State:**
+  - `gameState`: 'idle' | 'playing' | 'won' | 'lost'
+  - `difficulty`: number (current level)
+  - `score`: number (anomalies clicked)
+  - `anomalies`: Array<object> (anomalies on screen)
+  - `timeLeft`: number
+  - `isResultIconVisible`: boolean (controls visibility of the result icon post-game)
+>>>>>>> 4c6b5a5 (even more add more changes we made and also update pseudocode.md)
 
-### 3.3. Profile & Links (`profile-section.tsx`, `link-cards.tsx`)
+- **Game Logic Flow:**
+  1.  **`handleStart()`:**
+      - Set `gameState` to 'playing'.
+      - Reset `score`, `timeLeft` based on `difficulty`.
+      - Start the countdown timer `setInterval`.
+      - Call `spawnAnomaly()` to create the first target.
 
-- **Purpose:** Display user identity and social links.
-- **Logic:**
-  - Use `useInView` hook to trigger fade-in animations.
-  - `ProfileSection`:
-    - Renders `<Avatar>` with a local image (`/profile.webp`).
-    - Renders `<h1>` with full name for SEO.
-    - Renders tagline.
-  - `LinkCards`:
-    - Maps over a `links` array.
-    - Renders a `<LinkCard>` for each item, passing props like `href`, `title`, `Icon`, and animation `delay`.
-  - `LinkCard` (Client Component):
-    - Uses `onMouseMove` to create a 3D tilt and background glow effect.
-    - Uses `onMouseLeave` to reset the effect.
+  2.  **`spawnAnomaly()`:**
+      - Creates a new anomaly object with a **unique ID** (`Date.now() + Math.random()`).
+      - Adds the new anomaly to the `anomalies` state array.
 
-## 4. Data-Driven Content
+  3.  **`handleAnomalyClick(anomalyId)`:**
+      - Increment `score`.
+      - Remove the clicked anomaly from the `anomalies` array.
+      - Trigger a particle effect at the anomaly's position.
+      - **Check Win Condition:** If `score >= requiredScore`:
+          - Call `handleEndGame(true)` (win).
+      - Else:
+          - Call `spawnAnomaly()` to create the next target.
 
-### 4.1. Projects (`src/lib/projects-data.ts`, `src/components/projects.tsx`)
+  4.  **Countdown Timer (`useEffect`):**
+      - Decrements `timeLeft` every second.
+      - **Check Lose Condition:** If `timeLeft <= 0`:
+          - Call `handleEndGame(false)` (loss).
 
-- **Data:** `projects-data.ts` exports an array of `Project` objects. Each has a title, description, URL, license, and `isFeatured` flag.
-- **Component Logic (`Projects.tsx`):**
-  - Accepts `featuredOnly` prop.
-  - Filters the `projects` array based on `featuredOnly`.
-  - Maps over the filtered array to render a `<Card>` for each project.
-  - If `featuredOnly`, renders a "See More Projects" button linking to `/projects`.
+  5.  **`handleEndGame(didWin)`:**
+      - Clear the countdown timer interval.
+      - Set `gameState` to 'won' or 'lost'.
+      - Set `isResultIconVisible` to `true`.
+      - If `didWin`:
+          - Increment `difficulty`.
+          - **Pet Spawning (Delayed):**
+              - `setTimeout(250ms)`:
+                  - Get the screen coordinates of the result `Cat` icon.
+                  - Call `setPet('cat', x, y)` from the global pet store.
+                  - Set `isResultIconVisible` to `false`.
+      - Else (`didWin === false`):
+           - **Pet Spawning (Delayed):**
+              - `setTimeout(250ms)`:
+                  - Get the screen coordinates of the result `Ghost` icon.
+                  - Call `setPet('ghost', x, y)` from the global pet store.
+                  - Set `isResultIconVisible` to `false`.
+  
+  6.  **`handleReset()`:**
+      - Call `clearPet()` from the global pet store.
+      - Reset all game states to initial values (`gameState` to 'idle').
 
-### 4.2. Skills (`src/lib/skills-data.tsx`, `src/app/skills/page.tsx`)
+## 3. The Interactive Page Pet (`src/components/page-pet.tsx`)
 
-- **Data:** `skills-data.tsx` exports an array of `SkillCategory` objects. Each category has a title, icon, and an array of `Skill` objects. Each skill has a name, note, and a custom icon component.
-- **Component Logic (`SkillsPage.tsx`):**
-  - Maps over `skillsData` to render each category.
-  - Inside each category, maps over `category.skills` to render a `<Button>` for each skill.
-  - Each button is a `<DialogTrigger>` that opens a `<DialogContent>` showing the detailed `skill.note`.
+- **Purpose:** A client-side component that renders the roaming pet based on the global state.
+- **State:**
+  - `pos`: { x, y } (current position)
+  - `vel`: { x, y } (current velocity)
+  - `target`: { x, y } (destination for movement)
+  - `petState` (for ghost): 'stalking' | 'hiding' | 'swooshing'
+  - `showMeow` (for cat): boolean
 
-## 5. SEO & Configuration
+- **Animation & Logic:**
 
-- **`next-sitemap.config.js`:** Configured to run `postbuild` to automatically generate `sitemap.xml` and `robots.txt`.
-- **`package.json`:** `"postbuild": "next-sitemap"` script is present.
-- **`layout.tsx`:** Contains all primary metadata tags (`<title>`, `<meta>`, Open Graph, JSON-LD) for optimal search engine indexing.
+  1.  **Initial Spawn:**
+      - The component renders when the global `pet` state is not `null`.
+      - An outer `div` has a `fly-in` animation.
+      - This animation uses CSS variables (`--start-x`, `--start-y`) which are set inline based on the `pet.startX` and `pet.startY` from the global state.
+      - This creates the effect of the pet flying from the result card to its initial position.
+
+  2.  **Cat Logic (`useEffect` loop):**
+      - **Movement:**
+          - If cat is too far from its `target`, update `vel` to move towards it (avoiding the cursor).
+          - If cat is close to its `target`, pick a new random `target` on the screen.
+          - Apply velocity to `pos`.
+          - Use `requestAnimationFrame` for a smooth animation loop.
+      - **Interaction:**
+          - `onMouseEnter`: Set `showMeow` to `true`.
+          - `onMouseLeave`: Set `showMeow` to `false`.
+          - `onClick`: Trigger `showMeow` for a short duration.
+
+  3.  **Ghost Logic (`useEffect` loop):**
+      - **State Machine:**
+          - **`stalking` state:**
+              - Move slowly towards a random `target`.
+              - After a random duration (8-15s), switch to `hiding` or `swooshing`.
+          - **`hiding` state:**
+              - Become invisible (`opacity: 0`).
+              - After a random duration (2-4s), switch back to `stalking`.
+          - **`swooshing` state:**
+              - Pick a new random `target` across the screen.
+              - Apply a large, single burst of `vel` towards the target.
+              - The ghost dashes rapidly across the screen.
+              - After the swoosh duration (3s), switch back to `stalking`.
+      - **Animation:** The `requestAnimationFrame` loop applies the current `vel` to the `pos` to render the ghost's movement.
