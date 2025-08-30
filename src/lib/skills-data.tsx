@@ -23,6 +23,7 @@ import { ZshIcon } from '@/components/icons/zsh';
 import { VercelIcon } from '@/components/icons/vercel';
 import { UbuntuIcon } from '@/components/icons/ubuntu';
 import { CIcon } from '@/components/icons/c';
+import { CplusplusIcon } from '@/components/icons/cplusplus';
 import { NextjsIcon } from '@/components/icons/nextdotjs';
 import { NumpyIcon } from '@/components/icons/numpy';
 import { PandasIcon } from '@/components/icons/pandas';
@@ -37,7 +38,7 @@ import { EspressifIcon } from '@/components/icons/espressif';
  * Defines the structure for an individual skill.
  * @property {string} name - The name of the skill (e.g., "Python").
  * @property {React.ReactNode} icon - The React component for the skill's logo.
- * @property {string} [iconClassName] - Optional CSS classes to apply to the icon container, e.g., for dark mode adjustments.
+ * @property {string} [iconClassName] - Optional CSS classes to apply to the icon container.
  */
 export interface Skill {
   name: string;
@@ -50,13 +51,11 @@ export interface Skill {
  * @property {string} title - The title of the category (e.g., "Frontend Development").
  * @property {React.ReactNode} icon - The icon representing the category.
  * @property {Skill[]} skills - An array of `Skill` objects belonging to this category.
- * @property {string} [note] - An optional descriptive note for the category.
  */
 export interface SkillCategory {
   title: string;
   icon: React.ReactNode;
   skills: Skill[];
-  note?: string;
 }
 
 /**
@@ -67,10 +66,10 @@ export const skillsData: SkillCategory[] = [
   {
     title: 'Backend & Data Science',
     icon: <BrainCircuit size={32} />,
-    note: "Currently exploring these technologies with a focus on their applications in theoretical physics and data analysis.",
     skills: [
       { name: 'Python', icon: <PythonIcon /> },
       { name: 'C', icon: <CIcon /> },
+      { name: 'C++', icon: <CplusplusIcon /> },
       { name: 'NumPy', icon: <NumpyIcon /> },
       { name: 'Pandas', icon: <PandasIcon /> },
       { name: 'Scikit-learn', icon: <SciktLearnIcon /> },
@@ -81,7 +80,6 @@ export const skillsData: SkillCategory[] = [
   {
     title: 'Frontend Development',
     icon: <Code size={32} />,
-    note: "I have a theoretical foundation from courses like CS50W. I primarily 'vibe code' for frontend tasks, using Gemini for initial generation and ChatGPT for debugging.",
     skills: [
       { name: 'HTML5', icon: <HtmlIcon /> },
       { name: 'CSS3', icon: <CssIcon /> },
@@ -89,7 +87,7 @@ export const skillsData: SkillCategory[] = [
       { name: 'JavaScript', icon: <JavascriptIcon />, iconClassName: 'p-1' },
       { name: 'TypeScript', icon: <TypescriptIcon />, iconClassName: 'p-1' },
       { name: 'React', icon: <ReactIcon /> },
-      { name: 'Next.js', icon: <NextjsIcon />, iconClassName: 'dark:invert' },
+      { name: 'Next.js', icon: <NextjsIcon /> },
     ],
   },
   {
@@ -97,14 +95,14 @@ export const skillsData: SkillCategory[] = [
     icon: <Wrench size={32} />,
     skills: [
        { name: 'Git', icon: <GitIcon /> },
-       { name: 'GitHub', icon: <GithubIcon />, iconClassName: 'dark:invert' },
+       { name: 'GitHub', icon: <GithubIcon /> },
        { name: 'VS Code', icon: <VscodeIcon /> },
        { name: 'ChatGPT', icon: <ChatgptIcon /> },
        { name: 'Gemini', icon: <GeminiIcon /> },
-       { name: 'Bash', icon: <BashIcon />, iconClassName: 'dark:invert' },
-       { name: 'Zsh', icon: <ZshIcon />, iconClassName: 'dark:invert' },
+       { name: 'Bash', icon: <BashIcon /> },
+       { name: 'Zsh', icon: <ZshIcon /> },
        { name: 'Ubuntu', icon: <UbuntuIcon /> },
-       { name: 'Vercel', icon: <VercelIcon />, iconClassName: 'dark:invert' },
+       { name: 'Vercel', icon: <VercelIcon /> },
        { name: 'Arduino', icon: <ArduinoIcon /> },
        { name: 'ESP32/ESP8266', icon: <EspressifIcon /> },
     ],

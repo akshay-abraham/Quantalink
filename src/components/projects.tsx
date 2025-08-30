@@ -32,7 +32,7 @@ interface ProjectsProps {
 }
 
 /**
- * Projects component renders a list of project cards.
+ * Projects component renders a list of project cards with fade-in-up animations.
  * @param {ProjectsProps} props - The component props.
  * @returns {JSX.Element} A section containing project cards.
  */
@@ -75,13 +75,14 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
             key={project.title}
             className={cn(
               'group relative overflow-hidden bg-card/30 border-border/40 shadow-lg transition-all duration-700 ease-out text-left',
-              // Animate each card with a slight delay.
+              // Animate each card with a staggered delay.
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             )}
             style={{
               transitionDelay: isVisible ? `${200 + index * 100}ms` : '0ms',
             }}
           >
+            {/* Animated border glow effect on hover. */}
             <div className="absolute inset-0 animate-border-glow opacity-30 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="relative z-10">
               <CardHeader>

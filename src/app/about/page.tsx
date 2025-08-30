@@ -1,6 +1,7 @@
 /**
  * @file src/app/about/page.tsx
- * @description The dedicated "About Me" page, redesigned for a more dynamic and engaging presentation.
+ * @description The dedicated "About Me" page, providing a detailed look at my journey.
+ *              This page uses styled cards and icons for a dynamic presentation.
  */
 import AnimatedBackground from "@/components/animated-background";
 import PageFooter from "@/components/page-footer";
@@ -9,15 +10,17 @@ import type { Metadata } from 'next';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-// Page-specific metadata
+// Page-specific metadata for SEO.
 export const metadata: Metadata = {
   title: 'About Me | Akshay K Rooben Abraham',
   description: 'Learn more about Akshay K Rooben Abraham, a Class 11 PCMB student with a passion for theoretical physics, electronics, and open-source technology.',
+  // Provides the canonical URL for this page.
   alternates: {
     canonical: '/about',
   },
 };
 
+// Data for the different sections of the "About Me" page.
 const aboutSections = [
   {
     icon: <Target className="h-8 w-8" />,
@@ -38,7 +41,7 @@ const aboutSections = [
 
 /**
  * AboutPage component renders a detailed, sectioned biography.
- * @returns {JSX.Element} The rendered "About Me" page.
+ * @returns {JSX.Element} The rendered "About Me" page with animated sections.
  */
 export default function AboutPage() {
   return (

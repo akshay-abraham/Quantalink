@@ -1,6 +1,7 @@
 /**
  * @file src/components/desktop-nav.tsx
  * @description The navigation bar component for desktop screens.
+ *              It provides a clear, always-visible navigation experience for users on larger devices.
  */
 'use client';
 
@@ -9,6 +10,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Home, User, Code, Star } from 'lucide-react';
 
+// Defines the links that will be displayed in the navigation bar.
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/about', label: 'About', icon: User },
@@ -18,6 +20,7 @@ const navLinks = [
 
 /**
  * DesktopNav component renders a horizontal navigation menu for larger screens.
+ * It highlights the active link based on the current URL pathname.
  * @returns {JSX.Element} A nav element containing the navigation links.
  */
 export default function DesktopNav() {
@@ -34,6 +37,7 @@ export default function DesktopNav() {
             className={cn(
               'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors',
               'hover:bg-primary/10',
+              // Apply active styles if the current path matches the link's href.
               isActive ? 'bg-primary/10 text-primary' : 'text-foreground/70'
             )}
           >

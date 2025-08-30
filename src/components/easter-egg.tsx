@@ -2,6 +2,7 @@
  * @file src/components/easter-egg.tsx
  * @description A fun, interactive "game" component based on the Schrödinger's Cat thought experiment.
  *              It allows the user to "collapse the wave function" after completing a mini-game.
+ *              The game features adaptive difficulty and cinematic results.
  * @note This is a client component due to its use of state (`useState`) and effects (`useEffect`).
  */
 "use client"
@@ -22,11 +23,14 @@ import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
 import { setPet, PetState } from '@/lib/pet-state';
 
-
+// Defines the possible states of the game.
 type GameState = 'idle' | 'playing' | 'revealing' | 'result' | 'failed';
+// Defines the possible outcomes for the cat.
 type CatState = 'alive' | 'ghost' | null;
 
+// Icons used for the clickable "anomalies" in the game.
 const ANOMALY_ICONS = [Atom, Dna, Biohazard, FlaskConical];
+// Colors used for the anomalies, ensuring a vibrant and varied game board.
 const ANOMALY_COLORS = ['#ff00ff', '#00ffff', '#ffb700', '#00ff00', '#ff5252', '#ad52ff', '#f472b6', '#3b82f6'];
 
 interface Anomaly {
@@ -44,6 +48,7 @@ interface ParticleEffect {
   type: ParticleType;
 }
 
+// Defines the icons used for different particle effects.
 const PARTICLE_ICONS = {
   popper: PartyPopper,
   ghost: Skull,
@@ -51,15 +56,17 @@ const PARTICLE_ICONS = {
   anomaly: Star,
 };
 
+// Defines the color palettes for different particle effects.
 const PARTICLE_COLORS = {
-  popper: ['#facc15', '#fb923c', '#f87171', '#4ade80', '#22d3ee', '#a78bfa', '#f472b6', '#818cf8'],
-  ghost: ['#a5f3fc', '#67e8f9', '#c4b5fd', '#a78bfa', '#f0abfc', '#bae6fd'],
-  revealing: ['#ffffff', '#f0f0f0', '#e0e0e0'],
-  anomaly: ANOMALY_COLORS,
+  popper: ['#facc15', '#fb923c', '#f87171', '#4ade80', '#22d3ee', '#a78bfa', '#f472b6', '#818cf8'], // "Fun" colors
+  ghost: ['#a5f3fc', '#67e8f9', '#c4b5fd', '#a78bfa', '#f0abfc', '#bae6fd'], // "Spooky" colors
+  revealing: ['#ffffff', '#f0f0f0', '#e0e0e0'], // Neutral collapse colors
+  anomaly: ANOMALY_COLORS, // Anomaly burst colors
 };
 
 type ParticleType = keyof typeof PARTICLE_COLORS;
 
+/** A single particle that animates flying outwards from a central point. */
 const Particle = ({ type }: { type: ParticleType }) => {
   const tx = (Math.random() - 0.5) * 400;
   const ty = (Math.random() - 0.5) * 400;
@@ -82,12 +89,14 @@ const Particle = ({ type }: { type: ParticleType }) => {
   return <div style={style}><Icon className="h-5 w-5" /></div>;
 };
 
+/** A container that generates a burst of particles of a specific type. */
 const FunParticles = ({ type, count }: { type: ParticleType, count: number }) => (
     <div className="absolute inset-0 pointer-events-none">
         {Array.from({ length: count }).map((_, i) => <Particle key={i} type={type} />)}
     </div>
 );
 
+/** The clickable "anomaly" component. */
 const QuantumAnomaly = ({ anomaly, onClick }: { anomaly: Anomaly, onClick: (id: number, x: number, y: number) => void }) => (
   <button
     onClick={() => onClick(anomaly.id, anomaly.x, anomaly.y)}
@@ -98,15 +107,18 @@ const QuantumAnomaly = ({ anomaly, onClick }: { anomaly: Anomaly, onClick: (id: 
   </button>
 );
 
+/** Calculates game difficulty based on the number of times played. */
 const getDifficulty = (playCount: number) => {
-    const run = Math.min(playCount, 3); // Cap difficulty scaling at run 3
+    // Cap difficulty scaling at run 3 to prevent it from becoming truly impossible.
+    const run = Math.min(playCount, 3);
     return {
-        time: 15 - run * 3, // 15s -> 12s -> 9s -> 6s
-        anomalies: 5 + run * 2, // 5 -> 7 -> 9 -> 11
+        time: 15 - run * 3,      // 15s -> 12s -> 9s -> 6s
+        anomalies: 5 + run * 2,  // 5 -> 7 -> 9 -> 11
         spawnRate: 900 - run * 150 // 900ms -> 750ms -> 600ms -> 450ms
     }
 }
 
+/** The main Quantum Conundrum game component. */
 export default function EasterEgg() {
   const [gameState, setGameState] = useState<GameState>('idle');
   const [catState, setCatState] = useState<CatState>(null);
@@ -125,6 +137,7 @@ export default function EasterEgg() {
 
   const isGameActive = gameState === 'playing' || gameState === 'failed' || gameState === 'revealing' || gameState === 'result';
 
+  // Load stats from localStorage on component mount.
   useEffect(() => {
     try {
       const storedStats = localStorage.getItem('quantumConundrumStats');
@@ -138,6 +151,7 @@ export default function EasterEgg() {
     }
   }, []);
 
+  /** Updates game stats and saves them to localStorage. */
   const updateStats = useCallback((result: CatState, play: boolean) => {
     const newStats = { 
         ...stats, 
@@ -153,15 +167,17 @@ export default function EasterEgg() {
     }
   }, [stats]);
   
+  /** Clears all active game timers. */
   const cleanupTimers = () => {
     if (timerRef.current) clearInterval(timerRef.current);
     if (anomalySpawnerRef.current) clearInterval(anomalySpawnerRef.current);
   };
   
+  /** Starts a new game session. */
   const startExperiment = () => {
     updateStats(null, true);
     setPet(null); // Clear any existing global pet
-    const currentDifficulty = getDifficulty(stats.plays + 1); // Use upcoming play count
+    const currentDifficulty = getDifficulty(stats.plays + 1);
     setDifficulty(currentDifficulty);
     setAnomaliesToClick(currentDifficulty.anomalies);
     setTimeLeft(currentDifficulty.time);
@@ -169,6 +185,7 @@ export default function EasterEgg() {
     setParticleEffects([]);
     setGameState('playing');
     
+    // Start the countdown timer.
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
@@ -180,6 +197,7 @@ export default function EasterEgg() {
       });
     }, 1000);
 
+    // Function to spawn a new anomaly.
     const spawnAnomaly = () => {
         setAnomalies(prevAnomalies => {
             const newAnomaly: Anomaly = {
@@ -189,19 +207,20 @@ export default function EasterEgg() {
               Icon: ANOMALY_ICONS[Math.floor(Math.random() * ANOMALY_ICONS.length)],
               color: ANOMALY_COLORS[Math.floor(Math.random() * ANOMALY_COLORS.length)],
             };
-            // Limit total anomalies on screen to avoid clutter
             const updatedAnomalies = prevAnomalies.length > 7 ? prevAnomalies.slice(1) : prevAnomalies;
             return [...updatedAnomalies, newAnomaly];
         });
     }
 
     anomalySpawnerRef.current = setInterval(spawnAnomaly, currentDifficulty.spawnRate);
-    spawnAnomaly(); // Spawn one immediately
+    spawnAnomaly();
   };
 
+  /** Handles the click event on a quantum anomaly. */
   const handleAnomalyClick = (id: number, x: number, y: number) => {
     setAnomalies(prev => prev.filter(a => a.id !== id));
     
+    // Create a particle burst at the anomaly's location.
     const newEffect: ParticleEffect = { id: Date.now(), x, y, type: 'anomaly' };
     setParticleEffects(prev => [...prev, newEffect]);
     setTimeout(() => {
@@ -212,30 +231,32 @@ export default function EasterEgg() {
       const newCount = prev - 1;
       if (newCount <= 0) {
         cleanupTimers();
-        observe();
+        observe(); // All anomalies collected, trigger the reveal.
         return 0;
       }
       return newCount;
     });
   };
 
+  /** Triggers the "wave function collapse" animation sequence. */
   const observe = () => {
     setGameState('revealing');
     setTimeout(() => {
-       // Make death more prominent
+       // **Outcome Probability:** Make death more prominent (60% chance).
       const result = Math.random() > 0.6 ? 'alive' : 'ghost';
       setCatState(result);
-      setPet(result); // Set the global pet state
-      updateStats(result, false); // Don't increment play count again here
+      setPet(result); // Set the global pet state so it roams the page.
+      updateStats(result, false);
       setGameState('result');
-    }, 2500);
+    }, 2500); // 2.5 second reveal animation.
   };
 
+  /** Resets the game to its initial state. */
   const reset = () => {
     cleanupTimers();
     setGameState('idle');
     setCatState(null);
-    setPet(null); // Clear the global pet on reset
+    setPet(null);
     setAnomalies([]);
     setParticleEffects([]);
     const currentDifficulty = getDifficulty(stats.plays);
@@ -243,6 +264,17 @@ export default function EasterEgg() {
     setAnomaliesToClick(currentDifficulty.anomalies);
   };
   
+  /** A "very not noticeable" button to reset all stats and progress. */
+  const factoryReset = () => {
+    try {
+      localStorage.removeItem('quantumConundrumStats');
+      setStats({ alive: 0, ghost: 0, plays: 0 });
+      setDifficulty(getDifficulty(0));
+    } catch (error) {
+      console.error("Failed to reset stats in localStorage", error);
+    }
+  }
+
   useEffect(() => {
     return cleanupTimers;
   }, []);
@@ -260,6 +292,7 @@ export default function EasterEgg() {
         className={cn(
           "space-y-4 text-center transition-opacity duration-1000 ease-out", 
           isVisible ? "opacity-100" : "opacity-0",
+           // When game is active, it becomes a fixed overlay.
            isGameActive && "fixed inset-0 w-full h-full flex items-center justify-center z-50 p-4"
         )}
         style={{ transitionDelay: isVisible ? '150ms' : '0ms' }}
@@ -267,6 +300,7 @@ export default function EasterEgg() {
           <Card className={cn(
               "relative border-border/40 shadow-lg transition-all duration-700 ease-out text-center overflow-hidden w-full",
               isVisible && !isGameActive ? "opacity-100 translate-y-0 bg-card/30" : !isGameActive ? "opacity-0 translate-y-5" : "",
+              // Use a solid background when the game is active for better visibility.
               isGameActive ? "max-w-3xl h-auto md:h-[600px] flex flex-col bg-background" : "max-w-full"
           )}
           style={{ transitionDelay: isVisible ? `200ms` : '0ms' }}
@@ -312,6 +346,7 @@ export default function EasterEgg() {
                           <h3 className="font-bold text-lg text-primary">{gameState === 'failed' ? 'Experiment Failed!' : 'Tap the Anomalies!'}</h3>
                           <div className="space-y-2">
                             <div className="flex justify-between items-center text-sm font-medium">
+                                {/* The anomaly counter */}
                                 <span className={cn(
                                     "flex items-center gap-2",
                                     anomaliesToClick > 0 ? "text-amber-500" : "text-green-500"
@@ -334,6 +369,7 @@ export default function EasterEgg() {
                           <div 
                             className="relative w-full flex-grow bg-primary/5 border border-primary/20 rounded-lg mt-2 min-h-[250px] md:min-h-[350px] touch-none"
                           >
+                            {/* The "Failed" state UI */}
                             {gameState === 'failed' && (
                                 <div className="absolute inset-0 flex items-center justify-center">
                                   <div className="grid grid-cols-3 gap-8">
@@ -343,9 +379,11 @@ export default function EasterEgg() {
                                   </div>
                                 </div>
                               )}
+                              {/* The main game board where anomalies appear */}
                               {gameState === 'playing' && anomalies.map(item => (
                                 <QuantumAnomaly key={item.id} anomaly={item} onClick={handleAnomalyClick} />
                               ))}
+                              {/* Container for particle effects on anomaly click */}
                               {particleEffects.map(effect => (
                                 <div key={effect.id} className="absolute" style={{left: `${effect.x}%`, top: `${effect.y}%`, width: '50px', height: '50px', transform: 'translate(-50%, -50%)'}}>
                                    <FunParticles type={effect.type} count={30} />
@@ -401,7 +439,11 @@ export default function EasterEgg() {
                       </div>
                   )}
               </CardContent>
-              <CardFooter className="flex justify-center text-xs text-muted-foreground pb-4">
+              <CardFooter className="flex justify-center text-xs text-muted-foreground pb-4 relative">
+                  {/* Subtle reset button in the footer. */}
+                  <button onClick={factoryReset} className="absolute left-2 bottom-2 text-muted-foreground/30 hover:text-muted-foreground/80 transition-colors text-[10px] p-2">
+                    Reset Stats
+                  </button>
                   <p>Experiment Results and play count are saved locally in your browser.</p>
               </CardFooter>
           </Card>

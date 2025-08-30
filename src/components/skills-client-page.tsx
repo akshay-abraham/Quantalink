@@ -2,7 +2,8 @@
  * @file src/components/skills-client-page.tsx
  * @description A client component that renders the animated, interactive content
  *              for the main "Skills & Technologies" page. It handles the entrance
- *              animations for the skill categories.
+ *              animations for the skill categories and uses an infinite scroller
+ *              for a dynamic presentation.
  * @note This is a client component because it uses hooks for animations.
  */
 'use client';
@@ -30,15 +31,15 @@ const CategoryIcon = ({ icon }: { icon: React.ReactNode }) => (
  * @returns {JSX.Element} The rendered skills content.
  */
 export default function SkillsClientPage() {
+  // State to track if the component has mounted, to prevent server-side animation rendering.
   const [isMounted, setIsMounted] = useState(false);
 
-  // useEffect ensures animations only play on the client after the component has mounted.
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   /**
-   * Renders a single skill category, including its title, icon, and a grid of skill cards.
+   * Renders a single skill category, including its title, icon, and an infinite scroller of skill cards.
    * @param {SkillCategory} category - The category data object.
    * @param {number} index - The index of the category, used for animation delay.
    * @returns {JSX.Element} A div containing the rendered category.
@@ -48,6 +49,7 @@ export default function SkillsClientPage() {
       key={category.title}
       className={cn(
         "space-y-6 transition-all duration-700 ease-out",
+        // Only apply animation classes if the component is mounted on the client.
         isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
       )}
       style={{ animationDelay: `${200 + index * 150}ms` }}
@@ -55,12 +57,8 @@ export default function SkillsClientPage() {
       <div className="flex flex-col items-center text-center">
         <CategoryIcon icon={category.icon} />
         <h2 className="text-2xl font-bold text-primary mb-2">{category.title}</h2>
-        {category.note && (
-           <p className="text-sm text-foreground/70 mt-1 max-w-2xl mx-auto italic">
-            {category.note}
-          </p>
-        )}
       </div>
+      {/* Use the InfiniteScroller for a dynamic, moving display of skills. */}
        <InfiniteScroller speed={index % 2 === 0 ? "slow" : "normal"}>
         {category.skills.map((skill) => (
           <Card 

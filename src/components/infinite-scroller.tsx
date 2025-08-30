@@ -16,6 +16,11 @@ interface InfiniteScrollerProps {
   pauseOnHover?: boolean;
 }
 
+/**
+ * InfiniteScroller creates a seamless, looping animation of its children.
+ * @param {InfiniteScrollerProps} props - The component props.
+ * @returns {JSX.Element} A div containing the scrolling animation.
+ */
 export const InfiniteScroller = ({
   children,
   speed = 'normal',
@@ -26,23 +31,29 @@ export const InfiniteScroller = ({
   const scrollerRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
+    /**
+     * Clones the scroller content to create the illusion of an infinite loop.
+     * Sets CSS custom properties for animation speed and direction.
+     */
     const addAnimation = () => {
       if (containerRef.current && scrollerRef.current) {
         const scrollerContent = Array.from(scrollerRef.current.children);
         
-        // Clear previous clones
+        // Clear any previously cloned items before re-cloning.
         scrollerContent.forEach(item => {
           if (item.getAttribute('aria-hidden')) {
             item.remove();
           }
         });
         
+        // Clone each item and mark it as decorative for accessibility.
         scrollerContent.forEach((item) => {
             const duplicatedItem = item.cloneNode(true) as HTMLElement;
             duplicatedItem.setAttribute('aria-hidden', 'true');
             scrollerRef.current?.appendChild(duplicatedItem);
         });
 
+        // Map speed prop to CSS animation duration.
         const speedMap = {
           slow: '80s',
           normal: '40s',
@@ -55,7 +66,6 @@ export const InfiniteScroller = ({
           direction === 'left' ? 'normal' : 'reverse'
         );
         
-        // Add the animation class
         scrollerRef.current.classList.add('animate-scrolling-logos');
       }
     };
@@ -68,6 +78,7 @@ export const InfiniteScroller = ({
       ref={containerRef}
       className={cn(
         'scroller-container relative w-full overflow-hidden',
+        // Adds a fade effect to the edges of the scroller.
         '[mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)]'
       )}
     >
@@ -75,6 +86,7 @@ export const InfiniteScroller = ({
         ref={scrollerRef}
         className={cn(
           'flex min-w-full shrink-0 gap-6 py-4 w-max flex-nowrap',
+          // Pauses the animation on hover if enabled.
           pauseOnHover && 'hover:[animation-play-state:paused]'
         )}
       >

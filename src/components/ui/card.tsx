@@ -2,8 +2,7 @@
  * @file src/components/ui/card.tsx
  * @description A set of reusable Card components, based on ShadCN UI.
  *              These components are used to create structured content containers
- *              with a consistent style. The main Card has a semi-transparent
- *              "Acrylic" effect.
+ *              with a consistent style.
  */
 import * as React from "react"
 
@@ -18,7 +17,6 @@ const Card = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    // Base styles for the card, including the semi-transparent background for the acrylic effect.
     className={cn(
       "rounded-lg border bg-card text-card-foreground shadow-sm",
       className

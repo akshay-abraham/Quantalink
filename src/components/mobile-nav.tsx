@@ -2,6 +2,7 @@
  * @file src/components/mobile-nav.tsx
  * @description The navigation component for mobile screens. It features an
  *              animating toggle button that expands into a navigation bar.
+ *              The width is precisely calculated to prevent layout issues.
  */
 'use client';
 
@@ -11,6 +12,7 @@ import Link from 'next/link';
 import { Home, User, Code, Star, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+// Defines the links and their icons for the navigation.
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/about', label: 'About', icon: User },
@@ -18,12 +20,13 @@ const navLinks = [
   { href: '/projects', label: 'Projects', icon: Star },
 ];
 
-// --- PRECISE WIDTH CALCULATION CONSTANTS ---
-// These values are based on the Tailwind CSS classes used (w-14, p-1, etc.)
-const ICON_CONTAINER_WIDTH = 56; // w-14 -> 3.5rem -> 56px
-const GAP_WIDTH = 4; // gap-1 -> 0.25rem -> 4px
-const HORIZONTAL_PADDING = 8; // px-1 on each side -> 0.25rem * 2 -> 8px
-const TOGGLE_BUTTON_WIDTH = 48; // h-12 w-12 -> 3rem -> 48px
+// --- PRECISE WIDTH CALCULATION CONSTANTS (in pixels) ---
+// These values are based on the Tailwind CSS classes used (w-14, gap-1, etc.)
+// to ensure the expanded menu has the exact width required and does not overflow.
+const ICON_CONTAINER_WIDTH = 56;  // w-14 -> 3.5rem
+const GAP_WIDTH = 4;              // gap-1 -> 0.25rem
+const HORIZONTAL_PADDING = 8;     // px-1 on each side -> 0.25rem * 2
+const TOGGLE_BUTTON_WIDTH = 48;   // h-12 w-12 -> 3rem
 
 /**
  * MobileNav provides an animated, space-saving navigation for small screens.
@@ -35,26 +38,22 @@ export default function MobileNav() {
   const navRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Auto-collapse the menu after a delay of inactivity
+  // Auto-collapse the menu after a delay of inactivity to save screen space.
   useEffect(() => {
     if (isOpen) {
       if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
         setIsOpen(false);
-      }, 5000); // 5 seconds
+      }, 5000); // 5 seconds of inactivity.
     } else {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
+      if (timerRef.current) clearTimeout(timerRef.current);
     }
     return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, [isOpen]);
 
-  // Close menu if user clicks outside of it
+  // Close the menu if the user clicks outside of it.
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
@@ -62,20 +61,17 @@ export default function MobileNav() {
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
   
-  // Close menu on navigation
+  // Close the menu when the user navigates to a new page.
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
 
-  // --- DEFINITIVE OVERFLOW FIX ---
-  // Calculate the exact width required for the expanded menu
+  // **Definitive Overflow Fix:** Calculate the exact width required for the expanded menu.
   const navWidth = isOpen 
-    ? (navLinks.length * ICON_CONTAINER_WIDTH) + ((navLinks.length -1) * GAP_WIDTH) + HORIZONTAL_PADDING + TOGGLE_BUTTON_WIDTH
+    ? (navLinks.length * ICON_CONTAINER_WIDTH) + ((navLinks.length - 1) * GAP_WIDTH) + HORIZONTAL_PADDING + TOGGLE_BUTTON_WIDTH
     : TOGGLE_BUTTON_WIDTH;
 
   return (
@@ -84,6 +80,7 @@ export default function MobileNav() {
         className={cn(
             'absolute right-0 top-0 h-12 flex items-center justify-end rounded-full bg-card/50 border border-border/60 backdrop-blur-md transition-[width] duration-500 ease-in-out'
         )}
+        // The calculated width is applied via inline style.
         style={{ width: `${navWidth}px`}}
       >
         {/* Nav Links Container */}
@@ -93,7 +90,6 @@ export default function MobileNav() {
         )}>
           {navLinks.map((link, index) => {
             const isActive = pathname === link.href;
-
             return (
               <Link
                 key={link.href}
@@ -101,12 +97,14 @@ export default function MobileNav() {
                 className={cn(
                   'flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-lg text-xs font-medium transition-all duration-300 ease-in-out',
                   isActive ? 'text-primary' : 'text-foreground/70 hover:text-primary',
+                  // Scale in/out animation for each icon.
                   isOpen ? 'scale-100' : 'scale-0'
                 )}
                 style={{
+                  // Stagger the animation for a "fanning out" effect.
                   transitionDelay: isOpen ? `${index * 50}ms` : '0ms'
                 }}
-                tabIndex={isOpen ? 0 : -1}
+                tabIndex={isOpen ? 0 : -1} // Make icons non-tabbable when closed.
               >
                 <link.icon className="h-5 w-5" />
                 <span className="truncate">{link.label}</span>
@@ -115,7 +113,7 @@ export default function MobileNav() {
           })}
         </div>
 
-        {/* Toggle Button */}
+        {/* Animated Toggle Button (Menu/X) */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="h-12 w-12 flex items-center justify-center rounded-full z-20 absolute right-0"
