@@ -7,15 +7,24 @@
  */
 
 // Defines the possible states for the pet.
-export type PetState = 'alive' | 'ghost' | null;
+export type PetType = 'alive' | 'ghost';
 
-// The global state object. It holds the current pet type.
-let state: { pet: PetState } = {
-  pet: null,
+// Defines the full state, including the type and its starting position for animation.
+export interface PetState {
+  type: PetType | null;
+  startX: number | null;
+  startY: number | null;
+}
+
+// The global state object. It holds the current pet type and start coordinates.
+let state: PetState = {
+  type: null,
+  startX: null,
+  startY: null,
 };
 
 // A Set of all listener functions that need to be called on state change.
-const listeners: Set<(state: { pet: PetState }) => void> = new Set();
+const listeners: Set<(state: PetState) => void> = new Set();
 // A reference to the timeout that will clear the pet.
 let petTimeout: NodeJS.Timeout | null = null;
 
@@ -31,10 +40,12 @@ const notify = () => {
 /**
  * Sets the current pet state and notifies all listeners.
  * Also manages the timeout to clear the pet after a duration.
- * @param {PetState} pet - The new state for the pet ('alive', 'ghost', or null).
+ * @param {PetType | null} type - The new state for the pet ('alive', 'ghost', or null).
+ * @param {number | null} startX - The starting X coordinate for the animation.
+ * @param {number | null} startY - The starting Y coordinate for the animation.
  */
-export const setPet = (pet: PetState) => {
-  state = { ...state, pet };
+export const setPet = (type: PetType | null, startX: number | null = null, startY: number | null = null) => {
+  state = { ...state, type, startX, startY };
 
   // If there's an old timeout running, clear it.
   if (petTimeout) {
@@ -43,7 +54,7 @@ export const setPet = (pet: PetState) => {
   }
 
   // If a new pet is set (i.e., not null), start a new timer to clear it.
-  if (pet) {
+  if (type) {
     petTimeout = setTimeout(() => {
       setPet(null); // This will recursively call setPet to clear the state.
     }, 120000); // 2 minutes in milliseconds.
@@ -54,10 +65,10 @@ export const setPet = (pet: PetState) => {
 
 /**
  * Subscribes a component to state changes.
- * @param {(state: { pet: PetState }) => void} listener - The callback function to run on state change.
+ * @param {(state: PetState) => void} listener - The callback function to run on state change.
  * @returns {() => void} An `unsubscribe` function to be called on component unmount.
  */
-export const subscribe = (listener: (state: { pet: PetState }) => void): (() => void) => {
+export const subscribe = (listener: (state: PetState) => void): (() => void) => {
   listeners.add(listener);
   listener(state); // Immediately invoke with current state to sync up.
   // Return the cleanup function.
@@ -68,7 +79,7 @@ export const subscribe = (listener: (state: { pet: PetState }) => void): (() => 
 
 /**
  * Gets a snapshot of the current state.
- * @returns {{ pet: PetState }} The current pet state.
+ * @returns {PetState} The current pet state.
  */
 export const getSnapshot = () => {
   return state;

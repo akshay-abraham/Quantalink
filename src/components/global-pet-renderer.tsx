@@ -18,13 +18,13 @@ import PagePet from './page-pet';
  */
 export default function GlobalPetRenderer() {
   // Use state to hold the current pet state, initialized from the global snapshot.
-  const [petState, setPetState] = useState<PetState>(getSnapshot().pet);
+  const [petState, setPetState] = useState<PetState>(getSnapshot());
 
   useEffect(() => {
     // Subscribe to the global state on component mount. The `subscribe` function
     // returns an `unsubscribe` function for cleanup.
     const unsubscribe = subscribe((newState) => {
-      setPetState(newState.pet);
+      setPetState(newState);
     });
 
     // Cleanup the subscription when the component unmounts to prevent memory leaks.
@@ -32,10 +32,10 @@ export default function GlobalPetRenderer() {
   }, []);
 
   // If there's no active pet in the global state, render nothing.
-  if (!petState) {
+  if (!petState.type) {
     return null;
   }
 
-  // If a pet is active, render the PagePet component with the correct type.
-  return <PagePet type={petState} />;
+  // If a pet is active, render the PagePet component with the correct type and start coordinates.
+  return <PagePet type={petState.type} startX={petState.startX} startY={petState.startY} />;
 }

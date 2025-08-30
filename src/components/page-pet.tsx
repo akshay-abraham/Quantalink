@@ -13,23 +13,20 @@ import { Cat, Ghost } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PetState, setPet } from '@/lib/pet-state';
 
-interface PagePetProps {
-  type: PetState;
-}
-
 /**
  * PagePet component renders a pet that moves around the screen.
  * Its state (alive/ghost) is controlled globally.
- * @param {PagePetProps} props - The props for the component.
+ * @param {PetState} props - The props for the component, containing type and start coordinates.
  * @returns {React.ReactPortal | null} A portal rendering the pet div, or null if not mounted.
  */
-const PagePet = ({ type }: PagePetProps) => {
-  const [position, setPosition] = useState({ x: 50, y: 50 });
+const PagePet = ({ type, startX, startY }: PetState) => {
+  const [position, setPosition] = useState({ x: startX || 50, y: startY || 50 });
   const [velocity, setVelocity] = useState({
     vx: Math.random() * 2 - 1, // Start with random velocity.
     vy: Math.random() * 2 - 1,
   });
   const [isMounted, setIsMounted] = useState(false);
+  const [isAnimatingIn, setIsAnimatingIn] = useState(true);
   const mousePos = useRef({ x: 0, y: 0 });
   const petRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -38,15 +35,18 @@ const PagePet = ({ type }: PagePetProps) => {
   // It also sets a timeout to automatically dismiss the pet after 2 minutes.
   useEffect(() => {
     setIsMounted(true);
+
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       setPet(null); // This will trigger the global state update and unmount the pet.
     }, 120000); // 2 minutes in milliseconds.
+    
+    // Disable the intro animation after it has played.
+    const animTimeout = setTimeout(() => setIsAnimatingIn(false), 1000);
 
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      clearTimeout(animTimeout);
     };
   }, [type]);
   
@@ -61,6 +61,8 @@ const PagePet = ({ type }: PagePetProps) => {
 
   // This is the main animation loop for the pet's movement.
   useEffect(() => {
+    if (isAnimatingIn) return; // Don't apply physics during the fly-in animation.
+
     let animationFrameId: number;
 
     const animate = () => {
@@ -104,8 +106,14 @@ const PagePet = ({ type }: PagePetProps) => {
         let newY = prevPos.y + vy;
 
         // Wall bouncing logic.
-        if (newX <= 0 || newX >= window.innerWidth - 50) vx *= -1;
-        if (newY <= 0 || newY >= window.innerHeight - 50) vy *= -1;
+        if (newX <= 0 || newX >= window.innerWidth - 50) {
+            vx *= -1;
+            newX = prevPos.x + vx;
+        }
+        if (newY <= 0 || newY >= window.innerHeight - 50) {
+            vy *= -1;
+            newY = prevPos.y + vy;
+        }
         
         newX = Math.max(0, Math.min(window.innerWidth - 50, newX));
         newY = Math.max(0, Math.min(window.innerHeight - 50, newY));
@@ -119,7 +127,7 @@ const PagePet = ({ type }: PagePetProps) => {
     animationFrameId = requestAnimationFrame(animate);
 
     return () => cancelAnimationFrame(animationFrameId);
-  }, [type, velocity]);
+  }, [type, velocity, isAnimatingIn]);
 
   if (!isMounted || !type) return null;
 
@@ -130,19 +138,39 @@ const PagePet = ({ type }: PagePetProps) => {
   const container = document.getElementById('pet-container');
   if (!container) return null;
 
+  const initialRandomX = Math.random() * (window.innerWidth - 100) + 50;
+  const initialRandomY = Math.random() * (window.innerHeight - 100) + 50;
+  
+  const style: React.CSSProperties = {
+    position: 'fixed',
+    width: '48px',
+    height: '48px',
+    zIndex: 9999,
+    pointerEvents: 'none',
+    '--start-x': `${startX}px`,
+    '--start-y': `${startY}px`,
+    '--end-x': `${position.x}px`,
+    '--end-y': `${position.y}px`,
+    '--final-x': `${initialRandomX}px`,
+    '--final-y': `${initialRandomY}px`,
+    top: 0,
+    left: 0,
+    transform: `translate(${position.x}px, ${position.y}px) scale(1.2) rotate(${velocity.vx * 10}deg)`,
+    transition: 'transform 0.5s ease-out',
+  };
+
+
   return ReactDOM.createPortal(
     <div
       ref={petRef}
       className={cn(
-        "fixed w-12 h-12 z-[9999] pointer-events-none animate-fade-in",
-        "transition-transform duration-500 ease-out",
-        petClasses
+        petClasses,
+        isAnimatingIn && 'animate-fly-in'
       )}
-      style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-        // Add a slight rotation based on horizontal velocity for a more dynamic feel.
-        transform: `scale(1.2) rotate(${velocity.vx * 10}deg)`,
+      style={style}
+      onAnimationEnd={() => {
+        setPosition({x: initialRandomX, y: initialRandomY})
+        setIsAnimatingIn(false);
       }}
     >
       <PetIcon className="w-full h-full" />

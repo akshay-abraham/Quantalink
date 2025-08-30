@@ -20,12 +20,10 @@ import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPop
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
-import { setPet } from '@/lib/pet-state';
+import { setPet, PetType } from '@/lib/pet-state';
 
 // Defines the possible states of the game.
 type GameState = 'idle' | 'playing' | 'revealing' | 'result' | 'failed';
-// Defines the possible outcomes for the cat.
-type CatState = 'alive' | 'ghost' | null;
 
 // Icons used for the clickable "anomalies" in the game.
 const ANOMALY_ICONS = [Atom, Dna, Biohazard, FlaskConical];
@@ -85,7 +83,7 @@ const Particle = ({ type }: { type: ParticleType }) => {
     '--ty': `${ty}px`,
   } as React.CSSProperties;
 
-  return <div style={style}><Icon className="h-5 w-5" /></div>;
+  return <div style={style}><Icon className="w-5 w-5" /></div>;
 };
 
 /** A container that generates a burst of particles of a specific type. */
@@ -120,7 +118,7 @@ const getDifficulty = (playCount: number) => {
 /** The main Quantum Conundrum game component. */
 export default function EasterEgg() {
   const [gameState, setGameState] = useState<GameState>('idle');
-  const [catState, setCatState] = useState<CatState>(null);
+  const [catState, setCatState] = useState<PetType | null>(null);
   const [stats, setStats] = useState({ alive: 0, ghost: 0, plays: 0 });
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
   const [particleEffects, setParticleEffects] = useState<ParticleEffect[]>([]);
@@ -130,6 +128,7 @@ export default function EasterEgg() {
   const [timeLeft, setTimeLeft] = useState(difficulty.time);
 
   const ref = useRef<HTMLDivElement>(null);
+  const resultIconRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const anomalySpawnerRef = useRef<NodeJS.Timeout | null>(null);
   const isVisible = useInView(ref);
@@ -151,7 +150,7 @@ export default function EasterEgg() {
   }, []);
 
   /** Updates game stats and saves them to localStorage. */
-  const updateStats = useCallback((result: CatState | null, play: boolean) => {
+  const updateStats = useCallback((result: PetType | null, play: boolean) => {
     const newStats = { ...stats };
     if (result) {
         newStats[result as 'alive' | 'ghost']++;
@@ -243,14 +242,16 @@ export default function EasterEgg() {
   const observe = () => {
     setGameState('revealing');
     setTimeout(() => {
-       // **Outcome Probability:** Make death more prominent (60% chance).
-      const result = Math.random() > 0.4 ? 'alive' : 'ghost';
+      const result: PetType = Math.random() > 0.4 ? 'alive' : 'ghost';
       setCatState(result);
       updateStats(result, false);
       setGameState('result');
       // Delay setting the pet to create the illusion of it "coming from" the card.
       setTimeout(() => {
-        setPet(result);
+        if (resultIconRef.current) {
+          const rect = resultIconRef.current.getBoundingClientRect();
+          setPet(result, rect.left + rect.width / 2, rect.top + rect.height / 2);
+        }
       }, 250);
     }, 2500); // 2.5 second reveal animation.
   };
@@ -260,7 +261,6 @@ export default function EasterEgg() {
     cleanupTimers();
     setGameState('idle');
     setCatState(null);
-    // DO NOT clear the pet here, so it can keep roaming. setPet(null) is handled by the timer or next game start.
     setAnomalies([]);
     setParticleEffects([]);
     const currentDifficulty = getDifficulty(stats.plays);
@@ -421,7 +421,9 @@ export default function EasterEgg() {
                                   <div className="relative flex-1 p-4 border border-green-500/30 bg-green-500/10 rounded-lg space-y-3 text-center w-full max-w-sm">
                                       <FunParticles type="popper" count={150} />
                                       <h3 className="font-bold text-green-500">Observation Complete!</h3>
-                                      <Cat className="h-16 w-16 mx-auto text-green-500 animate-popper" />
+                                      <div ref={resultIconRef}>
+                                        <Cat className="h-16 w-16 mx-auto text-green-500 animate-popper" />
+                                      </div>
                                       <p className="text-xl font-bold text-green-500">The cat is ALIVE!</p>
                                       <p className="text-sm text-foreground/80">The superposition collapsed into a definite state of life. A pet now follows you!</p>
                                   </div>
@@ -430,7 +432,9 @@ export default function EasterEgg() {
                                   <div className="relative flex-1 p-4 border border-sky-400/30 bg-sky-400/10 rounded-lg space-y-3 text-center w-full max-w-sm">
                                       <FunParticles type="ghost" count={80} />
                                       <h3 className="font-bold text-destructive">You Monster.</h3>
-                                      <Ghost className="h-16 w-16 mx-auto text-sky-400 animate-ghost" />
+                                      <div ref={resultIconRef}>
+                                        <Ghost className="h-16 w-16 mx-auto text-sky-400 animate-ghost" />
+                                      </div>
                                       <p className="text-xl font-bold text-sky-400">The cat has decohered.</p>
                                       <p className="text-sm text-foreground/80">A vengeful spirit now haunts this page. Are you happy now?</p>
                                   </div>
