@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Box, Cat, Ghost, PartyPopper, Timer, Zap } from 'lucide-react';
+import { Box, Cat, Ghost, PartyPopper, Timer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
@@ -251,7 +251,7 @@ export default function EasterEgg() {
                                <span className="flex items-center gap-1"><Timer className="h-4 w-4" />{timeLeft}s</span>
                            </div>
                         </div>
-                        <div className="relative w-full flex-grow bg-primary/5 border border-primary/20 rounded-lg mt-2">
+                        <div className="relative w-full flex-grow bg-primary/5 border border-primary/20 rounded-lg mt-2 min-h-[150px]">
                             {orbs.map(orb => (
                               <QuantumOrb key={orb.id} orb={orb} onCollect={collectOrb} />
                             ))}
