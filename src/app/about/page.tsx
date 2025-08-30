@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 
 // Page-specific metadata for SEO.
 export const metadata: Metadata = {
-  title: 'About Me | Akshay K Rooben Abraham',
+  title: 'About Akshay K Rooben Abraham | Story & Journey',
   description: 'Learn more about Akshay K Rooben Abraham, a Class 11 PCMB student with a passion for theoretical physics, electronics, and open-source technology.',
   // Provides the canonical URL for this page.
   alternates: {

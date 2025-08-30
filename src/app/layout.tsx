@@ -44,6 +44,12 @@ export const metadata: Metadata = {
     locale: 'en_US',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Akshay K Rooben Abraham | Personal Portfolio',
+    description: 'Aspirant Theoretical Physicist · PCMB Student · Open-Source Contributor',
+    images: ['https://akshayabraham.vercel.app/og-image.png'],
+  },
   robots: {
     index: true,
     follow: true,

@@ -85,7 +85,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
           if (rand < 0.6) { // 60% chance to stalk
               setGhostState('stalking');
               setIsVisible(true);
-              ghostStateTimeout.current = setTimeout(changeState, Math.random() * 5000 + 5000); // Stalk for 5-10s
+              ghostStateTimeout.current = setTimeout(changeState, Math.random() * 7000 + 8000); // Stalk for 8-15s
           } else if (rand < 0.85) { // 25% chance to hide
               setGhostState('hiding');
               setIsVisible(false);
@@ -103,7 +103,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
                   vy: Math.sin(angle) * swooshSpeed,
               });
 
-              ghostStateTimeout.current = setTimeout(changeState, 1500); // Swoosh is a longer dash
+              ghostStateTimeout.current = setTimeout(changeState, 3000); // Swoosh is a longer dash
           }
       };
       changeState();
