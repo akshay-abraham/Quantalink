@@ -13,6 +13,16 @@ import { skillsData, SkillCategory } from '@/lib/skills-data';
 import { Card, CardHeader } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { InfiniteScroller } from '@/components/infinite-scroller';
+import type { Metadata } from 'next';
+
+// Page-specific metadata (Client Components export metadata this way)
+export const metadata: Metadata = {
+  title: 'Skills & Technologies | Akshay K Rooben Abraham',
+  description: 'A detailed look at the languages, frameworks, tools, and platforms I work with, including Python, React, Next.js, and various developer tools.',
+  alternates: {
+    canonical: '/skills',
+  },
+};
 
 /**
  * A small component to render a styled icon for a skill category.
