@@ -173,30 +173,30 @@ export default function EasterEgg() {
   };
   
   useEffect(() => {
+    // This effect ensures dynamic keyframes are available for the particle animations.
+    // It's a robust way to handle CSS animations that depend on random values.
     const keyframes = `
       @keyframes fly-out {
         0% { transform: translate(0, 0) scale(0); opacity: 1; }
         100% { transform: translate(${(Math.random() - 0.5) * 400}px, ${(Math.random() - 0.5) * 400}px) scale(1); opacity: 0; }
       }
-       @keyframes orb-pop-in {
-        0% { transform: scale(0); opacity: 0; }
-        50% { transform: scale(1.1); opacity: 1; }
-        100% { transform: scale(1); opacity: 1; }
-      }
     `;
     if (typeof window !== 'undefined') {
       const styleSheet = document.styleSheets[0];
-      if (styleSheet) {
+       if (styleSheet) {
           try {
+              // Check if the rule already exists to avoid duplicates
               if (!Array.from(styleSheet.cssRules).some(rule => (rule as CSSKeyframesRule).name === 'fly-out')) {
                  styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
               }
           } catch (e) {
-              console.warn("Could not insert keyframe rule.", e)
+              // Catch potential security errors in some browsers when accessing stylesheets
+              console.warn("Could not insert keyframe rule for particle animation.", e)
           }
       }
     }
     
+    // Cleanup timers on component unmount
     return cleanupTimers;
   }, []);
 
@@ -213,6 +213,7 @@ export default function EasterEgg() {
         className={cn(
           "space-y-4 text-center transition-opacity duration-1000 ease-out", 
           isVisible ? "opacity-100" : "opacity-0",
+           // When the game is active, it becomes a fixed overlay to expand and center itself.
            isGameActive && "fixed inset-0 w-full h-full flex items-center justify-center z-50 p-4"
         )}
         style={{ transitionDelay: isVisible ? '150ms' : '0ms' }}
@@ -329,5 +330,3 @@ export default function EasterEgg() {
     </>
   )
 }
-
-    
