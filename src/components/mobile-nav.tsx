@@ -71,7 +71,7 @@ export default function MobileNav() {
 
   // **Definitive Overflow Fix:** Calculate the exact width required for the expanded menu.
   const navWidth = isOpen 
-    ? (navLinks.length * ICON_CONTAINER_WIDTH) + ((navLinks.length - 1) * GAP_WIDTH) + HORIZONTAL_PADDING + TOGGLE_BUTTON_WIDTH
+    ? (navLinks.length * ICON_CONTAINER_WIDTH) + ((navLinks.length) * GAP_WIDTH) + HORIZONTAL_PADDING + TOGGLE_BUTTON_WIDTH
     : TOGGLE_BUTTON_WIDTH;
 
   return (
@@ -85,7 +85,7 @@ export default function MobileNav() {
       >
         {/* Nav Links Container */}
         <div className={cn(
-          "flex items-center gap-1 px-1 mr-[48px] h-full transition-opacity duration-300",
+          "flex items-center gap-1 px-1 mr-12 h-full transition-opacity duration-300",
           isOpen ? 'opacity-100' : 'opacity-0'
         )}>
           {navLinks.map((link, index) => {
@@ -98,7 +98,7 @@ export default function MobileNav() {
                   'flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-lg text-xs font-medium transition-all duration-300 ease-in-out',
                   isActive ? 'text-primary' : 'text-foreground/70 hover:text-primary',
                   // Scale in/out animation for each icon.
-                  isOpen ? 'scale-100' : 'scale-0'
+                  isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
                 )}
                 style={{
                   // Stagger the animation for a "fanning out" effect.

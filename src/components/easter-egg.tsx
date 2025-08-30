@@ -21,7 +21,7 @@ import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPop
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
-import { setPet, PetState } from '@/lib/pet-state';
+import { setPet } from '@/lib/pet-state';
 
 // Defines the possible states of the game.
 type GameState = 'idle' | 'playing' | 'revealing' | 'result' | 'failed';
@@ -152,12 +152,14 @@ export default function EasterEgg() {
   }, []);
 
   /** Updates game stats and saves them to localStorage. */
-  const updateStats = useCallback((result: CatState, play: boolean) => {
-    const newStats = { 
-        ...stats, 
-        [result as 'alive' | 'ghost']: result ? stats[result as 'alive' | 'ghost'] + 1 : stats[result as 'alive' | 'ghost'],
-        plays: play ? stats.plays + 1 : stats.plays
-    };
+  const updateStats = useCallback((result: CatState | null, play: boolean) => {
+    const newStats = { ...stats };
+    if (result) {
+        newStats[result as 'alive' | 'ghost']++;
+    }
+    if (play) {
+        newStats.plays++;
+    }
     setStats(newStats);
     setDifficulty(getDifficulty(newStats.plays));
     try {
@@ -243,7 +245,7 @@ export default function EasterEgg() {
     setGameState('revealing');
     setTimeout(() => {
        // **Outcome Probability:** Make death more prominent (60% chance).
-      const result = Math.random() > 0.6 ? 'alive' : 'ghost';
+      const result = Math.random() > 0.4 ? 'alive' : 'ghost';
       setCatState(result);
       setPet(result); // Set the global pet state so it roams the page.
       updateStats(result, false);
@@ -251,12 +253,12 @@ export default function EasterEgg() {
     }, 2500); // 2.5 second reveal animation.
   };
 
-  /** Resets the game to its initial state. */
+  /** Resets the game to its initial state, but keeps the pet active. */
   const reset = () => {
     cleanupTimers();
     setGameState('idle');
     setCatState(null);
-    setPet(null);
+    // DO NOT clear the pet here, so it can keep roaming. setPet(null) is handled by the timer or next game start.
     setAnomalies([]);
     setParticleEffects([]);
     const currentDifficulty = getDifficulty(stats.plays);
@@ -301,7 +303,7 @@ export default function EasterEgg() {
               "relative border-border/40 shadow-lg transition-all duration-700 ease-out text-center overflow-hidden w-full",
               isVisible && !isGameActive ? "opacity-100 translate-y-0 bg-card/30" : !isGameActive ? "opacity-0 translate-y-5" : "",
               // Use a solid background when the game is active for better visibility.
-              isGameActive ? "max-w-3xl h-auto md:h-[600px] flex flex-col bg-background" : "max-w-full"
+              isGameActive ? "max-w-3xl h-auto md:h-[550px] flex flex-col bg-background" : "max-w-full"
           )}
           style={{ transitionDelay: isVisible ? `200ms` : '0ms' }}
           >
@@ -440,11 +442,10 @@ export default function EasterEgg() {
                   )}
               </CardContent>
               <CardFooter className="flex justify-center text-xs text-muted-foreground pb-4 relative">
-                  {/* Subtle reset button in the footer. */}
-                  <button onClick={factoryReset} className="absolute left-2 bottom-2 text-muted-foreground/30 hover:text-muted-foreground/80 transition-colors text-[10px] p-2">
-                    Reset Stats
+                  {/* More prominent reset button */}
+                  <button onClick={factoryReset} className="text-muted-foreground/60 hover:text-muted-foreground/90 transition-colors text-xs p-2">
+                    Factory Reset Stats
                   </button>
-                  <p>Experiment Results and play count are saved locally in your browser.</p>
               </CardFooter>
           </Card>
       </section>
