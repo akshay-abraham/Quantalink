@@ -246,9 +246,12 @@ export default function EasterEgg() {
        // **Outcome Probability:** Make death more prominent (60% chance).
       const result = Math.random() > 0.4 ? 'alive' : 'ghost';
       setCatState(result);
-      setPet(result); // Set the global pet state so it roams the page.
       updateStats(result, false);
       setGameState('result');
+      // Delay setting the pet to create the illusion of it "coming from" the card.
+      setTimeout(() => {
+        setPet(result);
+      }, 250);
     }, 2500); // 2.5 second reveal animation.
   };
 
