@@ -18,9 +18,9 @@ const navLinks = [
   { href: '/projects', label: 'Projects', icon: Star },
 ];
 
-const ICON_SIZE = 56; // 14rem
-const PADDING = 10;
-const BUTTON_WIDTH = 48; // h-12 w-12
+const ICON_SIZE = 56; // w-14, which is 3.5rem or 56px
+const PADDING = 10; // Combined horizontal padding/spacing
+const BUTTON_WIDTH = 48; // h-12 w-12, which is 3rem or 48px
 
 /**
  * MobileNav provides an animated, space-saving navigation for small screens.
@@ -68,6 +68,7 @@ export default function MobileNav() {
     setIsOpen(false);
   };
   
+  // Precise width calculation to prevent overflow
   const navWidth = isOpen ? (navLinks.length * ICON_SIZE) + PADDING + BUTTON_WIDTH : BUTTON_WIDTH;
 
   return (
@@ -82,6 +83,7 @@ export default function MobileNav() {
         <div className="absolute right-0 top-0 h-12 flex items-center justify-end">
           {navLinks.map((link, index) => {
             const isActive = pathname === link.href;
+            // Precise position calculation for each icon
             const rightPosition = BUTTON_WIDTH + (index * ICON_SIZE) + PADDING;
 
             return (
@@ -132,3 +134,4 @@ export default function MobileNav() {
     </div>
   );
 }
+

@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPopper, Skull, Star, Move } from 'lucide-react';
+import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPopper, Skull, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
@@ -287,7 +287,16 @@ export default function EasterEgg() {
                           <div 
                             className="relative w-full flex-grow bg-primary/5 border border-primary/20 rounded-lg mt-2 min-h-[250px] md:min-h-[400px] touch-none"
                           >
-                              {anomalies.map(item => (
+                            {gameState === 'failed' && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <div className="grid grid-cols-3 gap-8">
+                                    <Skull className="h-16 w-16 text-destructive/50" />
+                                    <Skull className="h-16 w-16 text-destructive/50 animate-pulse" style={{animationDelay: '200ms'}} />
+                                    <Skull className="h-16 w-16 text-destructive/50" />
+                                  </div>
+                                </div>
+                              )}
+                              {gameState === 'playing' && anomalies.map(item => (
                                 <QuantumAnomaly key={item.id} anomaly={item} onClick={handleAnomalyClick} />
                               ))}
                               {particleEffects.map(effect => (
@@ -297,7 +306,7 @@ export default function EasterEgg() {
                                ))}
                           </div>
                            <p className="text-xs text-foreground/80 pt-2 flex items-center justify-center gap-2">
-                            {gameState === 'failed' ? 'The quantum state destabilized. Reset to try again.' : 'Quickly! Tap the anomalies to charge the meter!'}
+                            {gameState === 'failed' ? 'The quantum state destabilized. The timeline has been purged.' : 'Quickly! Tap the anomalies to charge the meter!'}
                           </p>
                           <div className="w-full pt-2">
                               {gameState === 'failed' && (
@@ -330,10 +339,10 @@ export default function EasterEgg() {
                               {catState === 'ghost' && (
                                   <div className="relative flex-1 p-4 border border-sky-400/30 bg-sky-400/10 rounded-lg space-y-3 text-center w-full max-w-sm">
                                       <FunParticles type="ghost" count={80} />
-                                      <h3 className="font-bold text-sky-400">Observation Complete!</h3>
+                                      <h3 className="font-bold text-destructive">You Monster.</h3>
                                       <Ghost className="h-16 w-16 mx-auto text-sky-400 animate-ghost" />
                                       <p className="text-xl font-bold text-sky-400">The cat has decohered.</p>
-                                      <p className="text-sm text-foreground/80">In this timeline, the cat has quantum-tunnelled into the great beyond. Spooky!</p>
+                                      <p className="text-sm text-foreground/80">In this timeline, the cat has quantum-tunnelled into the great beyond. Are you happy now?</p>
                                   </div>
                               )}
                           </div>
@@ -352,3 +361,4 @@ export default function EasterEgg() {
     </>
   )
 }
+
