@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Box, Cat, Ghost, PartyPopper, Timer } from 'lucide-react';
+import { Box, Cat, Ghost, PartyPopper, Timer, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
@@ -67,7 +67,6 @@ const QuantumOrb = ({ orb, onCollect }: { orb: Orb; onCollect: (id: number) => v
   </button>
 );
 
-
 export default function EasterEgg() {
   const [gameState, setGameState] = useState<GameState>('idle');
   const [catState, setCatState] = useState<CatState>(null);
@@ -80,6 +79,8 @@ export default function EasterEgg() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const orbSpawnerRef = useRef<NodeJS.Timeout | null>(null);
   const isVisible = useInView(ref);
+
+  const isGameActive = gameState === 'playing' || gameState === 'failed' || gameState === 'revealing' || gameState === 'result';
 
   useEffect(() => {
     try {
@@ -196,117 +197,137 @@ export default function EasterEgg() {
       }
     }
     
-    // Cleanup on unmount
     return cleanupTimers;
   }, []);
 
   return (
-    <section 
-      ref={ref}
-      className={cn("space-y-4 text-center transition-opacity duration-1000 ease-out", isVisible ? "opacity-100" : "opacity-0")}
-      style={{ transitionDelay: isVisible ? '150ms' : '0ms' }}
-    >
-        <Card className={cn(
-            "relative bg-card/30 border-border/40 shadow-lg transition-all duration-700 ease-out text-center overflow-hidden",
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+    <>
+      {isGameActive && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 animate-fade-in"
+          onClick={reset}
+        ></div>
+      )}
+      <section 
+        ref={ref}
+        className={cn(
+          "space-y-4 text-center transition-opacity duration-1000 ease-out", 
+          isVisible ? "opacity-100" : "opacity-0",
+           isGameActive && "fixed inset-0 w-full h-full flex items-center justify-center z-50 p-4"
         )}
-        style={{ transitionDelay: isVisible ? `200ms` : '0ms' }}
-        >
-            <CardHeader>
-                <CardTitle className="flex items-center justify-center gap-2 text-primary">
-                    <Box className="h-8 w-8" />
-                    A Quantum Conundrum
-                </CardTitle>
-                <CardDescription className="max-w-prose mx-auto italic">
-                  An interactive thought experiment. Your observation collapses the wave function.
-                </CardDescription>
-            </CardHeader>
-            <CardContent className="min-h-[300px] flex flex-col items-center justify-center space-y-6 p-6">
-                
-                {gameState === 'idle' && (
-                    <div className="space-y-6 animate-fade-in w-full max-w-sm px-4">
-                        <blockquote className='space-y-2'>
-                          <p className="font-medium text-foreground/90">"My fate is in superposition. Stabilize the quantum field to observe the outcome."</p>
-                          <cite className="text-sm text-foreground/70 not-italic">- The Cat (probably)</cite>
-                        </blockquote>
-                         <div className="text-sm text-foreground/80">
-                           <p>Cats Observed Alive: <span className="font-bold text-green-500">{stats.alive}</span></p>
-                           <p>Cats Decohered: <span className="font-bold text-sky-400">{stats.ghost}</span></p>
-                         </div>
-                        <div className="w-full pt-4">
-                          <Button onClick={startExperiment} size="lg" className="w-full sm:w-auto">
-                            Begin Experiment
-                          </Button>
-                        </div>
-                    </div>
-                )}
-                
-                {(gameState === 'playing' || gameState === 'failed') && (
-                    <div className="space-y-4 animate-fade-in w-full max-w-sm h-full flex flex-col">
-                        <h3 className="font-bold text-lg text-primary">{gameState === 'failed' ? 'Experiment Failed!' : 'Collecting Quantum Orbs...'}</h3>
-                        <div className="space-y-2">
-                           <Progress value={progress} className="w-full" />
-                           <div className="flex justify-between items-center text-sm text-foreground/70">
-                               <span>Observation Meter</span>
-                               <span className="flex items-center gap-1"><Timer className="h-4 w-4" />{timeLeft}s</span>
+        style={{ transitionDelay: isVisible ? '150ms' : '0ms' }}
+      >
+          <Card className={cn(
+              "relative bg-card/30 border-border/40 shadow-lg transition-all duration-700 ease-out text-center overflow-hidden w-full",
+              isVisible && !isGameActive ? "opacity-100 translate-y-0" : !isGameActive ? "opacity-0 translate-y-5" : "",
+              isGameActive ? "max-w-2xl h-auto md:h-[600px] flex flex-col" : "max-w-full"
+          )}
+          style={{ transitionDelay: isVisible ? `200ms` : '0ms' }}
+          >
+              {isGameActive && (
+                <Button variant="ghost" size="icon" className="absolute top-2 right-2 z-20" onClick={reset}>
+                  <X className="h-5 w-5" />
+                  <span className="sr-only">Close Game</span>
+                </Button>
+              )}
+              <CardHeader>
+                  <CardTitle className="flex items-center justify-center gap-2 text-primary">
+                      <Box className="h-8 w-8" />
+                      A Quantum Conundrum
+                  </CardTitle>
+                  <CardDescription className="max-w-prose mx-auto italic">
+                    An interactive thought experiment. Your observation collapses the wave function.
+                  </CardDescription>
+              </CardHeader>
+              <CardContent className={cn("min-h-[300px] flex flex-col items-center justify-center space-y-6 p-6", isGameActive && "flex-grow")}>
+                  
+                  {gameState === 'idle' && (
+                      <div className="space-y-6 animate-fade-in w-full max-w-sm px-4">
+                          <blockquote className='space-y-2'>
+                            <p className="font-medium text-foreground/90">"My fate is in superposition. Stabilize the quantum field to observe the outcome."</p>
+                            <cite className="text-sm text-foreground/70 not-italic">- The Cat (probably)</cite>
+                          </blockquote>
+                           <div className="text-sm text-foreground/80">
+                             <p>Cats Observed Alive: <span className="font-bold text-green-500">{stats.alive}</span></p>
+                             <p>Cats Decohered: <span className="font-bold text-sky-400">{stats.ghost}</span></p>
                            </div>
-                        </div>
-                        <div className="relative w-full flex-grow bg-primary/5 border border-primary/20 rounded-lg mt-2 min-h-[150px]">
-                            {orbs.map(orb => (
-                              <QuantumOrb key={orb.id} orb={orb} onCollect={collectOrb} />
-                            ))}
-                        </div>
-                         <p className="text-xs text-foreground/80 pt-2">
-                          {gameState === 'failed' ? 'The quantum state destabilized. Reset to try again.' : 'Click the spawning quantum orbs to charge the meter!'}
-                        </p>
-                        <div className="w-full pt-2">
-                            {gameState === 'failed' && (
-                                <Button onClick={reset} variant="outline">Reset Experiment</Button>
-                            )}
-                        </div>
-                    </div>
-                )}
+                          <div className="w-full pt-4">
+                            <Button onClick={startExperiment} size="lg" className="w-full sm:w-auto">
+                              Begin Experiment
+                            </Button>
+                          </div>
+                      </div>
+                  )}
+                  
+                  {(gameState === 'playing' || gameState === 'failed') && (
+                      <div className="space-y-4 animate-fade-in w-full h-full flex flex-col">
+                          <h3 className="font-bold text-lg text-primary">{gameState === 'failed' ? 'Experiment Failed!' : 'Collecting Quantum Orbs...'}</h3>
+                          <div className="space-y-2">
+                             <Progress value={progress} className="w-full" />
+                             <div className="flex justify-between items-center text-sm text-foreground/70">
+                                 <span>Observation Meter</span>
+                                 <span className="flex items-center gap-1"><Timer className="h-4 w-4" />{timeLeft}s</span>
+                             </div>
+                          </div>
+                          <div className="relative w-full flex-grow bg-primary/5 border border-primary/20 rounded-lg mt-2 min-h-[150px]">
+                              {orbs.map(orb => (
+                                <QuantumOrb key={orb.id} orb={orb} onCollect={collectOrb} />
+                              ))}
+                          </div>
+                           <p className="text-xs text-foreground/80 pt-2">
+                            {gameState === 'failed' ? 'The quantum state destabilized. Reset to try again.' : 'Click the spawning quantum orbs to charge the meter!'}
+                          </p>
+                          <div className="w-full pt-2">
+                              {gameState === 'failed' && (
+                                  <Button onClick={reset} variant="outline">Reset Experiment</Button>
+                              )}
+                          </div>
+                      </div>
+                  )}
 
-                {gameState === 'revealing' && (
-                    <div className="space-y-4 animate-fade-in text-center">
-                        <h3 className="text-xl font-bold text-primary">Wave Function Collapsing...</h3>
-                        <p className="text-foreground/80">Determining final state...</p>
-                    </div>
-                )}
+                  {gameState === 'revealing' && (
+                      <div className="space-y-4 animate-fade-in text-center">
+                          <h3 className="text-xl font-bold text-primary">Wave Function Collapsing...</h3>
+                          <p className="text-foreground/80">Determining final state...</p>
+                      </div>
+                  )}
 
-                {gameState === 'result' && (
-                     <div className="w-full animate-fade-in space-y-6">
-                        <div className="relative flex flex-col items-center justify-center gap-4">
-                            {catState === 'alive' && (
-                                <div className="relative flex-1 p-4 border border-green-500/30 bg-green-500/10 rounded-lg space-y-3 text-center w-full max-w-sm">
-                                    <FunParticles type="popper" count={50} />
-                                    <h3 className="font-bold text-green-500">Observation Complete!</h3>
-                                    <Cat className="h-16 w-16 mx-auto text-green-500 animate-popper" />
-                                    <p className="text-xl font-bold text-green-500">The cat is ALIVE!</p>
-                                    <p className="text-sm text-foreground/80">The superposition collapsed into a definite state of life. Congratulations!</p>
-                                </div>
-                            )}
-                            {catState === 'ghost' && (
-                                <div className="relative flex-1 p-4 border border-sky-400/30 bg-sky-400/10 rounded-lg space-y-3 text-center w-full max-w-sm">
-                                    <FunParticles type="ghost" count={30} />
-                                    <h3 className="font-bold text-sky-400">Observation Complete!</h3>
-                                    <Ghost className="h-16 w-16 mx-auto text-sky-400 animate-ghost" />
-                                    <p className="text-xl font-bold text-sky-400">The cat has decohered.</p>
-                                    <p className="text-sm text-foreground/80">In this timeline, the cat has quantum-tunnelled into the great beyond. Spooky!</p>
-                                </div>
-                            )}
-                        </div>
-                        <p className='text-xs text-foreground/60 max-w-prose mx-auto pt-4'>
-                          By participating, you didn't just see a result—you created it. This is the essence of the observer effect in quantum mechanics.
-                        </p>
-                        <Button onClick={reset} variant="outline">Run New Experiment</Button>
-                    </div>
-                )}
-            </CardContent>
-            <CardFooter className="flex justify-center text-xs text-muted-foreground pb-4">
-                <p>Experiment Results are saved locally in your browser.</p>
-            </CardFooter>
-        </Card>
-    </section>
+                  {gameState === 'result' && (
+                       <div className="w-full animate-fade-in space-y-6">
+                          <div className="relative flex flex-col items-center justify-center gap-4">
+                              {catState === 'alive' && (
+                                  <div className="relative flex-1 p-4 border border-green-500/30 bg-green-500/10 rounded-lg space-y-3 text-center w-full max-w-sm">
+                                      <FunParticles type="popper" count={50} />
+                                      <h3 className="font-bold text-green-500">Observation Complete!</h3>
+                                      <Cat className="h-16 w-16 mx-auto text-green-500 animate-popper" />
+                                      <p className="text-xl font-bold text-green-500">The cat is ALIVE!</p>
+                                      <p className="text-sm text-foreground/80">The superposition collapsed into a definite state of life. Congratulations!</p>
+                                  </div>
+                              )}
+                              {catState === 'ghost' && (
+                                  <div className="relative flex-1 p-4 border border-sky-400/30 bg-sky-400/10 rounded-lg space-y-3 text-center w-full max-w-sm">
+                                      <FunParticles type="ghost" count={30} />
+                                      <h3 className="font-bold text-sky-400">Observation Complete!</h3>
+                                      <Ghost className="h-16 w-16 mx-auto text-sky-400 animate-ghost" />
+                                      <p className="text-xl font-bold text-sky-400">The cat has decohered.</p>
+                                      <p className="text-sm text-foreground/80">In this timeline, the cat has quantum-tunnelled into the great beyond. Spooky!</p>
+                                  </div>
+                              )}
+                          </div>
+                          <p className='text-xs text-foreground/60 max-w-prose mx-auto pt-4'>
+                            By participating, you didn't just see a result—you created it. This is the essence of the observer effect in quantum mechanics.
+                          </p>
+                          <Button onClick={reset} variant="outline">Run New Experiment</Button>
+                      </div>
+                  )}
+              </CardContent>
+              <CardFooter className="flex justify-center text-xs text-muted-foreground pb-4">
+                  <p>Experiment Results are saved locally in your browser.</p>
+              </CardFooter>
+          </Card>
+      </section>
+    </>
   )
 }
+
+    
