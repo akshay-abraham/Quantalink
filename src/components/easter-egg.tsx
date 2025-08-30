@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Box, Cat, Ghost, PartyPopper, Timer, X, Atom, Dna, Biohazard, FlaskConical } from 'lucide-react';
+import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPopper } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
@@ -314,7 +314,7 @@ export default function EasterEgg() {
                                   <div className="relative flex-1 p-4 border border-green-500/30 bg-green-500/10 rounded-lg space-y-3 text-center w-full max-w-sm">
                                       <FunParticles type="popper" count={150} />
                                       <h3 className="font-bold text-green-500">Observation Complete!</h3>
-                                      <PartyPopper className="h-16 w-16 mx-auto text-green-500 animate-popper" />
+                                      <Cat className="h-16 w-16 mx-auto text-green-500 animate-popper" />
                                       <p className="text-xl font-bold text-green-500">The cat is ALIVE!</p>
                                       <p className="text-sm text-foreground/80">The superposition collapsed into a definite state of life. Congratulations!</p>
                                   </div>

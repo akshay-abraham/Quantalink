@@ -25,6 +25,7 @@ const navLinks = [
 export default function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const navRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Auto-collapse the menu after a delay of inactivity
@@ -38,7 +39,6 @@ export default function MobileNav() {
         clearTimeout(timerRef.current);
       }
     }
-    // Cleanup timer on component unmount
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
@@ -46,21 +46,30 @@ export default function MobileNav() {
     };
   }, [isOpen]);
 
+  // Close menu if user clicks outside of it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+
   const handleLinkClick = () => {
     setIsOpen(false);
   };
 
   return (
-    <div
-      className={cn(
-        'relative flex items-center justify-end transition-all duration-500 ease-in-out',
-        'bg-card/50 border border-border/60 rounded-full backdrop-blur-md',
-         isOpen ? 'w-full max-w-xs p-2' : 'w-12 h-12'
-      )}
-    >
+    <div ref={navRef} className="relative">
+      {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center z-10"
+        className="h-12 w-12 flex items-center justify-center rounded-full bg-card/50 border border-border/60 backdrop-blur-md z-20 relative"
         aria-label="Toggle Navigation"
       >
         <div className="relative h-6 w-6">
@@ -79,29 +88,38 @@ export default function MobileNav() {
         </div>
       </button>
 
+      {/* Nav Links Container */}
       <nav
         className={cn(
-          'flex items-center justify-around w-full transition-opacity duration-300',
-          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          'absolute right-0 top-0 h-12 flex items-center justify-end transition-[width] duration-500 ease-in-out',
+           isOpen ? 'w-[280px]' : 'w-12'
         )}
       >
-        {navLinks.map((link) => {
-          const isActive = pathname === link.href;
-          return (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={handleLinkClick}
-              className={cn(
-                'flex flex-col items-center justify-center gap-1 p-2 rounded-lg text-xs font-medium transition-colors w-14',
-                isActive ? 'text-primary' : 'text-foreground/70 hover:text-primary'
-              )}
-            >
-              <link.icon className="h-5 w-5" />
-              <span className="truncate">{link.label}</span>
-            </Link>
-          );
-        })}
+        {/* Links appear inside a rounded container that expands */}
+         <div className={cn('absolute right-0 top-0 h-12 flex items-center justify-end rounded-full bg-card/50 border border-border/60 backdrop-blur-md transition-all duration-500 ease-in-out', isOpen ? 'w-full' : 'w-12')}>
+           {navLinks.map((link, index) => {
+             const isActive = pathname === link.href;
+             return (
+               <Link
+                 key={link.href}
+                 href={link.href}
+                 onClick={handleLinkClick}
+                 className={cn(
+                   'absolute flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-lg text-xs font-medium transition-all duration-300 ease-in-out',
+                   isActive ? 'text-primary' : 'text-foreground/70 hover:text-primary',
+                    isOpen ? `opacity-100` : 'opacity-0 pointer-events-none',
+                 )}
+                 style={{
+                    right: isOpen ? `${(index * 60) + 55}px` : '0px',
+                    transitionDelay: isOpen ? `${index * 50}ms` : '0ms'
+                 }}
+               >
+                 <link.icon className="h-5 w-5" />
+                 <span className="truncate">{link.label}</span>
+               </Link>
+             );
+           })}
+         </div>
       </nav>
     </div>
   );
