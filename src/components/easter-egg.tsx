@@ -283,7 +283,7 @@ export default function EasterEgg() {
     <>
       {isGameActive && (
         <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 animate-fade-in"
+          className="fixed inset-0 z-40"
           onClick={reset}
         ></div>
       )}
