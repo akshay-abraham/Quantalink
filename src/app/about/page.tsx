@@ -7,6 +7,16 @@ import PageFooter from "@/components/page-footer";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import type { Metadata } from 'next';
+
+// Page-specific metadata
+export const metadata: Metadata = {
+  title: 'About Me | Akshay K Rooben Abraham',
+  description: 'Learn more about Akshay K Rooben Abraham, a Class 11 PCMB student with a passion for theoretical physics, electronics, and open-source technology.',
+  alternates: {
+    canonical: '/about',
+  },
+};
 
 /**
  * AboutPage component renders a detailed biography.
