@@ -1,5 +1,33 @@
 # Quantalink Portfolio - Development Log
 
+## Version 2.4: Animation & SEO Polish (`2a5d934`)
+
+This version focused on refining the user experience through smoother animations, improved game feel, and a final, comprehensive SEO overhaul to maximize the portfolio's visibility and social media presence.
+
+---
+
+### 🔹 Animation & Interaction Refinements
+
+*   **Smoother Ghost Movement:** The ghost's AI and physics were significantly refined to make its movement feel less chaotic and more deliberate.
+    *   **Longer, Graceful Dashes:** The "swoosh" animation was smoothed out by reducing friction, allowing the ghost to perform long, unsettling glides across the screen.
+    *   **Less Frequent Direction Changes:** The time the ghost spends in its "stalking" state was increased, making its behavior feel more patient and menacing.
+
+*   **Persistent Cat Interaction:** The cat's interaction model was finalized.
+    *   **No Dismiss on Click:** The cat is no longer dismissed when clicked, making it a persistent companion until the game is played again.
+    *   **"Meow" on Hover & Click:** The "Meow!" speech bubble now appears on both hover and click, making the cat more consistently responsive and interactive.
+
+*   **Improved Game Feel:**
+    *   **Larger Reset Button:** The "Reset" button in the game's failure state was enlarged for better usability and a clearer call to action.
+
+---
+
+### 🔹 SEO Enhancements
+
+*   **Twitter Card Metadata:** Added comprehensive Open Graph and Twitter-specific meta tags (`twitter:card`, `twitter:title`, etc.) to the root layout. This ensures that links shared on social media generate rich, properly formatted preview cards.
+*   **Optimized Page Titles:** The titles for the `/about`, `/projects`, and `/skills` pages were made more descriptive and keyword-rich to improve their visibility and ranking in search engine results.
+
+---
+
 ## Version 2.3: The Quantum Pet Update (`b013a94`)
 
 Version 2.3 marks a significant evolution of the portfolio's interactive elements, transforming the "Quantum Conundrum" from a simple thought experiment into a fully-fledged mini-game and introducing a persistent, interactive "page pet" whose existence is determined by the game's outcome.
@@ -54,19 +82,10 @@ The most significant addition in v2.3 is the introduction of a roaming "page pet
 
 ---
 
-### 🔹 UI & Animation Refinements
+## Version 2.2: Pre-Gamification (`ebc70a1`)
 
-General UI and animation smoothing was performed across the application to enhance the overall user experience.
+This version represents the baseline before the major interactive overhaul.
 
-*   **Smoother Easing Curves:** The primary `fade-in-up` animation was updated to use a more graceful `cubic-bezier` timing function, making element entrances feel less abrupt and more professional.
-*   **Refined Animation Durations:** Transition durations were tweaked across several components to create a more cohesive and deliberate feel.
-*   **Larger Reset Button:** The "Reset" button in the game was enlarged for better usability on all devices.
-
----
-
-### 🔹 SEO Enhancements
-
-*   **Twitter Card Metadata:** Added comprehensive Open Graph and Twitter-specific meta tags (`twitter:card`, `twitter:title`, etc.) to the root layout. This ensures that links shared on social media generate rich, properly formatted preview cards.
-*   **Optimized Page Titles:** The titles for the `/about`, `/projects`, and `/skills` pages were made more descriptive and keyword-rich to improve their visibility and ranking in search engine results.
-
----
+*   **Simple Easter Egg:** The "Quantum Conundrum" was a basic feature. A single button press would immediately show either an "Alive" or "Decohered" cat outcome with a simple particle effect. There was no gameplay, timer, or difficulty.
+*   **Static Pet:** The resulting pet was not interactive. It would appear on the screen and simply animate in place (`popper` or `ghost` animation) without roaming or responding to user input. The pet would also disappear after a fixed time.
+*   **Basic SEO:** The site had foundational metadata but lacked the more advanced Open Graph and Twitter-specific tags needed for rich social media sharing.
