@@ -25,8 +25,6 @@ let state: PetState = {
 
 // A Set of all listener functions that need to be called on state change.
 const listeners: Set<(state: PetState) => void> = new Set();
-// A reference to the timeout that will clear the pet.
-let petTimeout: NodeJS.Timeout | null = null;
 
 /**
  * Notifies all subscribed components that the state has changed by calling their listener functions.
@@ -38,28 +36,14 @@ const notify = () => {
 };
 
 /**
- * Sets the current pet state and notifies all listeners.
- * Also manages the timeout to clear the pet after a duration.
+ * Sets the current pet state and notifies all listeners. The pet will now
+ * remain on screen until explicitly cleared by starting a new game.
  * @param {PetType | null} type - The new state for the pet ('alive', 'ghost', or null).
  * @param {number | null} startX - The starting X coordinate for the animation.
  * @param {number | null} startY - The starting Y coordinate for the animation.
  */
 export const setPet = (type: PetType | null, startX: number | null = null, startY: number | null = null) => {
   state = { ...state, type, startX, startY };
-
-  // If there's an old timeout running, clear it.
-  if (petTimeout) {
-    clearTimeout(petTimeout);
-    petTimeout = null;
-  }
-
-  // If a new pet is set (i.e., not null), start a new timer to clear it.
-  if (type) {
-    petTimeout = setTimeout(() => {
-      setPet(null); // This will recursively call setPet to clear the state.
-    }, 120000); // 2 minutes in milliseconds.
-  }
-
   notify();
 };
 

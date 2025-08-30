@@ -51,13 +51,15 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   useEffect(() => {
     setIsMounted(true);
     
+    // The main animation-in logic.
     const animTimeout = setTimeout(() => {
       if (petRef.current) {
+        // Set the initial physics-based position after the CSS animation.
         const rect = petRef.current.getBoundingClientRect();
         setPosition({ x: rect.left, y: rect.top });
       }
-      setIsAnimatingIn(false);
-    }, 1000);
+      setIsAnimatingIn(false); // End the CSS animation phase.
+    }, 1000); // This duration must match the CSS fly-in animation.
 
     return () => {
       clearTimeout(animTimeout);
@@ -143,8 +145,8 @@ const PagePet = ({ type, startX, startY }: PetState) => {
       vx *= 0.98;
       vy *= 0.98;
 
-      // Clamp velocity based on pet type and state
-      const maxSpeed = type === 'ghost' && ghostState === 'swooshing' ? 8 : 1.5;
+      // Clamp velocity based on pet type and state. The ghost's "swoosh" is much faster.
+      const maxSpeed = type === 'ghost' && ghostState === 'swooshing' ? 15 : 1.5;
       vx = Math.max(-maxSpeed, Math.min(maxSpeed, vx));
       vy = Math.max(-maxSpeed, Math.min(maxSpeed, vy));
       
@@ -187,6 +189,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   const container = document.getElementById('pet-container');
   if (!container) return null;
 
+  // Generate a random destination for the fly-in animation.
   const initialRandomX = Math.random() * (window.innerWidth - 100) + 50;
   const initialRandomY = Math.random() * (window.innerHeight - 100) + 50;
   
@@ -197,6 +200,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         height: '48px',
         zIndex: 9999,
         pointerEvents: 'none',
+        // Set start and end points for the CSS animation.
         '--start-x': `${startX}px`,
         '--start-y': `${startY}px`,
         '--final-x': `${initialRandomX}px`,
@@ -212,8 +216,9 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         pointerEvents: 'auto', // Allow hover events on the pet
         top: 0,
         left: 0,
+        // The pet's position is now controlled by physics after the initial animation.
         transform: `translate(${position.x}px, ${position.y}px) scale(1.2) rotate(${velocity.vx * 10}deg)`,
-        transition: 'transform 0.5s ease-out, opacity 0.5s ease-in-out',
+        transition: 'opacity 0.5s ease-in-out', // Use transition only for visibility changes.
         opacity: isVisible ? (type === 'ghost' ? 0.8 : 1) : 0,
       };
 
@@ -222,6 +227,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
       ref={petRef}
       className={cn(
         petClasses,
+        // Only apply the fly-in animation during the animation phase.
         isAnimatingIn && 'animate-fly-in'
       )}
       style={style}
@@ -238,5 +244,3 @@ const PagePet = ({ type, startX, startY }: PetState) => {
 };
 
 export default PagePet;
-
-    
