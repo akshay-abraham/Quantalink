@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPopper } from 'lucide-react';
+import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPopper, Skull, Star, Move } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
@@ -42,6 +42,13 @@ interface ParticleEffect {
   type: ParticleType;
 }
 
+const PARTICLE_ICONS = {
+  popper: PartyPopper,
+  ghost: Skull,
+  anomaly: Star,
+  revealing: Star,
+};
+
 const PARTICLE_COLORS = {
   popper: ['#facc15', '#fb923c', '#f87171', '#4ade80', '#22d3ee', '#a78bfa', '#f472b6', '#818cf8'],
   ghost: ['#a5f3fc', '#67e8f9', '#c4b5fd', '#a78bfa', '#f0abfc', '#bae6fd'],
@@ -51,10 +58,12 @@ const PARTICLE_COLORS = {
 
 type ParticleType = keyof typeof PARTICLE_COLORS;
 
-const Particle = ({ color }: { color: string }) => {
+const Particle = ({ type }: { type: ParticleType }) => {
   const tx = (Math.random() - 0.5) * 400;
   const ty = (Math.random() - 0.5) * 400;
-  
+  const color = PARTICLE_COLORS[type][Math.floor(Math.random() * PARTICLE_COLORS[type].length)];
+  const Icon = PARTICLE_ICONS[type];
+
   const style: React.CSSProperties = {
     position: 'absolute',
     left: `50%`,
@@ -68,13 +77,12 @@ const Particle = ({ color }: { color: string }) => {
     '--ty': `${ty}px`,
   } as React.CSSProperties;
 
-  const Icon = PartyPopper;
   return <div style={style}><Icon className="h-5 w-5" /></div>;
 };
 
 const FunParticles = ({ type, count }: { type: ParticleType, count: number }) => (
     <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: count }).map((_, i) => <Particle key={i} color={PARTICLE_COLORS[type][Math.floor(Math.random() * PARTICLE_COLORS[type].length)]} />)}
+        {Array.from({ length: count }).map((_, i) => <Particle key={i} type={type} />)}
     </div>
 );
 
