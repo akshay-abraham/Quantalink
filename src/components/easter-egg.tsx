@@ -20,11 +20,11 @@ import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPop
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
-import PagePet from './page-pet';
+import { setPet, PetState } from '@/lib/pet-state';
+
 
 type GameState = 'idle' | 'playing' | 'revealing' | 'result' | 'failed';
 type CatState = 'alive' | 'ghost' | null;
-type PetState = CatState;
 
 const ANOMALY_ICONS = [Atom, Dna, Biohazard, FlaskConical];
 const ANOMALY_COLORS = ['#ff00ff', '#00ffff', '#ffb700', '#00ff00', '#ff5252', '#ad52ff', '#f472b6', '#3b82f6'];
@@ -110,7 +110,6 @@ const getDifficulty = (playCount: number) => {
 export default function EasterEgg() {
   const [gameState, setGameState] = useState<GameState>('idle');
   const [catState, setCatState] = useState<CatState>(null);
-  const [petState, setPetState] = useState<PetState>(null);
   const [stats, setStats] = useState({ alive: 0, ghost: 0, plays: 0 });
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
   const [particleEffects, setParticleEffects] = useState<ParticleEffect[]>([]);
@@ -161,13 +160,13 @@ export default function EasterEgg() {
   
   const startExperiment = () => {
     updateStats(null, true);
+    setPet(null); // Clear any existing global pet
     const currentDifficulty = getDifficulty(stats.plays + 1); // Use upcoming play count
     setDifficulty(currentDifficulty);
     setAnomaliesToClick(currentDifficulty.anomalies);
     setTimeLeft(currentDifficulty.time);
     setAnomalies([]);
     setParticleEffects([]);
-    setPetState(null);
     setGameState('playing');
     
     timerRef.current = setInterval(() => {
@@ -226,7 +225,7 @@ export default function EasterEgg() {
        // Make death more prominent
       const result = Math.random() > 0.6 ? 'alive' : 'ghost';
       setCatState(result);
-      setPetState(result);
+      setPet(result); // Set the global pet state
       updateStats(result, false); // Don't increment play count again here
       setGameState('result');
     }, 2500);
@@ -236,7 +235,7 @@ export default function EasterEgg() {
     cleanupTimers();
     setGameState('idle');
     setCatState(null);
-    setPetState(null);
+    setPet(null); // Clear the global pet on reset
     setAnomalies([]);
     setParticleEffects([]);
     const currentDifficulty = getDifficulty(stats.plays);
@@ -250,7 +249,6 @@ export default function EasterEgg() {
 
   return (
     <>
-      {petState && <PagePet type={petState} onReset={reset} />}
       {isGameActive && (
         <div 
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 animate-fade-in"
