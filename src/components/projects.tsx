@@ -74,7 +74,7 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
           <Card
             key={project.title}
             className={cn(
-              'bg-card/30 border-border/40 shadow-lg transition-all duration-700 ease-out text-left',
+              'group relative overflow-hidden bg-card/30 border-border/40 shadow-lg transition-all duration-700 ease-out text-left',
               // Animate each card with a slight delay.
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             )}
@@ -82,21 +82,24 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
               transitionDelay: isVisible ? `${200 + index * 100}ms` : '0ms',
             }}
           >
-            <CardHeader>
-              <CardTitle className="text-xl text-primary">{project.title}</CardTitle>
-              <CardDescription className="text-foreground/80 pt-1">
-                {project.description}
-              </CardDescription>
-            </CardHeader>
-            <CardFooter className="flex justify-between items-center">
-              <Badge variant="secondary" className="bg-background/50">{project.license}</Badge>
-              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                <Button variant="ghost">
-                  <Github className="mr-2 h-4 w-4" />
-                  View on GitHub
-                </Button>
-              </a>
-            </CardFooter>
+            <div className="animate-border-glow group-hover:opacity-100"></div>
+            <div className="relative z-10">
+              <CardHeader>
+                <CardTitle className="text-xl text-primary">{project.title}</CardTitle>
+                <CardDescription className="text-foreground/80 pt-1">
+                  {project.description}
+                </CardDescription>
+              </CardHeader>
+              <CardFooter className="flex justify-between items-center">
+                <Badge variant="secondary" className="bg-background/50">{project.license}</Badge>
+                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                  <Button variant="ghost">
+                    <Github className="mr-2 h-4 w-4" />
+                    View on GitHub
+                  </Button>
+                </a>
+              </CardFooter>
+            </div>
           </Card>
         ))}
       </div>
