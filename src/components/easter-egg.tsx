@@ -60,7 +60,7 @@ const FunParticles = ({ type, count }: { type: 'popper' | 'ghost', count: number
 const QuantumOrb = ({ orb, onCollect }: { orb: Orb; onCollect: (id: number) => void }) => (
   <button
     onClick={() => onCollect(orb.id)}
-    className="absolute w-8 h-8 rounded-full bg-primary/50 border-2 border-primary shadow-lg animate-orb-pop-in"
+    className="absolute w-8 h-8 rounded-full bg-primary/80 border-2 border-primary shadow-lg animate-orb-pop-in"
     style={{ left: `${orb.x}%`, top: `${orb.y}%` }}
   >
     <div className="w-full h-full rounded-full bg-primary animate-pulse"></div>
@@ -219,9 +219,9 @@ export default function EasterEgg() {
         style={{ transitionDelay: isVisible ? '150ms' : '0ms' }}
       >
           <Card className={cn(
-              "relative bg-card/30 border-border/40 shadow-lg transition-all duration-700 ease-out text-center overflow-hidden w-full",
-              isVisible && !isGameActive ? "opacity-100 translate-y-0" : !isGameActive ? "opacity-0 translate-y-5" : "",
-              isGameActive ? "max-w-2xl h-auto md:h-[600px] flex flex-col" : "max-w-full"
+              "relative border-border/40 shadow-lg transition-all duration-700 ease-out text-center overflow-hidden w-full",
+              isVisible && !isGameActive ? "opacity-100 translate-y-0 bg-card/30" : !isGameActive ? "opacity-0 translate-y-5" : "",
+              isGameActive ? "max-w-2xl h-auto md:h-[600px] flex flex-col bg-background" : "max-w-full"
           )}
           style={{ transitionDelay: isVisible ? `200ms` : '0ms' }}
           >
