@@ -4,9 +4,7 @@
  */
 import AnimatedBackground from "@/components/animated-background";
 import PageFooter from "@/components/page-footer";
-import { ArrowLeft, Target, Cpu, Users } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Target, Cpu, Users } from "lucide-react";
 import type { Metadata } from 'next';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -48,13 +46,7 @@ export default function AboutPage() {
       <AnimatedBackground />
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-5xl">
-          <header className="mb-12 text-center">
-             <Link href="/" className="inline-block mb-8 animate-fade-in" style={{ animationDelay: '100ms' }}>
-               <Button variant="outline" className="bg-card/30 border-border/40">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Home
-              </Button>
-            </Link>
+          <header className="mb-12 text-center pt-20">
             <h1 className="text-4xl font-bold text-primary tracking-tight animate-fade-in-up" style={{ animationDelay: '200ms' }}>
               My Story
             </h1>

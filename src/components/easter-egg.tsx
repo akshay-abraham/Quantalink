@@ -25,7 +25,7 @@ type GameState = 'idle' | 'playing' | 'revealing' | 'result' | 'failed';
 type CatState = 'alive' | 'ghost' | null;
 
 const ANOMALY_ICONS = [Atom, Dna, Biohazard, FlaskConical];
-const ANOMALY_COLORS = ['#ff00ff', '#00ffff', '#ffb700', '#00ff00', '#ff5252', '#ad52ff'];
+const ANOMALY_COLORS = ['#ff00ff', '#00ffff', '#ffb700', '#00ff00', '#ff5252', '#ad52ff', '#f472b6', '#3b82f6'];
 
 interface Anomaly {
   id: number;
@@ -35,39 +35,52 @@ interface Anomaly {
   color: string;
 }
 
+interface ParticleEffect {
+  id: number;
+  x: number;
+  y: number;
+  type: ParticleType;
+}
+
 const PARTICLE_COLORS = {
   popper: ['#facc15', '#fb923c', '#f87171', '#4ade80', '#22d3ee', '#a78bfa', '#f472b6', '#818cf8'],
   ghost: ['#a5f3fc', '#67e8f9', '#c4b5fd', '#a78bfa', '#f0abfc', '#bae6fd'],
-  revealing: ['#ffffff', '#f0f0f0', '#e0e0e0']
+  revealing: ['#ffffff', '#f0f0f0', '#e0e0e0'],
+  anomaly: ANOMALY_COLORS,
 };
 
 type ParticleType = keyof typeof PARTICLE_COLORS;
 
-const Particle = ({ type }: { type: ParticleType }) => {
-  const color = PARTICLE_COLORS[type][Math.floor(Math.random() * PARTICLE_COLORS[type].length)];
+const Particle = ({ color }: { color: string }) => {
+  const tx = (Math.random() - 0.5) * 400;
+  const ty = (Math.random() - 0.5) * 400;
+  
   const style: React.CSSProperties = {
     position: 'absolute',
-    left: `${Math.random() * 100}%`,
-    top: `${Math.random() * 100}%`,
+    left: `50%`,
+    top: `50%`,
     animation: `fly-out ${1 + Math.random() * 2}s ease-out forwards`,
     opacity: 0,
     transform: `rotate(${Math.random() * 360}deg) scale(${0.5 + Math.random()})`,
-    animationDelay: `${Math.random() * 0.5}s`,
+    animationDelay: `${Math.random() * 0.2}s`,
     color: color,
-  };
-  const Icon = type === 'popper' ? PartyPopper : Ghost;
+    '--tx': `${tx}px`,
+    '--ty': `${ty}px`,
+  } as React.CSSProperties;
+
+  const Icon = PartyPopper;
   return <div style={style}><Icon className="h-5 w-5" /></div>;
 };
 
 const FunParticles = ({ type, count }: { type: ParticleType, count: number }) => (
     <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: count }).map((_, i) => <Particle key={i} type={type} />)}
+        {Array.from({ length: count }).map((_, i) => <Particle key={i} color={PARTICLE_COLORS[type][Math.floor(Math.random() * PARTICLE_COLORS[type].length)]} />)}
     </div>
 );
 
-const QuantumAnomaly = ({ anomaly, onClick }: { anomaly: Anomaly, onClick: (id: number) => void }) => (
+const QuantumAnomaly = ({ anomaly, onClick }: { anomaly: Anomaly, onClick: (id: number, x: number, y: number) => void }) => (
   <button
-    onClick={() => onClick(anomaly.id)}
+    onClick={() => onClick(anomaly.id, anomaly.x, anomaly.y)}
     className="absolute w-12 h-12 rounded-full flex items-center justify-center animate-orb-pop-in transition-transform duration-200 hover:scale-110"
     style={{ left: `${anomaly.x}%`, top: `${anomaly.y}%`, color: anomaly.color, backgroundColor: `${anomaly.color}20` }}
   >
@@ -82,6 +95,7 @@ export default function EasterEgg() {
   const [timeLeft, setTimeLeft] = useState(10);
   const [stats, setStats] = useState({ alive: 0, ghost: 0 });
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
+  const [particleEffects, setParticleEffects] = useState<ParticleEffect[]>([]);
 
   const ref = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -121,6 +135,7 @@ export default function EasterEgg() {
     setProgress(0);
     setTimeLeft(10);
     setAnomalies([]);
+    setParticleEffects([]);
     setGameState('playing');
     
     timerRef.current = setInterval(() => {
@@ -149,8 +164,15 @@ export default function EasterEgg() {
     }, 800);
   };
 
-  const handleAnomalyClick = (id: number) => {
+  const handleAnomalyClick = (id: number, x: number, y: number) => {
     setAnomalies(prev => prev.filter(a => a.id !== id));
+    
+    const newEffect: ParticleEffect = { id: Date.now(), x, y, type: 'anomaly' };
+    setParticleEffects(prev => [...prev, newEffect]);
+    setTimeout(() => {
+      setParticleEffects(prev => prev.filter(p => p.id !== newEffect.id));
+    }, 2000);
+
     setProgress(prev => {
       const newProgress = prev + 25;
       if (newProgress >= 100) {
@@ -178,27 +200,10 @@ export default function EasterEgg() {
     setCatState(null);
     setProgress(0);
     setAnomalies([]);
+    setParticleEffects([]);
   };
   
   useEffect(() => {
-    const keyframes = `
-      @keyframes fly-out {
-        0% { transform: translate(0, 0) scale(0); opacity: 1; }
-        100% { transform: translate(${(Math.random() - 0.5) * 400}px, ${(Math.random() - 0.5) * 400}px) scale(1); opacity: 0; }
-      }
-    `;
-    if (typeof window !== 'undefined') {
-      const styleSheet = document.styleSheets[0];
-       if (styleSheet) {
-          try {
-              if (!Array.from(styleSheet.cssRules).some(rule => (rule as CSSKeyframesRule).name === 'fly-out')) {
-                 styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
-              }
-          } catch (e) {
-              console.warn("Could not insert keyframe rule for particle animation.", e)
-          }
-      }
-    }
     return cleanupTimers;
   }, []);
 
@@ -277,6 +282,11 @@ export default function EasterEgg() {
                               {anomalies.map(item => (
                                 <QuantumAnomaly key={item.id} anomaly={item} onClick={handleAnomalyClick} />
                               ))}
+                              {particleEffects.map(effect => (
+                                <div key={effect.id} className="absolute" style={{left: `${effect.x}%`, top: `${effect.y}%`, width: '50px', height: '50px', transform: 'translate(-50%, -50%)'}}>
+                                   <FunParticles type={effect.type} count={30} />
+                                </div>
+                               ))}
                           </div>
                            <p className="text-xs text-foreground/80 pt-2 flex items-center justify-center gap-2">
                             {gameState === 'failed' ? 'The quantum state destabilized. Reset to try again.' : 'Quickly! Tap the anomalies to charge the meter!'}
@@ -290,8 +300,8 @@ export default function EasterEgg() {
                   )}
 
                   {gameState === 'revealing' && (
-                      <div className="space-y-4 animate-fade-in text-center relative">
-                          <FunParticles type="revealing" count={80} />
+                      <div className="space-y-4 animate-fade-in text-center relative w-full h-full flex flex-col items-center justify-center">
+                          <FunParticles type="revealing" count={200} />
                           <h3 className="text-xl font-bold text-primary">Wave Function Collapsing...</h3>
                           <p className="text-foreground/80">Determining final state...</p>
                       </div>
@@ -302,16 +312,16 @@ export default function EasterEgg() {
                           <div className="relative flex flex-col items-center justify-center gap-4">
                               {catState === 'alive' && (
                                   <div className="relative flex-1 p-4 border border-green-500/30 bg-green-500/10 rounded-lg space-y-3 text-center w-full max-w-sm">
-                                      <FunParticles type="popper" count={100} />
+                                      <FunParticles type="popper" count={150} />
                                       <h3 className="font-bold text-green-500">Observation Complete!</h3>
-                                      <Cat className="h-16 w-16 mx-auto text-green-500 animate-popper" />
+                                      <PartyPopper className="h-16 w-16 mx-auto text-green-500 animate-popper" />
                                       <p className="text-xl font-bold text-green-500">The cat is ALIVE!</p>
                                       <p className="text-sm text-foreground/80">The superposition collapsed into a definite state of life. Congratulations!</p>
                                   </div>
                               )}
                               {catState === 'ghost' && (
                                   <div className="relative flex-1 p-4 border border-sky-400/30 bg-sky-400/10 rounded-lg space-y-3 text-center w-full max-w-sm">
-                                      <FunParticles type="ghost" count={50} />
+                                      <FunParticles type="ghost" count={80} />
                                       <h3 className="font-bold text-sky-400">Observation Complete!</h3>
                                       <Ghost className="h-16 w-16 mx-auto text-sky-400 animate-ghost" />
                                       <p className="text-xl font-bold text-sky-400">The cat has decohered.</p>

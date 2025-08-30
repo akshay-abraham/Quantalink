@@ -24,7 +24,7 @@ export default function DesktopNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="hidden md:flex items-center gap-2">
+    <nav className="hidden md:flex items-center gap-2 bg-card/50 border border-border/60 p-1 rounded-full backdrop-blur-md">
       {navLinks.map((link) => {
         const isActive = pathname === link.href;
         return (
