@@ -63,7 +63,11 @@ body {
   }
   
   .animate-orb-pop-in {
-    animation: orb-pop-in 0.3s ease-out forwards;
+    animation: orb-pop-in 0.4s ease-out forwards;
+  }
+
+  .animate-collector-pulse {
+    animation: collector-pulse 3s linear infinite;
   }
 
   @keyframes scrolling-logos {
@@ -107,9 +111,17 @@ body {
   }
 
   @keyframes orb-pop-in {
-    0% { transform: scale(0); opacity: 0; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(1); opacity: 1; }
+    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+    50% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  @keyframes collector-pulse {
+    0% { border-color: #ff00ff; box-shadow: 0 0 15px #ff00ff; }
+    25% { border-color: #00ffff; box-shadow: 0 0 15px #00ffff; }
+    50% { border-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
+    75% { border-color: #00ff00; box-shadow: 0 0 15px #00ff00; }
+    100% { border-color: #ff00ff; box-shadow: 0 0 15px #ff00ff; }
   }
 
   .text-shadow {

@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Box, Cat, Ghost, PartyPopper, Timer, X } from 'lucide-react';
+import { Box, Cat, Ghost, PartyPopper, Timer, X, Atom, Dna, Biohazard, FlaskConical, Move } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
@@ -24,8 +24,18 @@ import { Progress } from '@/components/ui/progress';
 type GameState = 'idle' | 'playing' | 'revealing' | 'result' | 'failed';
 type CatState = 'alive' | 'ghost' | null;
 
-interface Orb {
+const ANOMALY_ICONS = [Atom, Dna, Biohazard, FlaskConical];
+const ANOMALY_COLORS = ['#ff00ff', '#00ffff', '#ffb700', '#00ff00', '#ff5252', '#ad52ff'];
+
+interface Anomaly {
   id: number;
+  x: number;
+  y: number;
+  Icon: React.ElementType;
+  color: string;
+}
+
+interface Collector {
   x: number;
   y: number;
 }
@@ -57,14 +67,13 @@ const FunParticles = ({ type, count }: { type: 'popper' | 'ghost', count: number
     </div>
 );
 
-const QuantumOrb = ({ orb, onCollect }: { orb: Orb; onCollect: (id: number) => void }) => (
-  <button
-    onClick={() => onCollect(orb.id)}
-    className="absolute w-8 h-8 rounded-full bg-primary/80 border-2 border-primary shadow-lg animate-orb-pop-in"
-    style={{ left: `${orb.x}%`, top: `${orb.y}%` }}
+const QuantumAnomaly = ({ anomaly }: { anomaly: Anomaly }) => (
+  <div
+    className="absolute w-8 h-8 rounded-full flex items-center justify-center animate-orb-pop-in"
+    style={{ left: `${anomaly.x}%`, top: `${anomaly.y}%`, color: anomaly.color }}
   >
-    <div className="w-full h-full rounded-full bg-primary animate-pulse"></div>
-  </button>
+    <anomaly.Icon className="w-6 h-6" />
+  </div>
 );
 
 export default function EasterEgg() {
@@ -73,11 +82,13 @@ export default function EasterEgg() {
   const [progress, setProgress] = useState(0);
   const [timeLeft, setTimeLeft] = useState(10);
   const [stats, setStats] = useState({ alive: 0, ghost: 0 });
-  const [orbs, setOrbs] = useState<Orb[]>([]);
+  const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
+  const [collector, setCollector] = useState<Collector>({ x: 50, y: 50 });
 
   const ref = useRef<HTMLDivElement>(null);
+  const gameAreaRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const orbSpawnerRef = useRef<NodeJS.Timeout | null>(null);
+  const anomalySpawnerRef = useRef<NodeJS.Timeout | null>(null);
   const isVisible = useInView(ref);
 
   const isGameActive = gameState === 'playing' || gameState === 'failed' || gameState === 'revealing' || gameState === 'result';
@@ -106,13 +117,14 @@ export default function EasterEgg() {
   
   const cleanupTimers = () => {
     if (timerRef.current) clearInterval(timerRef.current);
-    if (orbSpawnerRef.current) clearInterval(orbSpawnerRef.current);
+    if (anomalySpawnerRef.current) clearInterval(anomalySpawnerRef.current);
   };
   
   const startExperiment = () => {
     setProgress(0);
     setTimeLeft(10);
-    setOrbs([]);
+    setAnomalies([]);
+    setCollector({ x: 50, y: 50 });
     setGameState('playing');
     
     timerRef.current = setInterval(() => {
@@ -126,32 +138,65 @@ export default function EasterEgg() {
       });
     }, 1000);
 
-    orbSpawnerRef.current = setInterval(() => {
-      setOrbs(prevOrbs => {
-        const newOrb: Orb = {
+    anomalySpawnerRef.current = setInterval(() => {
+      setAnomalies(prevAnomalies => {
+        const newAnomaly: Anomaly = {
           id: Date.now(),
-          x: Math.random() * 90, // Keep within bounds
+          x: Math.random() * 90,
           y: Math.random() * 90,
+          Icon: ANOMALY_ICONS[Math.floor(Math.random() * ANOMALY_ICONS.length)],
+          color: ANOMALY_COLORS[Math.floor(Math.random() * ANOMALY_COLORS.length)],
         };
-        // Remove the oldest orb if we have too many
-        const updatedOrbs = prevOrbs.length > 5 ? prevOrbs.slice(1) : prevOrbs;
-        return [...updatedOrbs, newOrb];
+        const updatedAnomalies = prevAnomalies.length > 8 ? prevAnomalies.slice(1) : prevAnomalies;
+        return [...updatedAnomalies, newAnomaly];
       });
-    }, 700);
+    }, 600);
   };
+  
+  const checkCollisions = useCallback(() => {
+    const collectorRadius = 24; // approx half of collector size (48px)
+    let collectedCount = 0;
+    
+    setAnomalies(prevAnomalies =>
+      prevAnomalies.filter(anomaly => {
+        const anomalyRadius = 16; // approx half of anomaly size (32px)
+        const dx = (collector.x / 100) * (gameAreaRef.current?.clientWidth || 0) - (anomaly.x / 100) * (gameAreaRef.current?.clientWidth || 0);
+        const dy = (collector.y / 100) * (gameAreaRef.current?.clientHeight || 0) - (anomaly.y / 100) * (gameAreaRef.current?.clientHeight || 0);
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
-  const collectOrb = (id: number) => {
-    if (gameState !== 'playing') return;
-    setOrbs(orbs.filter(orb => orb.id !== id));
-    setProgress(prev => {
-      const newProgress = prev + 25; // Each orb gives a good boost
-      if (newProgress >= 100) {
-        cleanupTimers();
-        observe();
-        return 100;
-      }
-      return newProgress;
-    });
+        if (distance < collectorRadius + anomalyRadius) {
+          collectedCount++;
+          return false; // remove from array
+        }
+        return true;
+      })
+    );
+
+    if (collectedCount > 0) {
+      setProgress(prev => {
+        const newProgress = prev + collectedCount * 20;
+        if (newProgress >= 100) {
+          cleanupTimers();
+          observe();
+          return 100;
+        }
+        return newProgress;
+      });
+    }
+  }, [collector.x, collector.y]);
+
+  useEffect(() => {
+    if (gameState === 'playing') {
+      checkCollisions();
+    }
+  }, [gameState, checkCollisions]);
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (gameState !== 'playing' || !gameAreaRef.current) return;
+    const rect = gameAreaRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setCollector({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) });
   };
 
   const observe = () => {
@@ -169,12 +214,10 @@ export default function EasterEgg() {
     setGameState('idle');
     setCatState(null);
     setProgress(0);
-    setOrbs([]);
+    setAnomalies([]);
   };
   
   useEffect(() => {
-    // This effect ensures dynamic keyframes are available for the particle animations.
-    // It's a robust way to handle CSS animations that depend on random values.
     const keyframes = `
       @keyframes fly-out {
         0% { transform: translate(0, 0) scale(0); opacity: 1; }
@@ -185,18 +228,14 @@ export default function EasterEgg() {
       const styleSheet = document.styleSheets[0];
        if (styleSheet) {
           try {
-              // Check if the rule already exists to avoid duplicates
               if (!Array.from(styleSheet.cssRules).some(rule => (rule as CSSKeyframesRule).name === 'fly-out')) {
                  styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
               }
           } catch (e) {
-              // Catch potential security errors in some browsers when accessing stylesheets
               console.warn("Could not insert keyframe rule for particle animation.", e)
           }
       }
     }
-    
-    // Cleanup timers on component unmount
     return cleanupTimers;
   }, []);
 
@@ -213,7 +252,6 @@ export default function EasterEgg() {
         className={cn(
           "space-y-4 text-center transition-opacity duration-1000 ease-out", 
           isVisible ? "opacity-100" : "opacity-0",
-           // When the game is active, it becomes a fixed overlay to expand and center itself.
            isGameActive && "fixed inset-0 w-full h-full flex items-center justify-center z-50 p-4"
         )}
         style={{ transitionDelay: isVisible ? '150ms' : '0ms' }}
@@ -221,7 +259,7 @@ export default function EasterEgg() {
           <Card className={cn(
               "relative border-border/40 shadow-lg transition-all duration-700 ease-out text-center overflow-hidden w-full",
               isVisible && !isGameActive ? "opacity-100 translate-y-0 bg-card/30" : !isGameActive ? "opacity-0 translate-y-5" : "",
-              isGameActive ? "max-w-2xl h-auto md:h-[600px] flex flex-col bg-background" : "max-w-full"
+              isGameActive ? "max-w-4xl h-auto md:h-[700px] flex flex-col bg-background" : "max-w-full"
           )}
           style={{ transitionDelay: isVisible ? `200ms` : '0ms' }}
           >
@@ -245,7 +283,7 @@ export default function EasterEgg() {
                   {gameState === 'idle' && (
                       <div className="space-y-6 animate-fade-in w-full max-w-sm px-4">
                           <blockquote className='space-y-2'>
-                            <p className="font-medium text-foreground/90">"My fate is in superposition. Stabilize the quantum field to observe the outcome."</p>
+                            <p className="font-medium text-foreground/90">"My fate is in superposition. Collect quantum anomalies to observe the outcome."</p>
                             <cite className="text-sm text-foreground/70 not-italic">- The Cat (probably)</cite>
                           </blockquote>
                            <div className="text-sm text-foreground/80">
@@ -262,7 +300,7 @@ export default function EasterEgg() {
                   
                   {(gameState === 'playing' || gameState === 'failed') && (
                       <div className="space-y-4 animate-fade-in w-full h-full flex flex-col">
-                          <h3 className="font-bold text-lg text-primary">{gameState === 'failed' ? 'Experiment Failed!' : 'Collecting Quantum Orbs...'}</h3>
+                          <h3 className="font-bold text-lg text-primary">{gameState === 'failed' ? 'Experiment Failed!' : 'Collecting Anomalies...'}</h3>
                           <div className="space-y-2">
                              <Progress value={progress} className="w-full" />
                              <div className="flex justify-between items-center text-sm text-foreground/70">
@@ -270,13 +308,26 @@ export default function EasterEgg() {
                                  <span className="flex items-center gap-1"><Timer className="h-4 w-4" />{timeLeft}s</span>
                              </div>
                           </div>
-                          <div className="relative w-full flex-grow bg-primary/5 border border-primary/20 rounded-lg mt-2 min-h-[150px]">
-                              {orbs.map(orb => (
-                                <QuantumOrb key={orb.id} orb={orb} onCollect={collectOrb} />
+                          <div 
+                            ref={gameAreaRef}
+                            className="relative w-full flex-grow bg-primary/5 border border-primary/20 rounded-lg mt-2 min-h-[250px] md:min-h-[400px] touch-none"
+                            onPointerMove={handlePointerMove}
+                          >
+                              {anomalies.map(item => (
+                                <QuantumAnomaly key={item.id} anomaly={item} />
                               ))}
+                              <div
+                                className="absolute w-12 h-12 rounded-full border-2 animate-collector-pulse"
+                                style={{
+                                  left: `${collector.x}%`,
+                                  top: `${collector.y}%`,
+                                  transform: 'translate(-50%, -50%)',
+                                }}
+                              />
                           </div>
-                           <p className="text-xs text-foreground/80 pt-2">
-                            {gameState === 'failed' ? 'The quantum state destabilized. Reset to try again.' : 'Click the spawning quantum orbs to charge the meter!'}
+                           <p className="text-xs text-foreground/80 pt-2 flex items-center justify-center gap-2">
+                             <Move className="h-4 w-4" />
+                            {gameState === 'failed' ? 'The quantum state destabilized. Reset to try again.' : 'Drag to move the collector and capture the anomalies!'}
                           </p>
                           <div className="w-full pt-2">
                               {gameState === 'failed' && (
@@ -298,7 +349,7 @@ export default function EasterEgg() {
                           <div className="relative flex flex-col items-center justify-center gap-4">
                               {catState === 'alive' && (
                                   <div className="relative flex-1 p-4 border border-green-500/30 bg-green-500/10 rounded-lg space-y-3 text-center w-full max-w-sm">
-                                      <FunParticles type="popper" count={50} />
+                                      <FunParticles type="popper" count={100} />
                                       <h3 className="font-bold text-green-500">Observation Complete!</h3>
                                       <Cat className="h-16 w-16 mx-auto text-green-500 animate-popper" />
                                       <p className="text-xl font-bold text-green-500">The cat is ALIVE!</p>
@@ -307,7 +358,7 @@ export default function EasterEgg() {
                               )}
                               {catState === 'ghost' && (
                                   <div className="relative flex-1 p-4 border border-sky-400/30 bg-sky-400/10 rounded-lg space-y-3 text-center w-full max-w-sm">
-                                      <FunParticles type="ghost" count={30} />
+                                      <FunParticles type="ghost" count={50} />
                                       <h3 className="font-bold text-sky-400">Observation Complete!</h3>
                                       <Ghost className="h-16 w-16 mx-auto text-sky-400 animate-ghost" />
                                       <p className="text-xl font-bold text-sky-400">The cat has decohered.</p>
