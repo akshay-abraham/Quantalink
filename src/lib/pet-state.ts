@@ -46,7 +46,7 @@ export const setPet = (pet: PetState) => {
   if (pet) {
     petTimeout = setTimeout(() => {
       setPet(null); // This will recursively call setPet to clear the state.
-    }, 600000); // 10 minutes in milliseconds.
+    }, 120000); // 2 minutes in milliseconds.
   }
 
   notify();

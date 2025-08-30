@@ -35,13 +35,13 @@ const PagePet = ({ type }: PagePetProps) => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // This effect runs once to indicate the component is ready to be rendered in a portal.
-  // It also sets a timeout to automatically dismiss the pet after 10 minutes.
+  // It also sets a timeout to automatically dismiss the pet after 2 minutes.
   useEffect(() => {
     setIsMounted(true);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       setPet(null); // This will trigger the global state update and unmount the pet.
-    }, 600000); // 10 minutes in milliseconds.
+    }, 120000); // 2 minutes in milliseconds.
 
     return () => {
       if (timeoutRef.current) {
@@ -66,31 +66,34 @@ const PagePet = ({ type }: PagePetProps) => {
     const animate = () => {
       setPosition((prevPos) => {
         let { vx, vy } = velocity;
+        
+        if (petRef.current) {
+            const rect = petRef.current.getBoundingClientRect();
+            const petX = rect.left + rect.width / 2;
+            const petY = rect.top + rect.height / 2;
+            const dx = mousePos.current.x - petX;
+            const dy = mousePos.current.y - petY;
+            const distance = Math.sqrt(dx*dx + dy*dy);
 
-        // **Interaction Logic:**
-        // If the pet is a cat, it's attracted to the mouse cursor.
-        if (type === 'alive' && petRef.current) {
-          const rect = petRef.current.getBoundingClientRect();
-          const petX = rect.left + rect.width / 2;
-          const petY = rect.top + rect.height / 2;
-          
-          const dx = mousePos.current.x - petX;
-          const dy = mousePos.current.y - petY;
-          const distance = Math.sqrt(dx*dx + dy*dy);
-          
-          // Add a small force vector towards the mouse.
-          if (distance > 50) { // Don't get too close.
-            vx += dx * 0.0005;
-            vy += dy * 0.0005;
-          }
+            // **Interaction Logic:**
+            // The live cat is attracted to the cursor.
+            if (type === 'alive') {
+              if (distance > 50) { // Don't get too close.
+                vx += dx * 0.0005;
+                vy += dy * 0.0005;
+              }
+            // The ghost is repelled by the cursor.
+            } else if (type === 'ghost') {
+                if (distance < 150) { // Only when cursor is near.
+                    vx -= dx * 0.0008;
+                    vy -= dy * 0.0008;
+                }
+                // Add some random, spooky drift.
+                vx += (Math.random() - 0.5) * 0.1;
+                vy += (Math.random() - 0.5) * 0.1;
+            }
         }
         
-        // If it's a ghost, add some random, spooky drift.
-        if (type === 'ghost') {
-            vx += (Math.random() - 0.5) * 0.1;
-            vy += (Math.random() - 0.5) * 0.1;
-        }
-
         // Clamp velocity to prevent it from getting too fast.
         vx = Math.max(-1.5, Math.min(1.5, vx));
         vy = Math.max(-1.5, Math.min(1.5, vy));
