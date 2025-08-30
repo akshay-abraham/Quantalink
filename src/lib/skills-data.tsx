@@ -50,11 +50,13 @@ export interface Skill {
  * Defines the structure for a category of skills.
  * @property {string} title - The title of the category (e.g., "Frontend Development").
  * @property {React.ReactNode} icon - The icon representing the category.
+ * @property {string} [subtitle] - An optional subtitle to display under the category title.
  * @property {Skill[]} skills - An array of `Skill` objects belonging to this category.
  */
 export interface SkillCategory {
   title: string;
   icon: React.ReactNode;
+  subtitle?: string;
   skills: Skill[];
 }
 
@@ -66,6 +68,7 @@ export const skillsData: SkillCategory[] = [
   {
     title: 'Backend & Data Science',
     icon: <BrainCircuit size={32} />,
+    subtitle: 'I am currently exploring these for my future physics research integration.',
     skills: [
       { name: 'Python', icon: <PythonIcon /> },
       { name: 'C', icon: <CIcon /> },
@@ -80,6 +83,7 @@ export const skillsData: SkillCategory[] = [
   {
     title: 'Frontend Development',
     icon: <Code size={32} />,
+    subtitle: 'I have learned theory from CS50W and YT, but I mainly focus on "vibe coding" using Gemini for generation and ChatGPT for debugging.',
     skills: [
       { name: 'HTML5', icon: <HtmlIcon /> },
       { name: 'CSS3', icon: <CssIcon /> },

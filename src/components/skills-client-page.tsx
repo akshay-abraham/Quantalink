@@ -57,6 +57,10 @@ export default function SkillsClientPage() {
       <div className="flex flex-col items-center text-center">
         <CategoryIcon icon={category.icon} />
         <h2 className="text-2xl font-bold text-primary mb-2">{category.title}</h2>
+        {/* Render the subtitle for the category if it exists */}
+        {category.subtitle && (
+          <p className="text-foreground/70 max-w-2xl text-sm leading-relaxed">{category.subtitle}</p>
+        )}
       </div>
       {/* Use the InfiniteScroller for a dynamic, moving display of skills. */}
        <InfiniteScroller speed={index % 2 === 0 ? "slow" : "normal"}>

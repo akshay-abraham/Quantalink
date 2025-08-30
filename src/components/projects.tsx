@@ -68,7 +68,7 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
         </h2>
       )}
 
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Map over the projects and render a Card for each one. */}
         {projectsToShow.map((project, index) => (
           <Card
@@ -82,8 +82,8 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
               transitionDelay: isVisible ? `${200 + index * 100}ms` : '0ms',
             }}
           >
-            {/* Animated border glow effect on hover. */}
-            <div className="absolute inset-0 animate-border-glow opacity-30 group-hover:opacity-100 transition-opacity duration-300"></div>
+            {/* Animated border glow effect container. */}
+            <div className="animate-border-glow"></div>
             <div className="relative z-10">
               <CardHeader>
                 <CardTitle className="text-xl text-primary">{project.title}</CardTitle>

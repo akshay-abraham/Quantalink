@@ -63,22 +63,25 @@ export default function AboutPage() {
                 <Card 
                   key={section.title}
                   className={cn(
-                    "bg-card/30 border-border/40 rounded-2xl p-6 text-center shadow-lg animate-fade-in-up",
+                    "group relative overflow-hidden bg-card/30 border-border/40 rounded-2xl p-6 text-center shadow-lg animate-fade-in-up",
                     "transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl hover:shadow-primary/20"
                   )}
                   style={{ animationDelay: `${500 + index * 150}ms`}}
                 >
-                  <CardHeader className="flex flex-col items-center gap-4">
-                    <div className="text-primary bg-primary/10 p-3 rounded-full transition-transform duration-300 group-hover:scale-110">
-                      {section.icon}
-                    </div>
-                    <CardTitle className="text-xl text-primary">{section.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-foreground/80 leading-relaxed text-sm">
-                      {section.content}
-                    </p>
-                  </CardContent>
+                  <div className="animate-border-glow"></div>
+                  <div className="relative z-10">
+                    <CardHeader className="flex flex-col items-center gap-4">
+                      <div className="text-primary bg-primary/10 p-3 rounded-full transition-transform duration-300 group-hover:scale-110">
+                        {section.icon}
+                      </div>
+                      <CardTitle className="text-xl text-primary">{section.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-foreground/80 leading-relaxed text-sm">
+                        {section.content}
+                      </p>
+                    </CardContent>
+                  </div>
                 </Card>
               ))}
             </div>

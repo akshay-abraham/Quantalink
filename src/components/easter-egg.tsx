@@ -441,12 +441,17 @@ export default function EasterEgg() {
                       </div>
                   )}
               </CardContent>
-              <CardFooter className="flex justify-center text-xs text-muted-foreground pb-4 relative">
-                  {/* More prominent reset button */}
-                  <button onClick={factoryReset} className="text-muted-foreground/60 hover:text-muted-foreground/90 transition-colors text-xs p-2">
-                    Factory Reset Stats
-                  </button>
+              <CardFooter className="flex justify-center text-xs text-muted-foreground pb-4">
+                  <p className="text-center">A game by Akshay Abraham</p>
               </CardFooter>
+              {/* More prominent reset button, moved to the bottom right for less conflict */}
+              <button 
+                onClick={factoryReset} 
+                className="absolute bottom-2 right-2 text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-xs p-2 rounded-md hover:bg-muted/50"
+                title="Reset all game statistics"
+              >
+                Factory Reset
+              </button>
           </Card>
       </section>
     </>
