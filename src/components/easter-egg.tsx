@@ -38,9 +38,12 @@ interface Anomaly {
 const PARTICLE_COLORS = {
   popper: ['#facc15', '#fb923c', '#f87171', '#4ade80', '#22d3ee', '#a78bfa', '#f472b6', '#818cf8'],
   ghost: ['#a5f3fc', '#67e8f9', '#c4b5fd', '#a78bfa', '#f0abfc', '#bae6fd'],
+  revealing: ['#ffffff', '#f0f0f0', '#e0e0e0']
 };
 
-const Particle = ({ type }: { type: 'popper' | 'ghost' }) => {
+type ParticleType = keyof typeof PARTICLE_COLORS;
+
+const Particle = ({ type }: { type: ParticleType }) => {
   const color = PARTICLE_COLORS[type][Math.floor(Math.random() * PARTICLE_COLORS[type].length)];
   const style: React.CSSProperties = {
     position: 'absolute',
@@ -56,7 +59,7 @@ const Particle = ({ type }: { type: 'popper' | 'ghost' }) => {
   return <div style={style}><Icon className="h-5 w-5" /></div>;
 };
 
-const FunParticles = ({ type, count }: { type: 'popper' | 'ghost', count: number }) => (
+const FunParticles = ({ type, count }: { type: ParticleType, count: number }) => (
     <div className="absolute inset-0 pointer-events-none">
         {Array.from({ length: count }).map((_, i) => <Particle key={i} type={type} />)}
     </div>
@@ -287,7 +290,8 @@ export default function EasterEgg() {
                   )}
 
                   {gameState === 'revealing' && (
-                      <div className="space-y-4 animate-fade-in text-center">
+                      <div className="space-y-4 animate-fade-in text-center relative">
+                          <FunParticles type="revealing" count={80} />
                           <h3 className="text-xl font-bold text-primary">Wave Function Collapsing...</h3>
                           <p className="text-foreground/80">Determining final state...</p>
                       </div>
@@ -330,5 +334,3 @@ export default function EasterEgg() {
     </>
   )
 }
-
-    
