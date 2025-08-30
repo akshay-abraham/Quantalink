@@ -16,13 +16,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPopper, Skull, Star } from 'lucide-react';
+import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPopper, Skull, Star, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
+import PagePet from './page-pet';
 
 type GameState = 'idle' | 'playing' | 'revealing' | 'result' | 'failed';
 type CatState = 'alive' | 'ghost' | null;
+type PetState = CatState;
 
 const ANOMALY_ICONS = [Atom, Dna, Biohazard, FlaskConical];
 const ANOMALY_COLORS = ['#ff00ff', '#00ffff', '#ffb700', '#00ff00', '#ff5252', '#ad52ff', '#f472b6', '#3b82f6'];
@@ -45,8 +47,8 @@ interface ParticleEffect {
 const PARTICLE_ICONS = {
   popper: PartyPopper,
   ghost: Skull,
-  anomaly: Star,
   revealing: Star,
+  anomaly: Star,
 };
 
 const PARTICLE_COLORS = {
@@ -96,14 +98,26 @@ const QuantumAnomaly = ({ anomaly, onClick }: { anomaly: Anomaly, onClick: (id: 
   </button>
 );
 
+const getDifficulty = (playCount: number) => {
+    const run = Math.min(playCount, 3); // Cap difficulty scaling at run 3
+    return {
+        time: 15 - run * 3, // 15s -> 12s -> 9s -> 6s
+        anomalies: 5 + run * 2, // 5 -> 7 -> 9 -> 11
+        spawnRate: 900 - run * 150 // 900ms -> 750ms -> 600ms -> 450ms
+    }
+}
+
 export default function EasterEgg() {
   const [gameState, setGameState] = useState<GameState>('idle');
   const [catState, setCatState] = useState<CatState>(null);
-  const [progress, setProgress] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(10);
-  const [stats, setStats] = useState({ alive: 0, ghost: 0 });
+  const [petState, setPetState] = useState<PetState>(null);
+  const [stats, setStats] = useState({ alive: 0, ghost: 0, plays: 0 });
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
   const [particleEffects, setParticleEffects] = useState<ParticleEffect[]>([]);
+  
+  const [difficulty, setDifficulty] = useState(getDifficulty(0));
+  const [anomaliesToClick, setAnomaliesToClick] = useState(difficulty.anomalies);
+  const [timeLeft, setTimeLeft] = useState(difficulty.time);
 
   const ref = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -116,17 +130,23 @@ export default function EasterEgg() {
     try {
       const storedStats = localStorage.getItem('quantumConundrumStats');
       if (storedStats) {
-        setStats(JSON.parse(storedStats));
+        const parsedStats = JSON.parse(storedStats);
+        setStats(parsedStats);
+        setDifficulty(getDifficulty(parsedStats.plays || 0));
       }
     } catch (error) {
       console.error("Failed to parse stats from localStorage", error);
     }
   }, []);
 
-  const updateStats = useCallback((result: CatState) => {
-    if (!result) return;
-    const newStats = { ...stats, [result]: stats[result] + 1 };
+  const updateStats = useCallback((result: CatState, play: boolean) => {
+    const newStats = { 
+        ...stats, 
+        [result as 'alive' | 'ghost']: result ? stats[result as 'alive' | 'ghost'] + 1 : stats[result as 'alive' | 'ghost'],
+        plays: play ? stats.plays + 1 : stats.plays
+    };
     setStats(newStats);
+    setDifficulty(getDifficulty(newStats.plays));
     try {
       localStorage.setItem('quantumConundrumStats', JSON.stringify(newStats));
     } catch (error) {
@@ -140,10 +160,14 @@ export default function EasterEgg() {
   };
   
   const startExperiment = () => {
-    setProgress(0);
-    setTimeLeft(10);
+    updateStats(null, true);
+    const currentDifficulty = getDifficulty(stats.plays + 1); // Use upcoming play count
+    setDifficulty(currentDifficulty);
+    setAnomaliesToClick(currentDifficulty.anomalies);
+    setTimeLeft(currentDifficulty.time);
     setAnomalies([]);
     setParticleEffects([]);
+    setPetState(null);
     setGameState('playing');
     
     timerRef.current = setInterval(() => {
@@ -157,19 +181,23 @@ export default function EasterEgg() {
       });
     }, 1000);
 
-    anomalySpawnerRef.current = setInterval(() => {
-      setAnomalies(prevAnomalies => {
-        const newAnomaly: Anomaly = {
-          id: Date.now(),
-          x: Math.random() * 90,
-          y: Math.random() * 90,
-          Icon: ANOMALY_ICONS[Math.floor(Math.random() * ANOMALY_ICONS.length)],
-          color: ANOMALY_COLORS[Math.floor(Math.random() * ANOMALY_COLORS.length)],
-        };
-        const updatedAnomalies = prevAnomalies.length > 5 ? prevAnomalies.slice(1) : prevAnomalies;
-        return [...updatedAnomalies, newAnomaly];
-      });
-    }, 800);
+    const spawnAnomaly = () => {
+        setAnomalies(prevAnomalies => {
+            const newAnomaly: Anomaly = {
+              id: Date.now(),
+              x: 5 + Math.random() * 85,
+              y: 5 + Math.random() * 85,
+              Icon: ANOMALY_ICONS[Math.floor(Math.random() * ANOMALY_ICONS.length)],
+              color: ANOMALY_COLORS[Math.floor(Math.random() * ANOMALY_COLORS.length)],
+            };
+            // Limit total anomalies on screen to avoid clutter
+            const updatedAnomalies = prevAnomalies.length > 7 ? prevAnomalies.slice(1) : prevAnomalies;
+            return [...updatedAnomalies, newAnomaly];
+        });
+    }
+
+    anomalySpawnerRef.current = setInterval(spawnAnomaly, currentDifficulty.spawnRate);
+    spawnAnomaly(); // Spawn one immediately
   };
 
   const handleAnomalyClick = (id: number, x: number, y: number) => {
@@ -181,34 +209,39 @@ export default function EasterEgg() {
       setParticleEffects(prev => prev.filter(p => p.id !== newEffect.id));
     }, 2000);
 
-    setProgress(prev => {
-      const newProgress = prev + 25;
-      if (newProgress >= 100) {
+    setAnomaliesToClick(prev => {
+      const newCount = prev - 1;
+      if (newCount <= 0) {
         cleanupTimers();
         observe();
-        return 100;
+        return 0;
       }
-      return newProgress;
+      return newCount;
     });
   };
 
   const observe = () => {
     setGameState('revealing');
     setTimeout(() => {
-      const result = Math.random() > 0.5 ? 'alive' : 'ghost';
+       // Make death more prominent
+      const result = Math.random() > 0.6 ? 'alive' : 'ghost';
       setCatState(result);
-      updateStats(result);
+      setPetState(result);
+      updateStats(result, false); // Don't increment play count again here
       setGameState('result');
-    }, 2000);
+    }, 2500);
   };
 
   const reset = () => {
     cleanupTimers();
     setGameState('idle');
     setCatState(null);
-    setProgress(0);
+    setPetState(null);
     setAnomalies([]);
     setParticleEffects([]);
+    const currentDifficulty = getDifficulty(stats.plays);
+    setDifficulty(currentDifficulty);
+    setAnomaliesToClick(currentDifficulty.anomalies);
   };
   
   useEffect(() => {
@@ -217,6 +250,7 @@ export default function EasterEgg() {
 
   return (
     <>
+      {petState && <PagePet type={petState} onReset={reset} />}
       {isGameActive && (
         <div 
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 animate-fade-in"
@@ -235,7 +269,7 @@ export default function EasterEgg() {
           <Card className={cn(
               "relative border-border/40 shadow-lg transition-all duration-700 ease-out text-center overflow-hidden w-full",
               isVisible && !isGameActive ? "opacity-100 translate-y-0 bg-card/30" : !isGameActive ? "opacity-0 translate-y-5" : "",
-              isGameActive ? "max-w-4xl h-auto md:h-[700px] flex flex-col bg-background" : "max-w-full"
+              isGameActive ? "max-w-3xl h-auto md:h-[600px] flex flex-col bg-background" : "max-w-full"
           )}
           style={{ transitionDelay: isVisible ? `200ms` : '0ms' }}
           >
@@ -263,6 +297,7 @@ export default function EasterEgg() {
                             <cite className="text-sm text-foreground/70 not-italic">- The Cat (probably)</cite>
                           </blockquote>
                            <div className="text-sm text-foreground/80">
+                             <p>Timeline #{stats.plays + 1}</p>
                              <p>Cats Observed Alive: <span className="font-bold text-green-500">{stats.alive}</span></p>
                              <p>Cats Decohered: <span className="font-bold text-sky-400">{stats.ghost}</span></p>
                            </div>
@@ -278,14 +313,28 @@ export default function EasterEgg() {
                       <div className="space-y-4 animate-fade-in w-full h-full flex flex-col">
                           <h3 className="font-bold text-lg text-primary">{gameState === 'failed' ? 'Experiment Failed!' : 'Tap the Anomalies!'}</h3>
                           <div className="space-y-2">
-                             <Progress value={progress} className="w-full" />
-                             <div className="flex justify-between items-center text-sm text-foreground/70">
-                                 <span>Observation Meter</span>
-                                 <span className="flex items-center gap-1"><Timer className="h-4 w-4" />{timeLeft}s</span>
+                            <div className="flex justify-between items-center text-sm font-medium">
+                                <span className={cn(
+                                    "flex items-center gap-2",
+                                    anomaliesToClick > 0 ? "text-amber-500" : "text-green-500"
+                                )}>
+                                    {anomaliesToClick > 0 ? (
+                                        <>
+                                         <Atom className="h-4 w-4 animate-spin" style={{ animationDuration: '3s' }} />
+                                         {anomaliesToClick} Anomalies Remaining
+                                        </>
+                                    ) : (
+                                        <>
+                                         <CheckCircle2 className="h-4 w-4" />
+                                         Objective Complete!
+                                        </>
+                                    )}
+                                </span>
+                                <span className="flex items-center gap-1 text-red-500"><Timer className="h-4 w-4" />{timeLeft}s</span>
                              </div>
                           </div>
                           <div 
-                            className="relative w-full flex-grow bg-primary/5 border border-primary/20 rounded-lg mt-2 min-h-[250px] md:min-h-[400px] touch-none"
+                            className="relative w-full flex-grow bg-primary/5 border border-primary/20 rounded-lg mt-2 min-h-[250px] md:min-h-[350px] touch-none"
                           >
                             {gameState === 'failed' && (
                                 <div className="absolute inset-0 flex items-center justify-center">
@@ -306,7 +355,7 @@ export default function EasterEgg() {
                                ))}
                           </div>
                            <p className="text-xs text-foreground/80 pt-2 flex items-center justify-center gap-2">
-                            {gameState === 'failed' ? 'The quantum state destabilized. The timeline has been purged.' : 'Quickly! Tap the anomalies to charge the meter!'}
+                            {gameState === 'failed' ? 'The quantum state destabilized. The timeline has been purged.' : `Collect ${difficulty.anomalies} anomalies in ${difficulty.time} seconds!`}
                           </p>
                           <div className="w-full pt-2">
                               {gameState === 'failed' && (
@@ -318,9 +367,10 @@ export default function EasterEgg() {
 
                   {gameState === 'revealing' && (
                       <div className="space-y-4 animate-fade-in text-center relative w-full h-full flex flex-col items-center justify-center">
-                          <FunParticles type="revealing" count={200} />
+                          <FunParticles type="revealing" count={300} />
                           <h3 className="text-xl font-bold text-primary">Wave Function Collapsing...</h3>
                           <p className="text-foreground/80">Determining final state...</p>
+                          <Progress value={100} className="w-1/2 animate-pulse" />
                       </div>
                   )}
 
@@ -333,7 +383,7 @@ export default function EasterEgg() {
                                       <h3 className="font-bold text-green-500">Observation Complete!</h3>
                                       <Cat className="h-16 w-16 mx-auto text-green-500 animate-popper" />
                                       <p className="text-xl font-bold text-green-500">The cat is ALIVE!</p>
-                                      <p className="text-sm text-foreground/80">The superposition collapsed into a definite state of life. Congratulations!</p>
+                                      <p className="text-sm text-foreground/80">The superposition collapsed into a definite state of life. A pet now follows you!</p>
                                   </div>
                               )}
                               {catState === 'ghost' && (
@@ -342,7 +392,7 @@ export default function EasterEgg() {
                                       <h3 className="font-bold text-destructive">You Monster.</h3>
                                       <Ghost className="h-16 w-16 mx-auto text-sky-400 animate-ghost" />
                                       <p className="text-xl font-bold text-sky-400">The cat has decohered.</p>
-                                      <p className="text-sm text-foreground/80">In this timeline, the cat has quantum-tunnelled into the great beyond. Are you happy now?</p>
+                                      <p className="text-sm text-foreground/80">A vengeful spirit now haunts this page. Are you happy now?</p>
                                   </div>
                               )}
                           </div>
@@ -354,11 +404,10 @@ export default function EasterEgg() {
                   )}
               </CardContent>
               <CardFooter className="flex justify-center text-xs text-muted-foreground pb-4">
-                  <p>Experiment Results are saved locally in your browser.</p>
+                  <p>Experiment Results and play count are saved locally in your browser.</p>
               </CardFooter>
           </Card>
       </section>
     </>
   )
 }
-

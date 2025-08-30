@@ -108,6 +108,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
           {/* The AnimatedBackground component is rendered here to appear on all pages. */}
           <AnimatedBackground />
+          <div id="pet-container"></div>
           <MainNav />
           {/* Renders the active page content. */}
           <main>{children}</main>

@@ -18,9 +18,12 @@ const navLinks = [
   { href: '/projects', label: 'Projects', icon: Star },
 ];
 
-const ICON_SIZE = 56; // w-14, which is 3.5rem or 56px
-const PADDING = 10; // Combined horizontal padding/spacing
-const BUTTON_WIDTH = 48; // h-12 w-12, which is 3rem or 48px
+// --- PRECISE WIDTH CALCULATION CONSTANTS ---
+// These values are based on the Tailwind CSS classes used (w-14, p-1, etc.)
+const ICON_CONTAINER_WIDTH = 56; // w-14 -> 3.5rem -> 56px
+const GAP_WIDTH = 4; // gap-1 -> 0.25rem -> 4px
+const HORIZONTAL_PADDING = 8; // px-1 on each side -> 0.25rem * 2 -> 8px
+const TOGGLE_BUTTON_WIDTH = 48; // h-12 w-12 -> 3rem -> 48px
 
 /**
  * MobileNav provides an animated, space-saving navigation for small screens.
@@ -63,13 +66,17 @@ export default function MobileNav() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  const handleLinkClick = () => {
-    setIsOpen(false);
-  };
   
-  // Precise width calculation to prevent overflow
-  const navWidth = isOpen ? (navLinks.length * ICON_SIZE) + PADDING + BUTTON_WIDTH : BUTTON_WIDTH;
+  // Close menu on navigation
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
+  // --- DEFINITIVE OVERFLOW FIX ---
+  // Calculate the exact width required for the expanded menu
+  const navWidth = isOpen 
+    ? (navLinks.length * ICON_CONTAINER_WIDTH) + ((navLinks.length -1) * GAP_WIDTH) + HORIZONTAL_PADDING + TOGGLE_BUTTON_WIDTH
+    : TOGGLE_BUTTON_WIDTH;
 
   return (
     <div ref={navRef} className="relative h-12">
@@ -80,27 +87,26 @@ export default function MobileNav() {
         style={{ width: `${navWidth}px`}}
       >
         {/* Nav Links Container */}
-        <div className="absolute right-0 top-0 h-12 flex items-center justify-end">
+        <div className={cn(
+          "flex items-center gap-1 px-1 mr-[48px] h-full transition-opacity duration-300",
+          isOpen ? 'opacity-100' : 'opacity-0'
+        )}>
           {navLinks.map((link, index) => {
             const isActive = pathname === link.href;
-            // Precise position calculation for each icon
-            const rightPosition = BUTTON_WIDTH + (index * ICON_SIZE) + PADDING;
 
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={handleLinkClick}
                 className={cn(
-                  'absolute flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-lg text-xs font-medium transition-all duration-300 ease-in-out',
+                  'flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-lg text-xs font-medium transition-all duration-300 ease-in-out',
                   isActive ? 'text-primary' : 'text-foreground/70 hover:text-primary',
-                  isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                  isOpen ? 'scale-100' : 'scale-0'
                 )}
                 style={{
-                  right: isOpen ? `${rightPosition}px` : `${BUTTON_WIDTH / 2}px`,
-                  transform: isOpen ? 'scale(1)' : 'scale(0.5)',
                   transitionDelay: isOpen ? `${index * 50}ms` : '0ms'
                 }}
+                tabIndex={isOpen ? 0 : -1}
               >
                 <link.icon className="h-5 w-5" />
                 <span className="truncate">{link.label}</span>
@@ -134,4 +140,3 @@ export default function MobileNav() {
     </div>
   );
 }
-
