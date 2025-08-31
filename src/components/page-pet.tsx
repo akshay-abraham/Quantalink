@@ -74,24 +74,25 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  /** Ghost AI: A more aggressive state machine. */
+  /** Ghost AI: A state machine for unpredictable behavior. */
   const runGhostAI = useCallback(() => {
     if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
 
-    // New aggressive state order
+    // More aggressive pattern: Swoosh -> Hide -> Short Stalk -> Repeat
     const states: GhostState[] = ['swooshing', 'hiding', 'stalking'];
     const nextState = states[Math.floor(Math.random() * states.length)];
     
-    // Stalking is short, others are longer
-    const stateDuration = nextState === 'stalking' 
-        ? 2000 // Very short 2s stalk
-        : Math.random() * 7000 + 8000; // 8-15s for swoosh/hide
+    const stateDuration = {
+      swooshing: Math.random() * 2000 + 3000, // 3-5s
+      hiding: 5000, // 5s
+      stalking: Math.random() * 10000 + 8000, // 8-18s
+    }[nextState];
 
 
     const executeState = (state: GhostState) => {
       let animId: number;
       
-      if (state === 'hiding') { // Teleport logic
+      if (state === 'hiding') {
         setIsVisible(false);
         ghostStateTimeout.current = setTimeout(() => {
           const newX = Math.random() * (window.innerWidth - 60);
@@ -99,11 +100,11 @@ const PagePet = ({ type, startX, startY }: PetState) => {
           setPosition({ x: newX, y: newY });
           setIsVisible(true);
           ghostStateTimeout.current = setTimeout(runGhostAI, stateDuration);
-        }, 1500); // 1.5s invisible
+        }, 1500); // 1.5s invisible time
         return;
       }
       
-      // Movement logic for 'stalking' and 'swooshing'
+      // Common movement logic for 'stalking' and 'swooshing'
       setIsVisible(true);
       const targetX = Math.random() * (window.innerWidth - 60);
       const targetY = Math.random() * (window.innerHeight - 60);
@@ -144,21 +145,15 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         animId = requestAnimationFrame(move);
       };
       animId = requestAnimationFrame(move);
-      
-      // Safety net to transition state, though the frame check should handle it.
-      ghostStateTimeout.current = setTimeout(() => {
-          cancelAnimationFrame(animId);
-          runGhostAI();
-      }, stateDuration + 100);
     };
 
     executeState(nextState);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Initial aggressive swoosh for the ghost when it spawns.
   useEffect(() => {
     if (type === 'ghost' && !isAnimatingIn) {
-      // Start with an aggressive swoosh
       let animId: number;
       const targetX = Math.random() * (window.innerWidth - 60);
       const targetY = Math.random() * (window.innerHeight - 60);
@@ -167,9 +162,11 @@ const PagePet = ({ type, startX, startY }: PetState) => {
           setPosition(prevPos => {
             const dx = targetX - prevPos.x;
             const dy = targetY - prevPos.y;
-            vx += dx * 0.05;
-            vy += dy * 0.99;
-            vx = Math.max(-10, Math.min(10, vx));
+            vx += dx * 0.05; // High acceleration
+            vy += dy * 0.05;
+            vx *= 0.99; // Low friction
+            vy *= 0.99;
+            vx = Math.max(-10, Math.min(10, vx)); // High max speed
             vy = Math.max(-10, Math.min(10, vy));
             return { x: prevPos.x + vx, y: prevPos.y + vy };
           });
@@ -184,6 +181,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
 
       return () => clearTimeout(swooshTimeout);
     }
+    // Cleanup for ghost AI
     return () => {
       if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
