@@ -33,7 +33,7 @@ export default function ProfileSection() {
         )}
       >
          {/* Adds a pulsing glow effect behind the avatar on hover. */}
-        <div className="absolute -inset-1.5 bg-gradient-to-r from-primary to-accent-foreground rounded-full opacity-0 group-hover:opacity-75 transition duration-500 group-hover:blur-xl animate-pulse group-hover:animate-none"></div>
+        <div className="absolute -inset-1.5 bg-gradient-to-r from-primary to-accent-foreground rounded-full opacity-0 group-hover:opacity-75 transition duration-500 group-hover:blur-xl group-hover:animate-none"></div>
         <Avatar className="relative h-28 w-28 md:h-32 md:w-32 border-4 border-card/80 shadow-lg group-hover:border-primary/50 transition-all duration-500 ease-out transform group-hover:scale-110">
           {/* 
             The profile picture. The `src` points to `/profile.webp`.
