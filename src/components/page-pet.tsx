@@ -50,6 +50,8 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   useEffect(() => {
     setIsMounted(true);
     
+    // The initial "fly-in" animation. After it completes, the physics-based
+    // or AI-based animations take over.
     const animTimeout = setTimeout(() => {
       if (petRef.current) {
         const rect = petRef.current.getBoundingClientRect();
@@ -58,6 +60,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
       setIsAnimatingIn(false);
     }, 1000); 
 
+    // Cleanup function to clear all timers and animation frames when the pet is despawned.
     return () => {
       clearTimeout(animTimeout);
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
@@ -66,6 +69,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
+  // Track the mouse position globally.
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
@@ -78,13 +82,15 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   const runGhostAI = useCallback(() => {
     if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
 
-    const states: GhostState[] = ['stalking', 'hiding', 'swooshing'];
+    // The sequence of states is more deliberate now: Swoosh -> Hide -> Stalk
+    const states: GhostState[] = ['swooshing', 'hiding', 'stalking'];
     const nextState = states[Math.floor(Math.random() * states.length)];
     
+    // Define durations for each state for more controlled behavior.
     const stateDuration = {
-      stalking: Math.random() * 7000 + 5000, // 5-12s
-      hiding: Math.random() * 7000 + 5000,   // 5-12s
-      swooshing: Math.random() * 7000 + 5000,// 5-12s
+      swooshing: 3000, // A long, graceful, and unsettling dash.
+      hiding: 1500, // A brief, jarring disappearance.
+      stalking: 8000 + Math.random() * 7000, // A long, slow, menacing drift (8-15 seconds).
     }[nextState];
 
     const executeState = (state: GhostState) => {
@@ -92,6 +98,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
       
       if (state === 'hiding') {
         setIsVisible(false);
+        // After hiding, teleport to a new spot and transition to the next state.
         ghostStateTimeout.current = setTimeout(() => {
           const newX = Math.random() * (window.innerWidth - 60);
           const newY = Math.random() * (window.innerHeight - 60);
@@ -107,15 +114,18 @@ const PagePet = ({ type, startX, startY }: PetState) => {
       const targetX = Math.random() * (window.innerWidth - 60);
       const targetY = Math.random() * (window.innerHeight - 60);
       
+      // 'Swooshing' uses high acceleration and low friction for a fast dash.
+      // 'Stalking' uses very low acceleration for a slow drift.
       const isSwooshing = state === 'swooshing';
-      const acceleration = isSwooshing ? 0.05 : 0.002;
-      const friction = isSwooshing ? 0.99 : 0.96;
-      const maxSpeed = isSwooshing ? 10 : 1;
+      const acceleration = isSwooshing ? 0.05 : 0.0005;
+      const friction = isSwooshing ? 0.98 : 0.94; // Lower friction for swoosh to glide more.
+      const maxSpeed = isSwooshing ? 10 : 0.5;
 
       let { vx, vy } = { vx: 0, vy: 0 };
       
       let startTime = performance.now();
       const move = (currentTime: number) => {
+        // When the state's duration is up, cancel this animation and start the next AI cycle.
         if (currentTime - startTime > stateDuration) {
             cancelAnimationFrame(animId);
             runGhostAI();
@@ -232,8 +242,8 @@ const PagePet = ({ type, startX, startY }: PetState) => {
 
   const PetIcon = type === 'alive' ? Cat : Ghost;
   const petClasses = type === 'alive' 
-    ? 'text-green-500' 
-    : 'text-sky-400';
+    ? 'animate-cat-colors' 
+    : 'animate-ghost-colors';
 
   const container = document.getElementById('pet-container');
   if (!container) return null;

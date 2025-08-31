@@ -274,7 +274,16 @@ export default function EasterEgg() {
   const observe = () => {
     setGameState('revealing');
     setTimeout(() => {
-      const result = Math.random() > 0.5 ? 'alive' : 'ghost';
+      let result: PetType;
+      // Implement fair randomness for the first two plays.
+      if (stats.plays === 0) {
+        result = Math.random() > 0.5 ? 'alive' : 'ghost';
+      } else if (stats.plays === 1) {
+        result = stats.lastResult === 'alive' ? 'ghost' : 'alive';
+      } else {
+        result = Math.random() > 0.5 ? 'alive' : 'ghost';
+      }
+      
       setCatState(result);
       // **Timeline (Level) Progression:** Only increment the play count on a successful observation.
       updateStats(result, true); 
@@ -415,7 +424,7 @@ export default function EasterEgg() {
                                     <Skull className="h-16 w-16 text-destructive/50" />
                                     <Skull className="h-16 w-16 text-destructive/50" />
                                   </div>
-                                   <Button onClick={reset} variant="destructive">Reset Experiment</Button>
+                                   <Button onClick={reset} size="lg" variant="destructive">Reset Experiment</Button>
                                 </div>
                               )}
                               {/* The main game board where anomalies appear */}
