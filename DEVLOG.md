@@ -1,4 +1,105 @@
-# Dev log
+# 📎 Appendix — Quantalink Portfolio
+
+[⬅ Back to Main README](./README.md)
+
+> **Version:** v3.0 | **Framework:** Next.js | **Language:** TypeScript | **Author:** Akshay K Rooben Abraham
+
+---
+
+## 🌀 Background
+
+> "What if a portfolio wasn't just a website… but a _thought experiment_ you could explore?"
+
+The **Quantalink Portfolio** reimagines a resume as a **physics-inspired interface**, where aesthetics, interactivity, and science converge.
+
+### ✨ Key Concepts
+
+| Concept                        | Inspired By                   | Implementation Details                                                        |
+| ------------------------------ | ----------------------------- | ----------------------------------------------------------------------------- |
+| **Quantum Foam Background**    | Quantum Electrodynamics (QED) | Animated particles, virtual photons, and vacuum fluctuations as moving nodes. |
+| **Observer Effect in UI**      | Quantum Mechanics             | 3D tilt cards & reactive elements respond to cursor position.                 |
+| **Schrödinger's Cat Game**     | Quantum Superposition         | Win/Loss states collapse based on player actions.                             |
+| **Acrylic & Glassmorphism UI** | Modern OS Design Systems      | `backdrop-blur`, transparency layers, and soft shadows for depth.             |
+| **Gamified Outcomes**          | Physics Thought Experiments   | Alive cat or ghost companion persists across pages post-game.                 |
+
+---
+
+## 🎮 The _Quantum Conundrum_ Mini-Game
+
+> A playful, skill-based **gamification of Schrödinger's Cat** built entirely with React, Framer Motion, and TypeScript.
+
+### 🧩 Core Gameplay Loop
+
+1. **Idle State:** User opens the game modal.
+2. **Play State:** Click on `Quantum Anomalies` within the time limit.
+3. **Result State:**
+   - **Win →** _Alive Cat_ spawns as an interactive page pet.
+   - **Lose →** _Decohered Ghost_ with spooky AI haunts the site.
+4. **Persistent Outcome:** Pet remains until game replay.
+
+---
+
+### 🕹️ Difficulty Progression
+
+| Level | Anomalies Required | Time Limit | Difficulty Curve         |
+| ----- | ------------------ | ---------- | ------------------------ |
+| 1     | 5                  | 15s        | Linear growth, tutorial  |
+| 2-3   | 8–12               | 12–10s     | Moderate, skill-based    |
+| 4+    | 15+                | 8s         | Exponential, expert mode |
+
+> _Powered by a dynamic state machine & localStorage to track progression._
+
+---
+
+### 🐾 Page Pet Behaviors
+
+| Pet Type      | Behavior Model                                        | Interactivity                                |
+| ------------- | ----------------------------------------------------- | -------------------------------------------- |
+| **Alive Cat** | Random wandering + cursor-follow physics              | "Meow!" tooltip on hover & click             |
+| **Ghost**     | Stalking → Hiding → Swooshing states via AI scheduler | Random opacity, sudden dashes, spooky timing |
+
+---
+
+## 🛠️ Developer's Log (v3.0)
+
+> Collapsible sections for each version with detailed commits, changes, and rationale.
+
+<details>
+<summary>📜 <b>v3.0 — Final Polish & SEO Pass</b></summary>
+
+- Added **Twitter Card metadata** for rich social sharing.
+- Implemented **canonical URLs** for all pages.
+- Optimized **page titles** for Google ranking (e.g., "About Akshay K Rooben Abraham").
+- Rewrote **Ghost AI** with smooth stalking + swoosh mechanics.
+- Persistent **Alive Cat** — removed dismiss-on-click for long-term presence.
+</details>
+
+<details>
+<summary>🎮 <b>v2.3 — Gamification Update</b></summary>
+
+- Added **full game loop** with progress bar, timer, and levels.
+- Created **Global Pet State Manager** for spawning page pets across routes.
+- Engineered **Fly-Out Animation** to transition result icon → roaming pet seamlessly.
+- Progressive difficulty scaling with linear → exponential growth.
+</details>
+
+<details>
+<summary>🖼️ <b>v2.2 — Foundational Polish</b></summary>
+
+- Multi-page architecture with `/about`, `/skills`, `/projects`.
+- InfiniteScroller for **skill logos** using SimpleIcons.
+- Particle cap to prevent animation overload.
+- SEO: **sitemap.xml** + **robots.txt** auto-generation via `next-sitemap`.
+</details>
+
+---
+
+## 📂 References & Docs
+
+- **[Main README](./README.md)** – Project overview, features, and tech stack.
+- **[Pseudocode.md](./pseudocode.md)** – Architectural sketches & code flow.
+
+# Dev log detailed
 
 ## V3.0: Final Polish & Experience Refinement
 

@@ -1,10 +1,18 @@
-## [![Live Site](https://img.shields.io/badge/Live%20Site-akshayabraham.vercel.app-brightgreen)](https://akshayabraham.vercel.app) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+# 🚀 Quantalink Portfolio — **Technical + Visual Showcase**
+
+[![Live Site](https://img.shields.io/badge/Live%20Site-akshayabraham.vercel.app-brightgreen?style=for-the-badge&logo=vercel)](https://akshayabraham.vercel.app)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge&logo=gnu)](https://www.gnu.org/licenses/gpl-3.0)
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 
 ---
 
 ## 🧠 **Core Vision**
 
-Quantalink fuses **Quantum Physics** with **Next.js Web Engineering** to deliver a **recruiter-ready, professional portfolio** that is visually captivating, technically polished, and conceptually unique.
+Quantalink fuses **Quantum Physics** + **Next.js Web Engineering** into a
+**recruiter-ready, visually immersive, and technically elegant** portfolio.
+
+> _"Science as an Interface. Code as an Art Form."_
 
 ---
 
@@ -12,59 +20,57 @@ Quantalink fuses **Quantum Physics** with **Next.js Web Engineering** to deliver
 
 ### 🎨 **Design & Aesthetics**
 
-- **Glassmorphism UI** with `backdrop-blur` effects for depth.
-- **Quantum-inspired Animated Background** representing quantum foam & observer effect.
-- **Framer Motion + Tailwind Magic** for cinematic page transitions & 3D tilt interactions.
+- **Glassmorphism UI** with `backdrop-blur` + layered transparency.
+- **Quantum-Inspired Animated Background** simulating vacuum fluctuations & quantum foam. _[learn more](./APPENDIX.md)_
+- **Framer Motion** for cinematic transitions, 3D tilt cards, and parallax effects.
+
+---
 
 ### 🗂 **Multi-Page Architecture**
 
-- `/` → Landing page with overview + CTA links.
-- `/about` → Personal + professional journey with animated timelines.
-- `/skills` → **InfiniteScroller** ribbons with official tech logos.
-- `/projects` → Dynamic portfolio with filters & glowing hover animations.
+| Route       | Purpose                                                  |
+| ----------- | -------------------------------------------------------- |
+| `/`         | Landing page with **overview + CTAs**                    |
+| `/about`    | Personal & professional journey + **animated timelines** |
+| `/skills`   | **InfiniteScroller** ribbons + official tech logos       |
+| `/projects` | Dynamic portfolio grid + hover-glow interactions         |
 
-### 🕹 **Easter Egg – Quantum Conundrum**
+---
 
-- Mini-game inspired by Schrödinger’s Cat 🐱.
-- Progressive difficulty, interactive page pets (Alive Cat / Ghost).
-- Performance-safe particle systems with capped render limits.
+### 🕹 **Easter Egg — Quantum Conundrum**
+
+- Schrödinger’s Cat–themed **mini-game** with levels, timers & outcomes.
+- **Page Pets**: Win → Alive Cat 🐱 | Lose → Quantum Ghost 👻
+- Particle engine with **capped FPS & render limits** for smooth performance.
 
 ---
 
 ## 🛠 **Tech Stack**
 
-| Category       | Tech Used                         |
-| -------------- | --------------------------------- |
-| Framework      | Next.js (App Router)              |
-| Language       | TypeScript (TS, TSX)              |
-| UI Components  | React, ShadCN UI, Tailwind CSS    |
-| Animations     | Framer Motion, CSS Transitions    |
-| Deployment     | Vercel                            |
-| SEO & Indexing | next-sitemap, JSON-LD, Open Graph |
+| Category           | Technologies Used                                |
+| ------------------ | ------------------------------------------------ |
+| **Framework**      | Next.js (App Router)                             |
+| **Language**       | TypeScript (TS, TSX)                             |
+| **UI & Styling**   | React, ShadCN UI, Tailwind CSS                   |
+| **Animations**     | Framer Motion, Custom Canvas Shaders             |
+| **Deployment**     | Vercel                                           |
+| **SEO & Indexing** | next-sitemap, Open Graph, Twitter Cards, JSON-LD |
 
 ---
 
 ## 📈 **SEO + Performance**
 
-- **Sitemap & robots.txt** → Auto-generated for Google indexing.
-- **Meta Tags** → OpenGraph, Twitter Cards for rich link previews.
-- **Structured Data** → JSON-LD for better ranking.
-- **Keyword Targets:** `Akshay Abraham`, `Akshay K Rooben Abraham`, typo variations supported.
+- **Meta Tags** → Optimized for Google, Twitter, LinkedIn previews.
+- **Structured Data** → JSON-LD markup for better ranking.
+- **Auto Sitemap** → `sitemap.xml` + `robots.txt` with next-sitemap.
+- **Keyword Targets** → `Akshay Abraham`, `Akshay K Rooben Abraham`, typo variations handled.
 
 ---
 
-## 📂 **Reference Docs**
+## 📂 **Documentation Links**
 
-- **[Pseudocode.md](./pseudocode.md)** → Component logic + architecture.
-- **[DevLog.md](./devlog.md)** → Version history + changelogs.
-
----
-
-## 👨‍💻 **For Recruiters**
-
-- Clean, modular code with **JSDoc** comments.
-- Responsive UI → Works on **mobile & desktop**.
-- Live demo + source repo for quick review.
+- **[APPENDIX.md](./APPENDIX.md)** → Game philosophy + detailed devlog.
+- **[Pseudocode.md](./pseudocode.md)** → Component flow & architecture sketches.
 
 ---
 
@@ -75,6 +81,12 @@ This project is licensed under the **GNU GPL v3** License.
 
 ---
 
-```
+## 🔗 **Quick Links**
 
-```
+| Resource              | Link                                                         |
+| --------------------- | ------------------------------------------------------------ |
+| **Live Demo**         | [akshayabraham.vercel.app](https://akshayabraham.vercel.app) |
+| **Game Pseudocode**   | [Pseudocode.md](./pseudocode.md)                             |
+| **Appendix & Devlog** | [APPENDIX.md](./APPENDIX.md)                                 |
+
+---
