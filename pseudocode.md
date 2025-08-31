@@ -1,161 +1,167 @@
-# Quantalink Portfolio - Pseudocode & Architecture Overview
+# 🌌 Quantalink Portfolio — Pseudocode & Architecture Overview
 
-## 1. Global State Management (`src/lib/pet-state.ts`)
+---
 
-- **Purpose:** A global state store (using a simple pub/sub model) to manage the page pet's existence and initial animation coordinates. This allows the pet to persist across all pages.
-- **State:**
-  - `pet`: object | null
-    - `type`: 'alive' | 'ghost'
-    - `startX`: number (initial screen X position for the fly-out animation)
-    - `startY`: number (initial screen Y position for the fly-out animation)
-- **Actions:**
-  - `setPet(type, startX, startY)`: Sets the pet's data, which triggers the `GlobalPetRenderer` to render the pet and start the animation.
-  - `getSnapshot()`: Returns the current state.
-  - `subscribe(listener)`: Allows components to listen for state changes.
+## 🗂 **1. Global State Management** (`src/lib/pet-state.ts`)
 
-## 2. The Quantum Conundrum Mini-Game (`src/components/easter-egg.tsx`)
+### **Purpose**
 
-- **Purpose:** A client-side, fully-fledged mini-game that determines which page pet spawns.
-- **State:**
+A global state store using a **lightweight pub/sub model** to manage page pet existence & fly-in animation coordinates. Enables persistence across pages.
 
-  - `gameState`: 'idle' | 'playing' | 'revealing' | 'result' | 'failed'
-  - `stats`: { alive: number, ghost: number, plays: number } (loaded from localStorage)
-  - `difficulty`: { time: number, anomalies: number, spawnRate: number }
-  - `anomaliesToClick`: number (remaining targets)
-  - `timeLeft`: number
-  - `isResultIconVisible`: boolean (controls visibility of the result icon post-game)
-    > > > > > > > 4c6b5a5 (even more add more changes we made and also update pseudocode.md)
-  - `anomalies`: Array<object> (the anomaly targets currently on screen)
-  - `particleEffects`: Array<object> (for click feedback)
-  - `isResultIconVisible`: boolean (controls the visibility of the result icon post-game to enable the fly-out animation)
+### **State Variables**
 
-- **Game Logic Flow:**
+| Variable           | Type               | Description                                    |
+| ------------------ | ------------------ | ---------------------------------------------- |
+| `pet`              | object             | Holds pet type & initial coordinates           |
+| `type`             | 'alive' \| 'ghost' | Determines pet variant                         |
+| `startX`, `startY` | number             | Initial spawn coordinates for fly-in animation |
 
-  1.  **`useEffect` on Mount:**
+### **Actions**
 
-      - Load `stats` from `localStorage` to track persistence.
-      - Calculate initial `difficulty` based on loaded stats.
+- `setPet(type, startX, startY)`: Spawns pet with given type & position.
+- `getSnapshot()`: Returns current state snapshot.
+- `subscribe(listener)`: Adds listener for state changes.
 
-  2.  **`startExperiment()`:**
+---
 
-      - Clear any existing `pet` from the global state.
-      - Update `stats` (increment `plays`) and save to `localStorage`.
-      - Calculate new `difficulty` based on the new play count.
-      - Reset `anomaliesToClick`, `timeLeft`, `anomalies`.
-      - Set `gameState` to 'playing'.
-      - Start the countdown `timerRef` (`setInterval`).
-      - Start the `anomalySpawnerRef` `setInterval` based on `difficulty.spawnRate`.
-      - Call `spawnAnomaly()` to create the first target immediately.
+## 🎮 **2. Quantum Conundrum Mini-Game** (`src/components/easter-egg.tsx`)
 
-  3.  **`spawnAnomaly()`:**
+### **Purpose**
 
-      - Creates a new anomaly object with a **unique ID** (`Date.now() + Math.random()`), a random position, icon, and color.
-      - Adds the new anomaly to the `anomalies` state array.
-      - To prevent overflow, if `anomalies.length > 7`, it removes the oldest one.
+A fully client-side mini-game deciding which page pet spawns post-game.
 
-  4.  **`handleAnomalyClick(id, x, y)`:**
+### **State Variables**
 
-      - Decrement `anomaliesToClick`.
-      - Remove the clicked anomaly from the `anomalies` array.
-      - Trigger a particle burst effect at the click coordinates (`x`, `y`).
-      - **Check Win Condition:** If `anomaliesToClick <= 0`:
-        - Call `observe()` to start the win sequence.
-      - Else:
-        - Call `spawnAnomaly()` to keep the game board populated.
+| Variable              | Type/Values                                                | Description                           |
+| --------------------- | ---------------------------------------------------------- | ------------------------------------- |
+| `gameState`           | 'idle' \| 'playing' \| 'revealing' \| 'result' \| 'failed' | Game lifecycle stages                 |
+| `stats`               | { alive, ghost, plays }                                    | Persistent stats (via `localStorage`) |
+| `difficulty`          | { time, anomalies, spawnRate }                             | Dynamic difficulty scaling            |
+| `anomaliesToClick`    | number                                                     | Remaining anomalies to clear          |
+| `timeLeft`            | number                                                     | Remaining seconds in round            |
+| `anomalies`           | Array<object>                                              | Active anomalies on screen            |
+| `particleEffects`     | Array<object>                                              | For click feedback bursts             |
+| `isResultIconVisible` | boolean                                                    | Controls fly-out animation visibility |
 
-  5.  **Countdown Timer (`useEffect` with `timeLeft`):**
+---
 
-      - `timerRef` `setInterval` decrements `timeLeft` every second.
-      - **Check Lose Condition:** If `timeLeft <= 1`:
-        - Clean up all timers (`cleanupTimers()`).
-        - Set `gameState` to 'failed'.
+### **Game Logic Flow**
 
-  6.  **`observe()` (Win Sequence):**
+#### **1. Mount Initialization (`useEffect`)**
 
-      - Cleanup all timers.
-      - Set `gameState` to 'revealing'.
-      - `setTimeout(2500ms)` to allow for the "Wave Function Collapsing..." animation:
-        - Randomly determine the `result` ('alive' or 'ghost').
-        - Update `stats` with the result and save to `localStorage`.
-        - Set `catState` to the `result`.
-        - Set `isResultIconVisible` to `true` (to prepare for the fly-out).
-        - Set `gameState` to 'result'.
-        - **Pet Spawning (Delayed Fly-Out Animation):**
-          - `setTimeout(250ms)`:
-            - Get the screen coordinates of the result icon (`Cat` or `Ghost`) using `resultIconRef.current.getBoundingClientRect()`.
-            - Call `setPet(result, x, y)` from the global pet store, passing the icon's coordinates.
-            - Set `isResultIconVisible` to `false` to hide the original icon, creating the illusion it "flew off" the card.
+- Load `stats` from `localStorage`.
+- Calculate difficulty curve based on plays.
 
-  7.  **`reset()`:**
-      - Called by the "Run New Experiment" button.
-      - Cleans up timers.
-      - Resets `gameState` to 'idle' and `catState` to `null`.
-      - Does **not** clear the pet from the global state, allowing it to persist.
+#### **2. startExperiment()**
 
-## 3. The Interactive Page Pet (`src/components/page-pet.tsx`)
+- Clear any active pet state.
+- Increment `plays`, save to `localStorage`.
+- Reset all timers, counters, and anomalies.
+- Set `gameState = 'playing'`.
+- Start `timerRef` (countdown) & `anomalySpawnerRef` (spawn loop).
+- Immediately spawn first anomaly.
 
-- **Purpose:** A client-side component that renders the roaming pet based on the global state. It's rendered via a portal into the root layout.
-- **State:**
+#### **3. spawnAnomaly()**
 
-  - `position`: { x, y } (current position on screen)
-  - `velocity`: { vx, vy } (current velocity for physics-based movement)
-  - `isAnimatingIn`: boolean (true for the first second to play the fly-in animation)
-  - `showMeow`: boolean (for the cat's interaction)
-  - `isVisible`: boolean (for the ghost's fade in/out)
-  - `ghostState`: 'stalking' | 'hiding' | 'swooshing' (The ghost's internal AI state)
+- Creates anomaly with:
+  - `id = Date.now() + Math.random()`
+  - Random position, icon, color.
+- Caps `anomalies.length ≤ 7` to avoid overflow.
 
-- **Animation & Logic:**
+#### **4. handleAnomalyClick(id, x, y)**
 
-  1.  **Initial Spawn (`useEffect` on mount):**
+- Remove anomaly by ID.
+- Add particle burst at `(x, y)`.
+- Decrement `anomaliesToClick`.
+- **Win Check:** If all cleared → `observe()`, else → spawn next anomaly.
 
-      - The component is rendered by `GlobalPetRenderer` when the global `pet` state is not `null`.
-      - An outer `div` has the `animate-fly-in` class.
-      - This animation uses CSS variables (`--start-x`, `--start-y`) which are set inline based on the `pet.startX` and `pet.startY` from the global state.
-      - A timeout sets `isAnimatingIn` to `false` after 1 second, switching from the initial CSS animation to the physics-based `requestAnimationFrame` loop (for cat) or the AI state machine (for ghost).
+#### **5. Countdown Timer**
 
-  2.  **Cat Logic (`requestAnimationFrame` loop, when `type === 'alive'`):**
+- `timerRef` decrements `timeLeft` each second.
+- **Lose Check:** If `timeLeft ≤ 1` → end game → `gameState = 'failed'`.
 
-      - **Movement:**
-        - Get the current mouse position.
-        - If the distance to the mouse is `> 50px`, apply a small force towards the cursor (`vx += dx * 0.0005`). This makes it gently follow.
-        - Apply friction (`vx *= 0.98`) to slow it down naturally.
-        - Enforce a `maxSpeed` to prevent it from moving too fast.
-        - Apply velocity to the `position`.
-        - Bounce off the edges of the window by reversing velocity.
-      - **Interaction:**
-        - `onMouseEnter` or `onClick` on the pet's `div` triggers `setShowMeow(true)`.
-        - A `useEffect` hook with a `setTimeout` hides the meow bubble after 1 second.
-        - The click handler that used to dismiss the cat is **removed**.
+#### **6. observe() (Win Sequence)**
 
-  3.  **Ghost Logic (Internal State Machine, when `type === 'ghost'`):**
-      - The ghost's behavior is driven by a `runGhostAI()` function that recursively calls itself with timeouts to change state.
-      - **`runGhostAI()` function:**
-        1. **Choose Next State:** Randomly select a new state from `['stalking', 'hiding', 'swooshing']`.
-        2. **Execute State Logic:**
-           - **If `state === 'stalking'`:**
-             - Set `isVisible` to `true`.
-             - Calculate a new random target position on the screen.
-             - Use a physics loop (`requestAnimationFrame`) to slowly drift towards the target over 8-15 seconds.
-             - Once the duration is over, call `runGhostAI()` again to transition to a new state.
-           - **If `state === 'hiding'`:**
-             - Set `isVisible` to `false` (via opacity transition).
-             - Use a `setTimeout` for 1.5-3 seconds.
-             - After timeout, set `isVisible` to `true` and immediately call `runGhostAI()` to transition to a new state.
-           - **If `state === 'swooshing'`:**
-             - Set `isVisible` to `true`.
-             - Calculate a new random target position far across the screen.
-             - Use a physics loop with **very high acceleration** and **low friction** to execute a rapid dash towards the target.
-             - The animation is set to take ~3000ms, creating a long, smooth glide.
-             - Once the dash completes, call `runGhostAI()` to transition to a new state.
+- Stop timers.
+- Animate "Wave Function Collapsing…".
+- After 2500ms:
+  - Randomly pick `'alive' | 'ghost'`.
+  - Save result to `stats` + localStorage.
+  - Fly-out animation:
+    - Get screen coordinates of result icon via `getBoundingClientRect()`.
+    - Call `setPet(result, x, y)` with icon position.
+    - Hide original icon → illusion of pet flying off card.
 
-## 4. Infinite Scroller (`src/components/infinite-scroller.tsx`)
+#### **7. reset()**
 
-- **Purpose:** Creates a seamless, looping "ribbon" of elements.
-- **Logic (`useEffect`):**
-  1.  When the component mounts or its children change, it runs the `addAnimation` function.
-  2.  `addAnimation` gets all direct children of the inner `<ul>`.
-  3.  It **clones each child** and appends the clone to the end of the `<ul>`.
-  4.  The clones are marked with `aria-hidden="true"` for accessibility.
-  5.  The `scroller-container` has a CSS keyframe animation (`scrolling-logos`) that translates it by `-50%`. Because the content is now doubled, this creates a perfect, seamless loop.
-  6.  CSS variables (`--animation-duration`, `--animation-direction`) are set on the container to control speed and direction from props.
-  7.  `pauseOnHover` is handled by a simple CSS `hover` selector in the `<ul>`'s class list.
+- Stops timers.
+- Resets `gameState = 'idle'`.
+- Pet persists across runs unless replaced by next game.
+
+---
+
+## 🐾 **3. Interactive Page Pet** (`src/components/page-pet.tsx`)
+
+### **Purpose**
+
+Client-side roaming pet rendered via **React Portal** into root layout.
+
+### **State Variables**
+
+| Variable        | Type                                  | Description                          |
+| --------------- | ------------------------------------- | ------------------------------------ |
+| `position`      | { x, y }                              | Current position                     |
+| `velocity`      | { vx, vy }                            | Movement vector                      |
+| `isAnimatingIn` | boolean                               | Initial fly-in animation flag        |
+| `showMeow`      | boolean                               | Displays speech bubble for alive cat |
+| `isVisible`     | boolean                               | Ghost visibility toggle              |
+| `ghostState`    | 'stalking' \| 'hiding' \| 'swooshing' | Ghost AI states                      |
+
+---
+
+### **Animation Logic**
+
+#### **1. Spawn Animation**
+
+- On pet spawn → `animate-fly-in` with CSS vars `--start-x`, `--start-y`.
+- After 1s → switch to physics loop or ghost AI.
+
+#### **2. Cat Logic (Alive Pet)**
+
+- **Follow Mouse:**
+  - Distance > 50px → small velocity towards cursor.
+  - Friction applied for natural slowdown.
+  - Max speed clamped.
+  - Window-edge bounce logic.
+- **Interaction:**
+  - `onMouseEnter` → shows "Meow" bubble for 1s.
+
+#### **3. Ghost Logic (AI State Machine)**
+
+- `runGhostAI()` cycles states:
+
+| State       | Behavior                                                 |
+| ----------- | -------------------------------------------------------- |
+| `stalking`  | Drift slowly towards random target point, visible.       |
+| `hiding`    | Fade-out for 1.5–3s → reappear randomly.                 |
+| `swooshing` | High-speed dash across screen → long smooth glide (~3s). |
+
+---
+
+## ♾ **4. Infinite Scroller** (`src/components/infinite-scroller.tsx`)
+
+### **Purpose**
+
+Creates a **seamless, infinite ribbon** of scrolling elements.
+
+### **Logic Flow (`useEffect`)**
+
+1. On mount → run `addAnimation()`.
+2. Clone each `<li>` child → append clone with `aria-hidden="true"`.
+3. Doubled content enables perfect `-50%` looping via keyframes.
+4. CSS vars:
+   - `--animation-duration` → Speed control.
+   - `--animation-direction` → Left/Right toggle.
+5. Pause-on-hover via CSS hover selector.
+
+---

@@ -21,7 +21,7 @@ Quantalink fuses **Quantum Physics** + **Next.js Web Engineering** into a
 ### 🎨 **Design & Aesthetics**
 
 - **Glassmorphism UI** with `backdrop-blur` + layered transparency.
-- **Quantum-Inspired Animated Background** simulating vacuum fluctuations & quantum foam. _[learn more](./APPENDIX.md)_
+- **Quantum-Inspired Animated Background** simulating vacuum fluctuations & quantum foam. _[learn more](./APPENDIX.md#Background)_
 - **Framer Motion** for cinematic transitions, 3D tilt cards, and parallax effects.
 
 ---
@@ -41,7 +41,7 @@ Quantalink fuses **Quantum Physics** + **Next.js Web Engineering** into a
 
 - Schrödinger’s Cat–themed **mini-game** with levels, timers & outcomes.
 - **Page Pets**: Win → Alive Cat 🐱 | Lose → Quantum Ghost 👻
-- Particle engine with **capped FPS & render limits** for smooth performance.
+- Particle engine with **capped FPS & render limits** for smooth performance. _[learn more](./APPENDIX.md#-the-quantum-conundrum-mini-game)_
 
 ---
 

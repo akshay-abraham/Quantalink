@@ -6,7 +6,7 @@
 
 ---
 
-## 🌀 Background
+## Background
 
 > "What if a portfolio wasn't just a website… but a _thought experiment_ you could explore?"
 
