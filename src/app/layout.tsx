@@ -10,6 +10,7 @@ import { Toaster } from "@/components/ui/toaster"
 import AnimatedBackground from "@/components/animated-background"
 import MainNav from '@/components/main-nav';
 import GlobalPetRenderer from '@/components/global-pet-renderer';
+import { Analytics } from '@vercel/analytics/react';
 
 // Define metadata for the website, used for SEO and browser tab information.
 export const metadata: Metadata = {
@@ -126,6 +127,7 @@ export default function RootLayout({
           <main>{children}</main>
           {/* The Toaster component handles pop-up notifications. */}
           <Toaster />
+          <Analytics />
       </body>
     </html>
   );
