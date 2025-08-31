@@ -391,12 +391,13 @@ export default function EasterEgg() {
                           >
                             {/* The "Failed" state UI */}
                             {gameState === 'failed' && (
-                                <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="absolute inset-0 flex flex-col gap-4 items-center justify-center">
                                   <div className="grid grid-cols-3 gap-8">
                                     <Skull className="h-16 w-16 text-destructive/50" />
-                                    <Skull className="h-16 w-16 text-destructive/50 animate-pulse" style={{animationDelay: '200ms'}} />
+                                    <Skull className="h-16 w-16 text-destructive/50" />
                                     <Skull className="h-16 w-16 text-destructive/50" />
                                   </div>
+                                   <Button onClick={reset} variant="destructive" size="lg">Reset Experiment</Button>
                                 </div>
                               )}
                               {/* The main game board where anomalies appear */}
@@ -413,11 +414,6 @@ export default function EasterEgg() {
                            <p className="text-xs text-foreground/80 pt-2 flex items-center justify-center gap-2">
                             {gameState === 'failed' ? 'The quantum state destabilized. The timeline has been purged.' : `Collect ${difficulty.anomalies} anomalies in ${Math.round(difficulty.time)} seconds!`}
                           </p>
-                          <div className="w-full pt-2">
-                              {gameState === 'failed' && (
-                                  <Button onClick={reset} variant="outline" size="lg">Reset Experiment</Button>
-                              )}
-                          </div>
                       </div>
                   )}
 
@@ -426,7 +422,7 @@ export default function EasterEgg() {
                           <FunParticles type="revealing" count={200} />
                           <h3 className="text-xl font-bold text-primary">Wave Function Collapsing...</h3>
                           <p className="text-foreground/80">Determining final state...</p>
-                          <Progress value={100} className="w-1/2 animate-pulse" />
+                          <Progress value={100} className="w-1/2" />
                       </div>
                   )}
 

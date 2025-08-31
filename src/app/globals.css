@@ -6,6 +6,8 @@ body {
   font-family: 'Space Grotesk', sans-serif;
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
+  /* Add subtle noise texture for a more realistic acrylic/glass effect */
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><g fill-opacity="0.015"><circle fill="hsl(180, 50%, 98%)" cx="400" cy="400" r="600"/><circle fill="hsl(180, 20%, 85%)" cx="400" cy="400" r="500"/><circle fill="hsl(180, 50%, 98%)" cx="400" cy="400" r="400"/><circle fill="hsl(180, 20%, 85%)" cx="400" cy="400" r="300"/><circle fill="hsl(180, 50%, 98%)" cx="400" cy="400" r="200"/><circle fill="hsl(180, 20%, 85%)" cx="400" cy="400" r="100"/></g></svg>');
 }
 
 @layer base {
@@ -66,10 +68,6 @@ body {
     animation: orb-pop-in 0.4s ease-out forwards;
   }
 
-  .animate-collector-pulse {
-    animation: collector-pulse 3s linear infinite;
-  }
-
   @keyframes scrolling-logos {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
@@ -114,14 +112,6 @@ body {
     0% { transform: scale(0) rotate(-180deg); opacity: 0; }
     50% { transform: scale(1.2) rotate(10deg); opacity: 1; }
     100% { transform: scale(1) rotate(0deg); opacity: 1; }
-  }
-
-  @keyframes collector-pulse {
-    0% { border-color: #ff00ff; box-shadow: 0 0 15px #ff00ff; }
-    25% { border-color: #00ffff; box-shadow: 0 0 15px #00ffff; }
-    50% { border-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
-    75% { border-color: #00ff00; box-shadow: 0 0 15px #00ff00; }
-    100% { border-color: #ff00ff; box-shadow: 0 0 15px #ff00ff; }
   }
   
   @keyframes fly-out {
