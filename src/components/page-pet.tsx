@@ -12,6 +12,7 @@ import ReactDOM from 'react-dom';
 import { Cat, Ghost } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PetState } from '@/lib/pet-state';
+import { FunParticles } from './easter-egg';
 
 /** A speech bubble component for the cat's "Meow!". */
 const MeowBubble = () => (
@@ -73,74 +74,115 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  /** Ghost AI: Manages a complex state machine for unpredictable behavior. */
+  /** Ghost AI: A more aggressive state machine. */
   const runGhostAI = useCallback(() => {
     if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
-    
-    const states: GhostState[] = ['stalking', 'hiding', 'swooshing'];
+
+    // New aggressive state order
+    const states: GhostState[] = ['swooshing', 'hiding', 'stalking'];
     const nextState = states[Math.floor(Math.random() * states.length)];
-    const stateDuration = Math.random() * 7000 + 5000; // 5-12 seconds per state
+    
+    // Stalking is short, others are longer
+    const stateDuration = nextState === 'stalking' 
+        ? 2000 // Very short 2s stalk
+        : Math.random() * 7000 + 8000; // 8-15s for swoosh/hide
+
 
     const executeState = (state: GhostState) => {
       let animId: number;
       
       if (state === 'hiding') { // Teleport logic
         setIsVisible(false);
-        setTimeout(() => {
+        ghostStateTimeout.current = setTimeout(() => {
           const newX = Math.random() * (window.innerWidth - 60);
           const newY = Math.random() * (window.innerHeight - 60);
           setPosition({ x: newX, y: newY });
           setIsVisible(true);
+          ghostStateTimeout.current = setTimeout(runGhostAI, stateDuration);
         }, 1500); // 1.5s invisible
-      } else { // Movement logic for 'stalking' and 'swooshing'
-        setIsVisible(true);
-        const targetX = Math.random() * (window.innerWidth - 60);
-        const targetY = Math.random() * (window.innerHeight - 60);
-        
-        const isSwooshing = state === 'swooshing';
-        const acceleration = isSwooshing ? 0.05 : 0.002;
-        const friction = isSwooshing ? 0.99 : 0.96;
-        const maxSpeed = isSwooshing ? 10 : 1;
-
-        let { vx, vy } = { vx: 0, vy: 0 };
-        
-        const move = () => {
-          setPosition(prevPos => {
-            const dx = targetX - prevPos.x;
-            const dy = targetY - prevPos.y;
-            
-            vx += dx * acceleration;
-            vy += dy * acceleration;
-            
-            vx *= friction;
-            vy *= friction;
-
-            vx = Math.max(-maxSpeed, Math.min(maxSpeed, vx));
-            vy = Math.max(-maxSpeed, Math.min(maxSpeed, vy));
-            
-            let newX = prevPos.x + vx;
-            let newY = prevPos.y + vy;
-
-            return { x: newX, y: newY };
-          });
-          animId = requestAnimationFrame(move);
-        };
-        animId = requestAnimationFrame(move);
+        return;
       }
+      
+      // Movement logic for 'stalking' and 'swooshing'
+      setIsVisible(true);
+      const targetX = Math.random() * (window.innerWidth - 60);
+      const targetY = Math.random() * (window.innerHeight - 60);
+      
+      const isSwooshing = state === 'swooshing';
+      const acceleration = isSwooshing ? 0.05 : 0.002;
+      const friction = isSwooshing ? 0.99 : 0.96;
+      const maxSpeed = isSwooshing ? 10 : 1;
 
-      // Schedule the next state transition
+      let { vx, vy } = { vx: 0, vy: 0 };
+      
+      let startTime = performance.now();
+      const move = (currentTime: number) => {
+        if (currentTime - startTime > stateDuration) {
+            cancelAnimationFrame(animId);
+            runGhostAI();
+            return;
+        }
+
+        setPosition(prevPos => {
+          const dx = targetX - prevPos.x;
+          const dy = targetY - prevPos.y;
+          
+          vx += dx * acceleration;
+          vy += dy * acceleration;
+          
+          vx *= friction;
+          vy *= friction;
+
+          vx = Math.max(-maxSpeed, Math.min(maxSpeed, vx));
+          vy = Math.max(-maxSpeed, Math.min(maxSpeed, vy));
+          
+          let newX = prevPos.x + vx;
+          let newY = prevPos.y + vy;
+
+          return { x: newX, y: newY };
+        });
+        animId = requestAnimationFrame(move);
+      };
+      animId = requestAnimationFrame(move);
+      
+      // Safety net to transition state, though the frame check should handle it.
       ghostStateTimeout.current = setTimeout(() => {
-        if (animId) cancelAnimationFrame(animId);
-        runGhostAI();
-      }, stateDuration);
+          cancelAnimationFrame(animId);
+          runGhostAI();
+      }, stateDuration + 100);
     };
 
     executeState(nextState);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (type === 'ghost' && !isAnimatingIn) {
-      runGhostAI();
+      // Start with an aggressive swoosh
+      let animId: number;
+      const targetX = Math.random() * (window.innerWidth - 60);
+      const targetY = Math.random() * (window.innerHeight - 60);
+      let { vx, vy } = { vx: 0, vy: 0 };
+      const move = () => {
+          setPosition(prevPos => {
+            const dx = targetX - prevPos.x;
+            const dy = targetY - prevPos.y;
+            vx += dx * 0.05;
+            vy += dy * 0.99;
+            vx = Math.max(-10, Math.min(10, vx));
+            vy = Math.max(-10, Math.min(10, vy));
+            return { x: prevPos.x + vx, y: prevPos.y + vy };
+          });
+          animId = requestAnimationFrame(move);
+        };
+      animId = requestAnimationFrame(move);
+
+      const swooshTimeout = setTimeout(() => {
+        cancelAnimationFrame(animId);
+        runGhostAI();
+      }, 3000); // 3-second initial swoosh.
+
+      return () => clearTimeout(swooshTimeout);
     }
     return () => {
       if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
@@ -163,8 +205,9 @@ const PagePet = ({ type, startX, startY }: PetState) => {
           const dy = mousePos.current.y - petY;
           const distance = Math.sqrt(dx*dx + dy*dy);
 
+          // Only follow the cursor if it's far away, making it feel more independent.
           if (distance > 50) {
-            vx += dx * 0.0005; // Gently follow cursor
+            vx += dx * 0.0005; 
             vy += dy * 0.0005;
           }
       }
@@ -182,12 +225,13 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         let newX = prevPos.x + vx;
         let newY = prevPos.y + vy;
         
+        // Bounce off edges to stay within view
         if (newX <= 0 || newX >= window.innerWidth - 48) {
-            vx *= -1;
+            vx *= -1.1; // Add a little extra push on bounce
             newX = prevPos.x + vx;
         }
         if (newY <= 0 || newY >= window.innerHeight - 48) {
-            vy *= -1;
+            vy *= -1.1;
             newY = prevPos.y + vy;
         }
         
@@ -272,7 +316,10 @@ const PagePet = ({ type, startX, startY }: PetState) => {
       title={type === 'ghost' ? "A vengeful spirit" : "A friendly cat"}
     >
       {showMeow && type === 'alive' && <MeowBubble />}
-      <PetIcon className="w-full h-full" />
+      <div className="relative w-full h-full">
+         <FunParticles type={type === 'alive' ? 'ambient_cat' : 'ambient_ghost'} count={5} />
+         <PetIcon className="w-full h-full" />
+      </div>
     </div>,
     container
   );

@@ -46,27 +46,35 @@ interface ParticleEffect {
 }
 
 // Defines the icons used for different particle effects.
-const PARTICLE_ICONS = {
+export const PARTICLE_ICONS = {
   popper: PartyPopper,
   ghost: Skull,
   revealing: Star,
   anomaly: Star,
+  ambient_cat: Star,
+  ambient_ghost: Star,
 };
 
 // Defines the color palettes for different particle effects.
-const PARTICLE_COLORS = {
-  popper: ['#facc15', '#fb923c', '#f87171', '#4ade80', '#22d3ee', '#a78bfa', '#f472b6', '#818cf8'], // "Fun" colors
-  ghost: ['#a5f3fc', '#67e8f9', '#c4b5fd', '#a78bfa', '#f0abfc', '#bae6fd'], // "Spooky" colors
-  revealing: ['#ffffff', '#f0f0f0', '#e0e0e0'], // Neutral collapse colors
-  anomaly: ANOMALY_COLORS, // Anomaly burst colors
+export const PARTICLE_COLORS = {
+  popper: ['#facc15', '#fb923c', '#f87171', '#4ade80', '#22d3ee', '#a78bfa', '#f472b6', '#818cf8'],
+  ghost: ['#a5f3fc', '#67e8f9', '#c4b5fd', '#a78bfa', '#f0abfc', '#bae6fd'],
+  revealing: ['#ffffff', '#f0f0f0', '#e0e0e0'],
+  anomaly: ANOMALY_COLORS,
+  ambient_cat: ['#ff7e5f', '#feb47b', '#86A8E7', '#91EAE4'], // Coral, Orange, Light Blue, Teal
+  ambient_ghost: ['#89f7fe', '#66a6ff', '#a78bfa', '#c4b5fd'], // Cyan, Light Blue, Lavender
 };
 
-type ParticleType = keyof typeof PARTICLE_COLORS;
+export type ParticleType = keyof typeof PARTICLE_COLORS;
 
 /** A single particle that animates flying outwards from a central point. */
 const Particle = ({ type }: { type: ParticleType }) => {
-  const tx = (Math.random() - 0.5) * 150;
-  const ty = (Math.random() - 0.5) * 150;
+  const isAmbient = type.startsWith('ambient');
+  const duration = isAmbient ? 1 + Math.random() * 1.5 : 0.6 + Math.random() * 0.8;
+  const travelDistance = isAmbient ? 40 : 150;
+  
+  const tx = (Math.random() - 0.5) * travelDistance;
+  const ty = (Math.random() - 0.5) * travelDistance;
   const color = PARTICLE_COLORS[type][Math.floor(Math.random() * PARTICLE_COLORS[type].length)];
   const Icon = PARTICLE_ICONS[type];
 
@@ -74,20 +82,21 @@ const Particle = ({ type }: { type: ParticleType }) => {
     position: 'absolute',
     left: `50%`,
     top: `50%`,
-    animation: `fly-out ${0.6 + Math.random() * 0.8}s ease-out forwards`,
+    animation: `fly-out ${duration}s ease-out forwards`,
     opacity: 0,
-    transform: `rotate(${Math.random() * 360}deg) scale(${0.5 + Math.random()})`,
-    animationDelay: `${Math.random() * 0.1}s`,
+    transform: `rotate(${Math.random() * 360}deg) scale(${isAmbient ? (0.2 + Math.random() * 0.5) : (0.5 + Math.random())})`,
+    animationDelay: `${Math.random() * (isAmbient ? duration : 0.1)}s`,
     color: color,
     '--tx': `${tx}px`,
     '--ty': `${ty}px`,
   } as React.CSSProperties;
 
-  return <div style={style}><Icon className="w-5 w-5" /></div>;
+  return <div style={style}><Icon className="w-5 h-5" /></div>;
 };
 
+
 /** A container that generates a burst of particles of a specific type. */
-const FunParticles = ({ type, count }: { type: ParticleType, count: number }) => (
+export const FunParticles = ({ type, count }: { type: ParticleType, count: number }) => (
     <div className="absolute inset-0 pointer-events-none">
         {Array.from({ length: count }).map((_, i) => <Particle key={i} type={type} />)}
     </div>
