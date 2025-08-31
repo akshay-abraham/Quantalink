@@ -50,7 +50,7 @@ export default function SkillsClientPage() {
       className={cn(
         "space-y-6 transition-all duration-700 ease-out",
         // Only apply animation classes if the component is mounted on the client.
-        isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+        isMounted ? "animate-fade-in-up" : "opacity-0"
       )}
       style={{ animationDelay: `${200 + index * 150}ms` }}
     >
@@ -67,7 +67,7 @@ export default function SkillsClientPage() {
         {category.skills.map((skill) => (
           <Card 
             key={skill.name}
-            className="bg-card/40 border-border/40 shadow-lg text-center flex flex-col items-center justify-center w-[160px] h-[120px] shrink-0 p-4"
+            className="bg-card/40 border-border/40 shadow-lg text-center flex flex-col items-center justify-center w-[160px] h-[120px] shrink-0 p-4 transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl hover:bg-card/60"
           >
             <CardHeader className="p-0 flex-grow flex flex-col items-center justify-center gap-2">
                <div className={cn("h-12 w-12 flex items-center justify-center text-foreground", skill.iconClassName)}>
