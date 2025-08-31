@@ -20,6 +20,8 @@ const MeowBubble = () => (
   </div>
 );
 
+type GhostState = 'stalking' | 'hiding' | 'swooshing';
+
 /**
  * PagePet component renders a pet that moves around the screen.
  * Its state (alive/ghost) is controlled globally.
@@ -34,7 +36,6 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   });
   const [isMounted, setIsMounted] = useState(false);
   const [isAnimatingIn, setIsAnimatingIn] = useState(true);
-  const [isHovered, setIsHovered] = useState(false);
   const [showMeow, setShowMeow] = useState(false);
   
   // --- Ghost-specific state ---
@@ -72,28 +73,69 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  /** Ghost AI: Manages teleporting behavior. */
+  /** Ghost AI: Manages a complex state machine for unpredictable behavior. */
   const runGhostAI = useCallback(() => {
-    const changeState = () => {
-      if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
+    if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
+    
+    const states: GhostState[] = ['stalking', 'hiding', 'swooshing'];
+    const nextState = states[Math.floor(Math.random() * states.length)];
+    const stateDuration = Math.random() * 7000 + 5000; // 5-12 seconds per state
+
+    const executeState = (state: GhostState) => {
+      let animId: number;
       
-      // Fade out
-      setIsVisible(false);
-      
-      // After fading out, wait, then teleport and fade in.
-      ghostStateTimeout.current = setTimeout(() => {
-        const newX = Math.random() * (window.innerWidth - 60); // Subtract pet width
-        const newY = Math.random() * (window.innerHeight - 60); // Subtract pet height
-        setPosition({ x: newX, y: newY });
-        
-        // Fade back in
+      if (state === 'hiding') { // Teleport logic
+        setIsVisible(false);
+        setTimeout(() => {
+          const newX = Math.random() * (window.innerWidth - 60);
+          const newY = Math.random() * (window.innerHeight - 60);
+          setPosition({ x: newX, y: newY });
+          setIsVisible(true);
+        }, 1500); // 1.5s invisible
+      } else { // Movement logic for 'stalking' and 'swooshing'
         setIsVisible(true);
+        const targetX = Math.random() * (window.innerWidth - 60);
+        const targetY = Math.random() * (window.innerHeight - 60);
         
-        // Schedule the next teleportation
-        ghostStateTimeout.current = setTimeout(changeState, Math.random() * 5000 + 4000); // Teleport every 4-9 seconds
-      }, 1500); // 1.5 seconds of invisibility
+        const isSwooshing = state === 'swooshing';
+        const acceleration = isSwooshing ? 0.05 : 0.002;
+        const friction = isSwooshing ? 0.99 : 0.96;
+        const maxSpeed = isSwooshing ? 10 : 1;
+
+        let { vx, vy } = { vx: 0, vy: 0 };
+        
+        const move = () => {
+          setPosition(prevPos => {
+            const dx = targetX - prevPos.x;
+            const dy = targetY - prevPos.y;
+            
+            vx += dx * acceleration;
+            vy += dy * acceleration;
+            
+            vx *= friction;
+            vy *= friction;
+
+            vx = Math.max(-maxSpeed, Math.min(maxSpeed, vx));
+            vy = Math.max(-maxSpeed, Math.min(maxSpeed, vy));
+            
+            let newX = prevPos.x + vx;
+            let newY = prevPos.y + vy;
+
+            return { x: newX, y: newY };
+          });
+          animId = requestAnimationFrame(move);
+        };
+        animId = requestAnimationFrame(move);
+      }
+
+      // Schedule the next state transition
+      ghostStateTimeout.current = setTimeout(() => {
+        if (animId) cancelAnimationFrame(animId);
+        runGhostAI();
+      }, stateDuration);
     };
-    changeState();
+
+    executeState(nextState);
   }, []);
 
   useEffect(() => {
@@ -102,11 +144,13 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     }
     return () => {
       if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
+      if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
     };
   }, [type, isAnimatingIn, runGhostAI]);
 
+  // Physics-based animation loop for the 'alive' cat.
   useEffect(() => {
-    if (isAnimatingIn || type === 'ghost') return; // Ghost movement is handled by its AI.
+    if (isAnimatingIn || type !== 'alive') return;
 
     const animate = () => {
       let { vx, vy } = velocity;
@@ -125,7 +169,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
           }
       }
       
-      vx *= 0.98;
+      vx *= 0.98; // Friction
       vy *= 0.98;
 
       const maxSpeed = 1.5;
@@ -174,7 +218,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   const PetIcon = type === 'alive' ? Cat : Ghost;
   const petClasses = type === 'alive' 
     ? 'text-green-500' 
-    : 'text-sky-400 opacity-80';
+    : 'text-sky-400';
 
   const container = document.getElementById('pet-container');
   if (!container) return null;
@@ -205,8 +249,8 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         top: 0,
         left: 0,
         transform: `translate(${position.x}px, ${position.y}px) scale(1.2) rotate(${velocity.vx * 10}deg)`,
-        transition: 'opacity 0.5s ease-in-out',
-        opacity: isVisible ? (type === 'ghost' ? 0.8 : 1) : 0,
+        transition: 'opacity 0.75s ease-in-out',
+        opacity: isVisible ? 1 : 0,
       };
 
   const handlePetInteraction = () => {
@@ -223,16 +267,11 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         isAnimatingIn && 'animate-fly-in'
       )}
       style={style}
-      onMouseEnter={() => {
-        if (type === 'alive') setIsHovered(true);
-      }}
-      onMouseLeave={() => {
-        if (type === 'alive') setIsHovered(false);
-      }}
       onClick={handlePetInteraction}
+      onMouseEnter={handlePetInteraction}
       title={type === 'ghost' ? "A vengeful spirit" : "A friendly cat"}
     >
-      {(isHovered || showMeow) && type === 'alive' && <MeowBubble />}
+      {showMeow && type === 'alive' && <MeowBubble />}
       <PetIcon className="w-full h-full" />
     </div>,
     container
