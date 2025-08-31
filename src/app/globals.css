@@ -173,7 +173,7 @@ body {
       hsla(var(--primary), 0) 35%
     );
     animation: animated-border-glow 4s linear infinite;
-    opacity: 0;
+    opacity: 0.15;
     transition: opacity 0.3s ease-in-out;
   }
   .group:hover .animate-border-glow::before {
