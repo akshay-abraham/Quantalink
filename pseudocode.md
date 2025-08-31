@@ -104,6 +104,7 @@ This document outlines the high-level structure and logic of the key interactive
   - `isAnimatingIn`: boolean (true for the first second to play the fly-in animation)
   - `showMeow`: boolean (for the cat's interaction)
   - `isVisible`: boolean (for the ghost's fade in/out)
+  - `ghostState`: 'stalking' | 'hiding' | 'swooshing' (The ghost's internal AI state)
 
 - **Animation & Logic:**
 
@@ -112,7 +113,7 @@ This document outlines the high-level structure and logic of the key interactive
       - The component is rendered by `GlobalPetRenderer` when the global `pet` state is not `null`.
       - An outer `div` has the `animate-fly-in` class.
       - This animation uses CSS variables (`--start-x`, `--start-y`) which are set inline based on the `pet.startX` and `pet.startY` from the global state.
-      - A timeout sets `isAnimatingIn` to `false` after 1 second, switching from the initial CSS animation to the physics-based `requestAnimationFrame` loop.
+      - A timeout sets `isAnimatingIn` to `false` after 1 second, switching from the initial CSS animation to the physics-based `requestAnimationFrame` loop (for cat) or the AI state machine (for ghost).
 
   2.  **Cat Logic (`requestAnimationFrame` loop, when `type === 'alive'`):**
 
@@ -128,16 +129,26 @@ This document outlines the high-level structure and logic of the key interactive
         - A `useEffect` hook with a `setTimeout` hides the meow bubble after 1 second.
         - The click handler that used to dismiss the cat is **removed**.
 
-  3.  **Ghost Logic (`useEffect` and timeouts, when `type === 'ghost'`):**
-      - The ghost uses a state machine based on timeouts, not a physics loop.
-      - `runGhostAI()` is called when the component is ready.
-        1. **Fade Out:** `setIsVisible(false)`.
-        2. **Teleport:** `setTimeout(1500ms)`:
-           - Calculate a new random `(x, y)` position on the screen.
-           - Set the ghost's `position` to these new coordinates.
-        3. **Fade In:** `setIsVisible(true)`.
-        4. **Schedule Next Teleport:** `setTimeout(random(4-9 seconds))`:
-           - Call `runGhostAI()` again to loop the behavior.
+  3.  **Ghost Logic (Internal State Machine, when `type === 'ghost'`):**
+      - The ghost's behavior is driven by a `runGhostAI()` function that recursively calls itself with timeouts to change state.
+      - **`runGhostAI()` function:**
+        1. **Choose Next State:** Randomly select a new state from `['stalking', 'hiding', 'swooshing']`.
+        2. **Execute State Logic:**
+           - **If `state === 'stalking'`:**
+             - Set `isVisible` to `true`.
+             - Calculate a new random target position on the screen.
+             - Use a physics loop (`requestAnimationFrame`) to slowly drift towards the target over 8-15 seconds.
+             - Once the duration is over, call `runGhostAI()` again to transition to a new state.
+           - **If `state === 'hiding'`:**
+             - Set `isVisible` to `false` (via opacity transition).
+             - Use a `setTimeout` for 1.5-3 seconds.
+             - After timeout, set `isVisible` to `true` and immediately call `runGhostAI()` to transition to a new state.
+           - **If `state === 'swooshing'`:**
+             - Set `isVisible` to `true`.
+             - Calculate a new random target position far across the screen.
+             - Use a physics loop with **very high acceleration** and **low friction** to execute a rapid dash towards the target.
+             - The animation is set to take ~3000ms, creating a long, smooth glide.
+             - Once the dash completes, call `runGhostAI()` to transition to a new state.
 
 ## 4. Infinite Scroller (`src/components/infinite-scroller.tsx`)
 
