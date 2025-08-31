@@ -13,9 +13,6 @@ import { Cat, Ghost } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PetState } from '@/lib/pet-state';
 
-// Defines the ghost's possible movement states.
-type GhostState = 'stalking' | 'swooshing' | 'hiding';
-
 /** A speech bubble component for the cat's "Meow!". */
 const MeowBubble = () => (
   <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-card border border-border rounded-lg text-sm text-foreground shadow-lg whitespace-nowrap animate-fade-in">
@@ -41,7 +38,6 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   const [showMeow, setShowMeow] = useState(false);
   
   // --- Ghost-specific state ---
-  const [ghostState, setGhostState] = useState<GhostState>('stalking');
   const [isVisible, setIsVisible] = useState(true);
   const ghostStateTimeout = useRef<NodeJS.Timeout | null>(null);
   
@@ -52,7 +48,6 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   useEffect(() => {
     setIsMounted(true);
     
-    // After the initial "fly-in" animation, set the pet's position and start physics.
     const animTimeout = setTimeout(() => {
       if (petRef.current) {
         const rect = petRef.current.getBoundingClientRect();
@@ -77,38 +72,29 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  /** Ghost AI: Manages state transitions for spooky behavior. */
+  /** Ghost AI: Manages teleporting behavior. */
   const runGhostAI = useCallback(() => {
-      const changeState = () => {
-          if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
-          
-          const rand = Math.random();
-          if (rand < 0.6) { // 60% chance to stalk
-              setGhostState('stalking');
-              setIsVisible(true);
-              ghostStateTimeout.current = setTimeout(changeState, Math.random() * 7000 + 8000); // Stalk for 8-15s
-          } else if (rand < 0.85) { // 25% chance to hide
-              setGhostState('hiding');
-              setIsVisible(false);
-              ghostStateTimeout.current = setTimeout(changeState, Math.random() * 2000 + 2000); // Hide for 2-4s
-          } else { // 15% chance to swoosh
-              setGhostState('swooshing');
-              setIsVisible(true);
-              
-              const targetX = Math.random() * window.innerWidth;
-              const targetY = Math.random() * window.innerHeight;
-              const angle = Math.atan2(targetY - position.y, targetX - position.x);
-              const swooshSpeed = 15;
-              setVelocity({
-                  vx: Math.cos(angle) * swooshSpeed,
-                  vy: Math.sin(angle) * swooshSpeed,
-              });
-
-              ghostStateTimeout.current = setTimeout(changeState, 3000); // Swoosh is a longer dash
-          }
-      };
-      changeState();
-  }, [position.y, position.x]);
+    const changeState = () => {
+      if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
+      
+      // Fade out
+      setIsVisible(false);
+      
+      // After fading out, wait, then teleport and fade in.
+      ghostStateTimeout.current = setTimeout(() => {
+        const newX = Math.random() * (window.innerWidth - 60); // Subtract pet width
+        const newY = Math.random() * (window.innerHeight - 60); // Subtract pet height
+        setPosition({ x: newX, y: newY });
+        
+        // Fade back in
+        setIsVisible(true);
+        
+        // Schedule the next teleportation
+        ghostStateTimeout.current = setTimeout(changeState, Math.random() * 5000 + 4000); // Teleport every 4-9 seconds
+      }, 1500); // 1.5 seconds of invisibility
+    };
+    changeState();
+  }, []);
 
   useEffect(() => {
     if (type === 'ghost' && !isAnimatingIn) {
@@ -120,7 +106,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   }, [type, isAnimatingIn, runGhostAI]);
 
   useEffect(() => {
-    if (isAnimatingIn) return;
+    if (isAnimatingIn || type === 'ghost') return; // Ghost movement is handled by its AI.
 
     const animate = () => {
       let { vx, vy } = velocity;
@@ -133,28 +119,16 @@ const PagePet = ({ type, startX, startY }: PetState) => {
           const dy = mousePos.current.y - petY;
           const distance = Math.sqrt(dx*dx + dy*dy);
 
-          if (type === 'alive') {
-            if (distance > 50) {
-              vx += dx * 0.0005; // Gently follow cursor
-              vy += dy * 0.0005;
-            }
-          } else if (type === 'ghost' && ghostState !== 'swooshing') {
-              if (distance < 150) { // Repel from cursor
-                  vx -= dx * 0.0008;
-                  vy -= dy * 0.0008;
-              }
-              if (ghostState === 'stalking') {
-                  vx += (Math.random() - 0.5) * 0.1; // Slow, random drift
-                  vy += (Math.random() - 0.5) * 0.1;
-              }
+          if (distance > 50) {
+            vx += dx * 0.0005; // Gently follow cursor
+            vy += dy * 0.0005;
           }
       }
       
-      // Apply friction/drag
-      vx *= ghostState === 'swooshing' ? 0.99 : 0.98;
-      vy *= ghostState === 'swooshing' ? 0.99 : 0.98;
+      vx *= 0.98;
+      vy *= 0.98;
 
-      const maxSpeed = ghostState === 'swooshing' ? 20 : 1.5;
+      const maxSpeed = 1.5;
       vx = Math.max(-maxSpeed, Math.min(maxSpeed, vx));
       vy = Math.max(-maxSpeed, Math.min(maxSpeed, vy));
       
@@ -164,7 +138,6 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         let newX = prevPos.x + vx;
         let newY = prevPos.y + vy;
         
-        // Wall bouncing logic
         if (newX <= 0 || newX >= window.innerWidth - 48) {
             vx *= -1;
             newX = prevPos.x + vx;
@@ -185,14 +158,13 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     return () => {
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
     };
-  }, [type, velocity, isAnimatingIn, ghostState]);
+  }, [type, velocity, isAnimatingIn]);
   
-  // Effect to handle the "Meow!" bubble display on click
   useEffect(() => {
     if (showMeow) {
       const timer = setTimeout(() => {
         setShowMeow(false);
-      }, 1000); // Show bubble for 1 second
+      }, 1000);
       return () => clearTimeout(timer);
     }
   }, [showMeow]);
@@ -207,7 +179,6 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   const container = document.getElementById('pet-container');
   if (!container) return null;
 
-  // Generate a random destination for the fly-in animation that is within the viewport.
   const initialRandomX = Math.random() * (window.innerWidth - 100) + 50;
   const initialRandomY = Math.random() * (window.innerHeight - 100) + 50;
   
