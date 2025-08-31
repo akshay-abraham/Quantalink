@@ -63,7 +63,7 @@ export default function AboutPage() {
                 <Card 
                   key={section.title}
                   className={cn(
-                    "group relative overflow-hidden bg-card/30 border-border/40 rounded-2xl p-6 text-center shadow-lg animate-fade-in-up",
+                    "group relative overflow-hidden bg-card/30 border-border/40 rounded-2xl p-4 text-center shadow-lg animate-fade-in-up",
                     "transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl hover:shadow-primary/20"
                   )}
                   style={{ animationDelay: `${500 + index * 150}ms`}}

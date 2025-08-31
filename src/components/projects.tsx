@@ -84,7 +84,7 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
           >
             {/* Animated border glow effect container. */}
             <div className="animate-border-glow"></div>
-            <div className="relative z-10">
+            <div className="relative z-10 p-2">
               <CardHeader>
                 <CardTitle className="text-xl text-primary">{project.title}</CardTitle>
                 <CardDescription className="text-foreground/80 pt-1">

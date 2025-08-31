@@ -149,33 +149,41 @@ body {
     text-shadow: 0 1px 2px hsl(var(--foreground) / 0.1);
   }
   
-  @keyframes animated-border-glow {
+  @keyframes border-chase {
     0% {
-      transform: rotate(0deg);
+      background-position: 0% 0%;
+    }
+    25% {
+      background-position: 100% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    75% {
+      background-position: 0% 100%;
     }
     100% {
-      transform: rotate(360deg);
+      background-position: 0% 0%;
     }
   }
 
   .animate-border-glow::before {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(
-      from 180deg at 50% 50%,
-      hsla(var(--primary), 0) 0%,
-      hsla(var(--primary), 0.5) 30%,
-      hsla(var(--primary), 0) 35%
-    );
-    animation: animated-border-glow 4s linear infinite;
+    top: -2px; left: -2px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    background: radial-gradient(circle 80px at -10% -10%, hsl(var(--primary) / 0.5), transparent),
+                radial-gradient(circle 80px at 110% 110%, hsl(var(--accent) / 0.4), transparent);
+    background-size: 200% 200%;
+    background-position: 0% 0%;
+    border-radius: inherit; /* Use the parent's border-radius */
+    animation: border-chase 4s linear infinite;
+    z-index: 0;
     opacity: 0.15;
     transition: opacity 0.3s ease-in-out;
   }
+  
   .group:hover .animate-border-glow::before {
     opacity: 0.3;
   }
