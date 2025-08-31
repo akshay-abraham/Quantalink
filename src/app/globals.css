@@ -177,6 +177,30 @@ body {
   .group:hover .animate-border-glow::before {
     opacity: 0.5;
   }
+
+  @keyframes cat-color-cycle {
+    0% { color: #ff7e5f; } /* Coral */
+    25% { color: #feb47b; } /* Orange */
+    50% { color: #86A8E7; } /* Light Blue */
+    75% { color: #91EAE4; } /* Teal */
+    100% { color: #ff7e5f; } /* Back to Coral */
+  }
+
+  .animate-cat-colors {
+    animation: cat-color-cycle 8s linear infinite;
+  }
+
+  @keyframes ghost-color-cycle {
+    0% { color: #89f7fe; } /* Light Cyan */
+    25% { color: #66a6ff; } /* Light Blue */
+    50% { color: #a78bfa; } /* Lavender */
+    75% { color: #c4b5fd; } /* Light Lavender */
+    100% { color: #89f7fe; } /* Back to Light Cyan */
+  }
+
+  .animate-ghost-colors {
+    animation: ghost-color-cycle 6s linear infinite;
+  }
 }
 
 /* Button glow and ripple effects */

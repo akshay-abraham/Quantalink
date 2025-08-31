@@ -217,8 +217,8 @@ const PagePet = ({ type, startX, startY }: PetState) => {
 
   const PetIcon = type === 'alive' ? Cat : Ghost;
   const petClasses = type === 'alive' 
-    ? 'text-green-500' 
-    : 'text-sky-400';
+    ? 'animate-cat-colors' 
+    : 'animate-ghost-colors';
 
   const container = document.getElementById('pet-container');
   if (!container) return null;
