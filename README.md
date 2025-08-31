@@ -70,13 +70,11 @@ Production: **[https://akshayabraham.vercel.app](https://akshayabraham.vercel.ap
 
 > > > > > > > 4c6b5a5 (even more add more changes we made and also update pseudocode.md)
 
-tt# Quantalink Portfolio: A Deep Dive
+# Quantalink Portfolio: A Deep Dive
 
 **[https://akshayabraham.vercel.app](https://akshayabraham.vercel.app)**
 
 This document is a comprehensive guide to the architecture, design philosophy, and technical implementation of the Quantalink portfolio. It goes beyond a simple feature list to explain the _why_ behind the user experience—connecting design choices to their inspirational roots in theoretical physics and modern UI/UX principles.
-
-> > > > > > > 4c6b5a5 (even more add more changes we made and also update pseudocode.md)
 
 ---
 
@@ -86,19 +84,15 @@ The central thesis of this portfolio is to create an interactive experience that
 
 Every element, from the animated background to the "Quantum Conundrum" game, is designed to be a conversation starter, reflecting a passion for science, technology, and meticulous design.
 
-> > > > > > > 4c6b5a5 (even more add more changes we made and also update pseudocode.md)
-
 ---
 
 ## 🔹 The User Experience: A Guided Tour
 
-The UI/UX is built on a foundation of minimalism, focus, and progressive disclosure. The user is guided through a narrative, with interactive elements designed to delight and engage without overwhelming.
+The UI/UX is built on a foundation of minimalism, focus, and progressive disclosure.
 
 ### **1. The Ambiance: A Living Quantum Foam**
 
 The first thing a user experiences is not a static background, but a dynamic, living canvas.
-
-> > > > > > > 4c6b5a5 (even more add more changes we made and also update pseudocode.md)
 
 - **The Physics Behind It (`AnimatedBackground`):** The background is a direct visualization of **Quantum Electrodynamics (QED)**, the theory of how light and matter interact.
   - **Particles:** The drifting points of light represent charged particles (like electrons and positrons) existing in a quantum field. Their gentle, random motion evokes the constant, subtle energy of the universe at a subatomic level.
@@ -108,9 +102,7 @@ The first thing a user experiences is not a static background, but a dynamic, li
 
 ### **2. The UI Aesthetic: Acrylic Glass & Light**
 
-The entire UI is built on a custom "Acrylic" design system, inspired by modern operating systems.
-
-> > > > > > > 4c6b5a5 (even more add more changes we made and also update pseudocode.md)
+The entire UI is built on a custom "Acrylic" design system (inspired from Microsoft's Fluent design).
 
 - **The Design:** Components like the link cards, project cards, and dialogs have a semi-transparent background with a subtle background blur (`bg-card/30 backdrop-blur-md`).
 - **The UX Purpose:** This creates a sense of depth and hierarchy. The content feels like it's floating on a pane of glass just above the quantum foam, reinforcing the futuristic, layered aesthetic. The primary color, Teal, is used as an accent for interactive elements, guiding the user's eye without being distracting.
@@ -127,8 +119,6 @@ The user's first interaction with the content is designed to be smooth and focus
 
 The primary navigation links are not static buttons but highly interactive objects.
 
-> > > > > > > 4c6b5a5 (even more add more changes we made and also update pseudocode.md)
-
 - **The Physics Behind It:** The 3D tilt effect, which responds to the user's cursor position, is a subtle nod to the **Observer Effect** in quantum mechanics—the idea that the act of observation can influence a system. Here, the user's "observation" (their cursor) directly influences the card's state.
 - **The Implementation:** This is achieved by calculating the cursor's position relative to the card's center and applying a `perspective` and `rotateX/Y` CSS transform. A radial gradient, whose position is also controlled by the cursor, creates a "glow" that appears to follow the user's mouse.
 - **The UX Purpose:** This turns simple navigation into a tactile, engaging experience. It makes the interface feel responsive and alive, rewarding user curiosity with satisfying visual feedback.
@@ -142,11 +132,14 @@ This is the portfolio's centerpiece—a feature that fully embodies the "Science
   - **Observation:** The act of playing the game—collecting the "Quantum Anomalies"—is the "observation."
   - **Wave Function Collapse:** The moment the game ends (win or lose), the wave function collapses, and reality is forced to choose one of two definite outcomes: the cat is either "Alive" (a win) or "Decohered" (a loss).
 - **The Gamification & UX:**
-  _ **Progressive Difficulty:** The game starts easy and becomes progressively harder, rewarding skill and persistence. This makes it a compelling challenge rather than a simple one-off gimmick.
-  _ **Responsive Feedback:** Clicking an anomaly triggers a satisfying particle burst. A progress bar and timer create urgency and provide clear feedback on the player's performance.
-  _ **The "Fly-Out" Transition:** This is the most complex animation in the app. The icon from the result card (Cat or Ghost) appears to seamlessly lift off the card and become the roaming page pet. This is achieved by: 1. Capturing the screen coordinates of the result icon. 2. Passing these coordinates to a global state manager. 3. Using a dynamic CSS animation with CSS variables to animate the pet from that starting position. 4. Hiding the original icon at the exact moment the pet spawns.
-  _ **Persistent, Interactive Pets:** The resulting pet is not just a temporary animation. It becomes a persistent page companion until the game is played again. The "Alive" cat playfully roams and "meows" on hover/click. The "Decohered" ghost has a complex AI, alternating between slow, menacing stalking, brief invisibility, and sudden, high-speed "swooshes" across the screen. This makes the outcome of the game feel meaningful and impactful.
-  > > > > > > > 4c6b5a5 (even more add more changes we made and also update pseudocode.md)
+  - **Progressive Difficulty:** The game starts easy and becomes progressively harder, rewarding skill and persistence. This makes it a compelling challenge rather than a simple one-off gimmick.
+  - **Responsive Feedback:** Clicking an anomaly triggers a satisfying particle burst. A progress bar and timer create urgency and provide clear feedback on the player's performance.
+  - **The "Fly-Out" Transition:** This is the most complex animation in the app. The icon from the result card (Cat or Ghost) appears to seamlessly lift off the card and become the roaming page pet. This is achieved by:
+    1.  Capturing the screen coordinates of the result icon.
+    2.  Passing these coordinates to a global state manager.
+    3.  Using a dynamic CSS animation with CSS variables to animate the pet from that starting position.
+    4.  Hiding the original icon at the exact moment the pet spawns.
+  - **Persistent, Interactive Pets:** The resulting pet is not just a temporary animation. It becomes a persistent page companion until the game is played again. The "Alive" cat playfully roams and "meows" on hover/click. The "Decohered" ghost has a complex AI, alternating between slow, menacing stalking, brief invisibility, and sudden, high-speed "swooshes" across the screen. This makes the outcome of the game feel meaningful and impactful.
 
 ---
 
@@ -165,11 +158,10 @@ This is the portfolio's centerpiece—a feature that fully embodies the "Science
 
 - **Documentation**: All components and major functions are documented with JSDoc comments. `pseudocode.md` and `DEVLOG.md` provide high-level architectural overviews.
 - **SEO**: The application is fully optimized for search engines with:
-  _ Rich metadata (Open Graph, Twitter Cards).
-  _ A `sitemap.xml` and `robots.txt` generated on build.
-  _ Structured Data (JSON-LD) for enhanced Google indexing.
-  _ Semantic HTML and keyword-optimized page titles.
-  > > > > > > > 4c6b5a5 (even more add more changes we made and also update pseudocode.md)
+  - Rich metadata (Open Graph, Twitter Cards).
+  - A `sitemap.xml` and `robots.txt` generated on build.
+  - Structured Data (JSON-LD) for enhanced Google indexing.
+  - Semantic HTML and keyword-optimized page titles.
 
 ---
 

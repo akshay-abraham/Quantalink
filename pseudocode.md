@@ -1,7 +1,5 @@
 # Quantalink Portfolio - Pseudocode & Architecture Overview
 
-This document outlines the high-level structure and logic of the key interactive components of the Next.js portfolio application, reflecting the final implementation.
-
 ## 1. Global State Management (`src/lib/pet-state.ts`)
 
 - **Purpose:** A global state store (using a simple pub/sub model) to manage the page pet's existence and initial animation coordinates. This allows the pet to persist across all pages.
