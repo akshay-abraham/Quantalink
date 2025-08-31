@@ -1,4 +1,4 @@
-# 🚀 Quantalink Portfolio\*\*
+# 🚀 Quantalink Portfolio
 
 [![Live Site](https://img.shields.io/badge/Live%20Site-akshayabraham.vercel.app-brightgreen?style=for-the-badge&logo=vercel)](https://akshayabraham.vercel.app)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge&logo=gnu)](https://www.gnu.org/licenses/gpl-3.0)
@@ -10,9 +10,7 @@
 ## 🧠 **Core Vision**
 
 Quantalink fuses **Quantum Physics** + **Next.js Web Engineering** into a
-**recruiter-ready, visually immersive, and technically elegant** portfolio.
-
-> _"Science as an Interface. Code as an Art Form."_
+**visually immersive, and technically elegant** portfolio.
 
 ---
 
@@ -28,12 +26,12 @@ Quantalink fuses **Quantum Physics** + **Next.js Web Engineering** into a
 
 ### 🗂 **Multi-Page Architecture**
 
-| Route       | Purpose                                                  |
-| ----------- | -------------------------------------------------------- |
-| `/`         | Landing page with **overview + CTAs**                    |
-| `/about`    | Personal & professional journey + **animated timelines** |
-| `/skills`   | **InfiniteScroller** ribbons + official tech logos       |
-| `/projects` | Dynamic portfolio grid + hover-glow interactions         |
+| Route       | Purpose                                            |
+| ----------- | -------------------------------------------------- |
+| `/`         | Landing page with **overview + CTAs**              |
+| `/about`    | Personal & professional journey                    |
+| `/skills`   | **InfiniteScroller** ribbons + official tech logos |
+| `/projects` | Dynamic portfolio grid + hover-glow interactions   |
 
 ---
 
