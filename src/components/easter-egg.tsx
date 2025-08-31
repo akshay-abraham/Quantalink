@@ -140,7 +140,7 @@ const getDifficulty = (playCount: number) => {
 export default function EasterEgg() {
   const [gameState, setGameState] = useState<GameState>('idle');
   const [catState, setCatState] = useState<PetType | null>(null);
-  const [stats, setStats] = useState({ alive: 0, ghost: 0, plays: 0 });
+  const [stats, setStats] = useState({ alive: 0, ghost: 0, plays: 0, lastResult: null as PetType | null });
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
   const [particleEffects, setParticleEffects] = useState<ParticleEffect[]>([]);
   const [isResultIconVisible, setIsResultIconVisible] = useState(true);
@@ -173,21 +173,24 @@ export default function EasterEgg() {
 
   /** Updates game stats and saves them to localStorage. */
   const updateStats = useCallback((result: PetType | null, play: boolean) => {
-    const newStats = { ...stats };
-    if (result) {
-        newStats[result as 'alive' | 'ghost']++;
-    }
-    if (play) {
-        newStats.plays++;
-    }
-    setStats(newStats);
-    setDifficulty(getDifficulty(newStats.plays));
-    try {
-      localStorage.setItem('quantumConundrumStats', JSON.stringify(newStats));
-    } catch (error) {
-      console.error("Failed to save stats to localStorage", error);
-    }
-  }, [stats]);
+    setStats(prevStats => {
+      const newStats = { ...prevStats };
+      if (result) {
+          newStats[result as 'alive' | 'ghost']++;
+          newStats.lastResult = result;
+      }
+      if (play) {
+          newStats.plays++;
+      }
+      setDifficulty(getDifficulty(newStats.plays));
+      try {
+        localStorage.setItem('quantumConundrumStats', JSON.stringify(newStats));
+      } catch (error) {
+        console.error("Failed to save stats to localStorage", error);
+      }
+      return newStats;
+    });
+  }, []);
   
   /** Clears all active game timers. */
   const cleanupTimers = () => {
@@ -197,17 +200,20 @@ export default function EasterEgg() {
   
   /** Function to spawn a new anomaly. */
   const spawnAnomaly = useCallback(() => {
-      setAnomalies(prevAnomalies => {
-          const newAnomaly: Anomaly = {
-            id: `${Date.now()}-${Math.random()}`, // Use a more unique ID
-            x: 5 + Math.random() * 85,
-            y: 5 + Math.random() * 85,
-            Icon: ANOMALY_ICONS[Math.floor(Math.random() * ANOMALY_ICONS.length)],
-            color: ANOMALY_COLORS[Math.floor(Math.random() * ANOMALY_COLORS.length)],
-          };
-          const updatedAnomalies = prevAnomalies.length > 7 ? prevAnomalies.slice(1) : prevAnomalies;
-          return [...updatedAnomalies, newAnomaly];
-      });
+    setAnomalies(prevAnomalies => {
+      // Smart spawning: only add if there's room.
+      if (prevAnomalies.length >= 7) {
+        return prevAnomalies;
+      }
+      const newAnomaly: Anomaly = {
+        id: `${Date.now()}-${Math.random()}`, // Use a more unique ID
+        x: 5 + Math.random() * 85,
+        y: 5 + Math.random() * 85,
+        Icon: ANOMALY_ICONS[Math.floor(Math.random() * ANOMALY_ICONS.length)],
+        color: ANOMALY_COLORS[Math.floor(Math.random() * ANOMALY_COLORS.length)],
+      };
+      return [...prevAnomalies, newAnomaly];
+    });
   }, []);
 
   /** Starts a new game session. */
@@ -266,7 +272,16 @@ export default function EasterEgg() {
   const observe = () => {
     setGameState('revealing');
     setTimeout(() => {
-      const result: PetType = Math.random() > 0.5 ? 'alive' : 'ghost'; // True 50/50 chance
+      let result: PetType;
+      // Fairer randomness for the first two plays.
+      if (stats.plays === 1) {
+        result = Math.random() > 0.5 ? 'alive' : 'ghost'; // Timeline 1 is random
+      } else if (stats.plays === 2) {
+        result = stats.lastResult === 'alive' ? 'ghost' : 'alive'; // Timeline 2 is the opposite
+      } else {
+        result = Math.random() > 0.5 ? 'alive' : 'ghost'; // Timelines 3+ are random
+      }
+
       setCatState(result);
       updateStats(result, false);
       setIsResultIconVisible(true); // Ensure icon is visible initially
@@ -298,7 +313,7 @@ export default function EasterEgg() {
   const factoryReset = () => {
     try {
       localStorage.removeItem('quantumConundrumStats');
-      setStats({ alive: 0, ghost: 0, plays: 0 });
+      setStats({ alive: 0, ghost: 0, plays: 0, lastResult: null });
       setDifficulty(getDifficulty(0));
     } catch (error) {
       console.error("Failed to reset stats in localStorage", error);
