@@ -78,16 +78,14 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   const runGhostAI = useCallback(() => {
     if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
 
-    // More aggressive pattern: Swoosh -> Hide -> Short Stalk -> Repeat
-    const states: GhostState[] = ['swooshing', 'hiding', 'stalking'];
+    const states: GhostState[] = ['stalking', 'hiding', 'swooshing'];
     const nextState = states[Math.floor(Math.random() * states.length)];
     
     const stateDuration = {
-      swooshing: Math.random() * 2000 + 3000, // 3-5s
-      hiding: 5000, // 5s
-      stalking: Math.random() * 10000 + 8000, // 8-18s
+      stalking: Math.random() * 7000 + 5000, // 5-12s
+      hiding: Math.random() * 7000 + 5000,   // 5-12s
+      swooshing: Math.random() * 7000 + 5000,// 5-12s
     }[nextState];
-
 
     const executeState = (state: GhostState) => {
       let animId: number;
@@ -99,7 +97,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
           const newY = Math.random() * (window.innerHeight - 60);
           setPosition({ x: newX, y: newY });
           setIsVisible(true);
-          ghostStateTimeout.current = setTimeout(runGhostAI, stateDuration);
+          runGhostAI();
         }, 1500); // 1.5s invisible time
         return;
       }
@@ -151,35 +149,10 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Initial aggressive swoosh for the ghost when it spawns.
+  // Run the AI for the ghost when it spawns.
   useEffect(() => {
     if (type === 'ghost' && !isAnimatingIn) {
-      let animId: number;
-      const targetX = Math.random() * (window.innerWidth - 60);
-      const targetY = Math.random() * (window.innerHeight - 60);
-      let { vx, vy } = { vx: 0, vy: 0 };
-      const move = () => {
-          setPosition(prevPos => {
-            const dx = targetX - prevPos.x;
-            const dy = targetY - prevPos.y;
-            vx += dx * 0.05; // High acceleration
-            vy += dy * 0.05;
-            vx *= 0.99; // Low friction
-            vy *= 0.99;
-            vx = Math.max(-10, Math.min(10, vx)); // High max speed
-            vy = Math.max(-10, Math.min(10, vy));
-            return { x: prevPos.x + vx, y: prevPos.y + vy };
-          });
-          animId = requestAnimationFrame(move);
-        };
-      animId = requestAnimationFrame(move);
-
-      const swooshTimeout = setTimeout(() => {
-        cancelAnimationFrame(animId);
-        runGhostAI();
-      }, 3000); // 3-second initial swoosh.
-
-      return () => clearTimeout(swooshTimeout);
+      runGhostAI();
     }
     // Cleanup for ghost AI
     return () => {
@@ -259,8 +232,8 @@ const PagePet = ({ type, startX, startY }: PetState) => {
 
   const PetIcon = type === 'alive' ? Cat : Ghost;
   const petClasses = type === 'alive' 
-    ? 'animate-cat-colors' 
-    : 'animate-ghost-colors';
+    ? 'text-green-500' 
+    : 'text-sky-400';
 
   const container = document.getElementById('pet-container');
   if (!container) return null;
@@ -315,7 +288,6 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     >
       {showMeow && type === 'alive' && <MeowBubble />}
       <div className="relative w-full h-full">
-         <FunParticles type={type === 'alive' ? 'ambient_cat' : 'ambient_ghost'} count={5} />
          <PetIcon className="w-full h-full" />
       </div>
     </div>,
