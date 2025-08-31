@@ -113,22 +113,22 @@ const QuantumAnomaly = ({ anomaly, onClick }: { anomaly: Anomaly, onClick: (id: 
   </button>
 );
 
-/** Calculates game difficulty based on the number of times played. */
-const getDifficulty = (playCount: number) => {
+/** Calculates game difficulty based on the number of times played (i.e., wins). */
+const getDifficulty = (winCount: number) => {
     // Capped difficulty after many plays to prevent it being impossible.
-    if (playCount > 10) {
+    if (winCount > 10) {
       return { time: 4, anomalies: 15, spawnRate: 250 };
     }
-    // Linear increase up to play 3
-    if (playCount <= 3) {
+    // Linear increase up to win 3
+    if (winCount <= 3) {
       return {
-          time: 15 - playCount * 3, // 15s -> 12s -> 9s -> 6s
-          anomalies: 5 + playCount * 2, // 5 -> 7 -> 9 -> 11
-          spawnRate: 900 - playCount * 150 // 900ms -> 750ms -> 600ms -> 450ms
+          time: 15 - winCount * 3, // 15s -> 12s -> 9s -> 6s
+          anomalies: 5 + winCount * 2, // 5 -> 7 -> 9 -> 11
+          spawnRate: 900 - winCount * 150 // 900ms -> 750ms -> 600ms -> 450ms
       }
     }
-    // After play 3, the difficulty increases at a compounding rate.
-    const compoundFactor = Math.pow(1.1, playCount - 3);
+    // After win 3, the difficulty increases at a compounding rate.
+    const compoundFactor = Math.pow(1.1, winCount - 3);
     return {
         time: Math.max(4, 6 / compoundFactor), // Time decreases but won't go below 4s
         anomalies: 11 + Math.floor(2 * compoundFactor), // Anomalies increase
@@ -172,16 +172,17 @@ export default function EasterEgg() {
   }, []);
 
   /** Updates game stats and saves them to localStorage. */
-  const updateStats = useCallback((result: PetType | null, play: boolean) => {
+  const updateStats = useCallback((result: PetType | null, incrementPlayCount: boolean) => {
     setStats(prevStats => {
       const newStats = { ...prevStats };
       if (result) {
           newStats[result as 'alive' | 'ghost']++;
           newStats.lastResult = result;
       }
-      if (play) {
+      if (incrementPlayCount) {
           newStats.plays++;
       }
+      // Difficulty is always based on the number of successful plays (wins).
       setDifficulty(getDifficulty(newStats.plays));
       try {
         localStorage.setItem('quantumConundrumStats', JSON.stringify(newStats));
@@ -203,7 +204,8 @@ export default function EasterEgg() {
     setAnomalies(prevAnomalies => {
       // Smart spawning: only add if there's room.
       if (prevAnomalies.length >= 7) {
-        return prevAnomalies;
+        // To prevent overflow, remove the oldest anomaly.
+        return prevAnomalies.slice(1);
       }
       const newAnomaly: Anomaly = {
         id: `${Date.now()}-${Math.random()}`, // Use a more unique ID
@@ -218,9 +220,8 @@ export default function EasterEgg() {
 
   /** Starts a new game session. */
   const startExperiment = () => {
-    updateStats(null, true);
     setPet(null); // Clear any existing global pet
-    const currentDifficulty = getDifficulty(stats.plays + 1);
+    const currentDifficulty = getDifficulty(stats.plays);
     setDifficulty(currentDifficulty);
     setAnomaliesToClick(currentDifficulty.anomalies);
     setTimeLeft(currentDifficulty.time);
@@ -240,6 +241,7 @@ export default function EasterEgg() {
       });
     }, 1000);
 
+    // Start the anomaly spawner.
     anomalySpawnerRef.current = setInterval(spawnAnomaly, currentDifficulty.spawnRate);
     spawnAnomaly();
   };
@@ -273,17 +275,18 @@ export default function EasterEgg() {
     setGameState('revealing');
     setTimeout(() => {
       let result: PetType;
-      // Fairer randomness for the first two plays.
-      if (stats.plays === 1) {
+      // Fairer randomness for the first two wins.
+      if (stats.plays === 0) {
         result = Math.random() > 0.5 ? 'alive' : 'ghost'; // Timeline 1 is random
-      } else if (stats.plays === 2) {
+      } else if (stats.plays === 1) {
         result = stats.lastResult === 'alive' ? 'ghost' : 'alive'; // Timeline 2 is the opposite
       } else {
         result = Math.random() > 0.5 ? 'alive' : 'ghost'; // Timelines 3+ are random
       }
 
       setCatState(result);
-      updateStats(result, false);
+      // **Timeline (Level) Progression:** Only increment the play count on a successful observation.
+      updateStats(result, true); 
       setIsResultIconVisible(true); // Ensure icon is visible initially
       setGameState('result');
       // Delay setting the pet to create the illusion of it "coming from" the card.
@@ -373,7 +376,7 @@ export default function EasterEgg() {
                             <p className="font-medium text-foreground/90">"My fate is in superposition. Collect quantum anomalies to observe the outcome."</p>
                           </blockquote>
                            <div className="text-sm text-foreground/80">
-                             <p>Timeline #{stats.plays + 1}</p>
+                             <p>Level (Timeline) #{stats.plays + 1}</p>
                              <p>Cats Observed Alive: <span className="font-bold text-green-500">{stats.alive}</span></p>
                              <p>Cats Decohered: <span className="font-bold text-sky-400">{stats.ghost}</span></p>
                            </div>
