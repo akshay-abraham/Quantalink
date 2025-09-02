@@ -21,6 +21,7 @@ import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
 import { setPet, PetType } from '@/lib/pet-state';
+import { usePostHog } from 'posthog-js/react';
 
 // Defines the possible states of the game.
 type GameState = 'idle' | 'playing' | 'revealing' | 'result' | 'failed';
@@ -144,6 +145,7 @@ export default function EasterEgg() {
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
   const [particleEffects, setParticleEffects] = useState<ParticleEffect[]>([]);
   const [isResultIconVisible, setIsResultIconVisible] = useState(true);
+  const posthog = usePostHog();
   
   const [difficulty, setDifficulty] = useState(getDifficulty(0));
   const [anomaliesToClick, setAnomaliesToClick] = useState(difficulty.anomalies);
@@ -220,6 +222,7 @@ export default function EasterEgg() {
 
   /** Starts a new game session. */
   const startExperiment = () => {
+    posthog.capture('easter_egg_game_started');
     setPet(null); // Clear any existing global pet
     const currentDifficulty = getDifficulty(stats.plays);
     setDifficulty(currentDifficulty);
