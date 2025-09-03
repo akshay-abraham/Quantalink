@@ -12,7 +12,6 @@ import ReactDOM from 'react-dom';
 import { Cat, Ghost } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PetState } from '@/lib/pet-state';
-import { FunParticles } from './easter-egg';
 
 /** A speech bubble component for the cat's "Meow!". */
 const MeowBubble = () => (
@@ -156,7 +155,6 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     };
 
     executeState(nextState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Run the AI for the ghost when it spawns.

@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPopper, Skull, Star, CheckCircle2, RefreshCw } from 'lucide-react';
+import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPopper, Skull, Star, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
@@ -385,7 +385,7 @@ export default function EasterEgg() {
                              <p>Cats Decohered: <span className="font-bold text-sky-400">{stats.ghost}</span></p>
                            </div>
                           <div className="w-full pt-4">
-                            <Button id="begin-experiment-button" onClick={startExperiment} size="lg" className="w-full sm:w-auto">
+                            <Button id="begin-experiment-button" onClick={startExperiment} size="lg" className="w-full sm:w-auto animate-button-glow">
                               Begin Experiment
                             </Button>
                           </div>
@@ -492,13 +492,14 @@ export default function EasterEgg() {
               </CardContent>
               {/* Developer/Testing tools */}
               <div className="absolute bottom-1 right-1">
-                <button 
+                <Button 
                   onClick={factoryReset} 
-                  className="text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-[10px] p-1 rounded-sm hover:bg-muted/50"
+                  className="text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-xs p-2 h-auto rounded-md hover:bg-muted/50"
+                  variant="ghost"
                   title="Reset all game statistics and restart the guided tour."
                 >
                   Dev Reset
-                </button>
+                </Button>
               </div>
           </Card>
       </section>
