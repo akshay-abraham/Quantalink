@@ -134,6 +134,41 @@ body {
       animation: fly-in 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
 
+  /* Keyframes for the new Guided Tour component */
+  @keyframes slide-in-from-bottom-and-left {
+    from {
+      transform: translate(-100%, 100%);
+      opacity: 0;
+    }
+    to {
+      transform: translate(0, 0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-out-to-bottom-and-left {
+    from {
+      transform: translate(0, 0);
+      opacity: 1;
+    }
+    to {
+      transform: translate(-100%, 100%);
+      opacity: 0;
+    }
+  }
+
+  .animate-in.slide-in-from-bottom-and-left {
+    animation-name: slide-in-from-bottom-and-left;
+    animation-duration: 0.5s;
+    animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  
+  .animate-out.slide-out-to-bottom-and-left {
+    animation-name: slide-out-to-bottom-and-left;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in;
+  }
+
 
   .text-shadow {
     text-shadow: 0 1px 2px hsl(var(--foreground) / 0.1);

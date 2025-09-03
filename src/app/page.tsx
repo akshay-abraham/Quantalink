@@ -14,7 +14,6 @@ import Projects from '@/components/projects';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import GamePromptDialog from '@/components/game-prompt-dialog';
 
 /**
  * The Home component serves as the main entry point and landing page for the website.
@@ -52,7 +51,6 @@ export default function Home() {
         </div>
       </div>
       <PageFooter />
-      <GamePromptDialog />
     </div>
   );
 }

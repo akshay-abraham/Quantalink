@@ -12,6 +12,7 @@ import MainNav from '@/components/main-nav';
 import GlobalPetRenderer from '@/components/global-pet-renderer';
 import { Analytics } from '@vercel/analytics/react';
 import { PostHogProvider } from './providers';
+import GuidedTour from '@/components/guided-tour';
 
 // Define metadata for the website, used for SEO and browser tab information.
 export const metadata: Metadata = {
@@ -130,6 +131,7 @@ export default function RootLayout({
           {/* The Toaster component handles pop-up notifications. */}
           <Toaster />
           <Analytics />
+          <GuidedTour />
         </PostHogProvider>
       </body>
     </html>

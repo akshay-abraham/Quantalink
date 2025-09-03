@@ -1,83 +1,56 @@
 /**
- * @file src/components/game-prompt-dialog.tsx
- * @description A dialog that appears once for first-time visitors, prompting them to try the game.
- *              It uses localStorage to track whether the user has seen it before.
- * @note This is a client component because it uses state and interacts with localStorage.
+ * @file src/app/page.tsx
+ * @description The main homepage of the Quantalink portfolio.
+ *              This component arranges all the primary sections of the landing page
+ *              in a vertical layout.
  */
-"use client";
-
-import { useState, useEffect } from 'react';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Box, Gamepad2 } from 'lucide-react';
-
-const STORAGE_KEY = 'hasSeenGamePrompt';
+import ProfileSection from '@/components/profile-section';
+import LinkCards from '@/components/link-cards';
+import PageFooter from '@/components/page-footer';
+import Skills from '@/components/skills';
+import { Separator } from '@/components/ui/separator';
+import EasterEgg from '@/components/easter-egg';
+import Projects from '@/components/projects';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 /**
- * GamePromptDialog component shows a one-time welcome message about the game.
- * @returns {JSX.Element | null} The rendered dialog or null.
+ * The Home component serves as the main entry point and landing page for the website.
+ * It composes various sections like the profile, links, projects, and skills
+ * into a single, scrollable view.
+ * @returns {JSX.Element} A structured layout of the homepage components.
  */
-export default function GamePromptDialog() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  // This effect runs only on the client after mounting.
-  useEffect(() => {
-    // Check if the prompt has been seen before.
-    const hasSeenPrompt = localStorage.getItem(STORAGE_KEY);
-    
-    // If it's the user's first visit, open the dialog after a short delay.
-    if (!hasSeenPrompt) {
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-      }, 1500); // Wait 1.5 seconds before showing the prompt.
-
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
-  /**
-   * Handles closing the dialog and setting the flag in localStorage.
-   */
-  const handleClose = () => {
-    setIsOpen(false);
-    try {
-      localStorage.setItem(STORAGE_KEY, 'true');
-    } catch (error) {
-      console.error("Failed to write to localStorage", error);
-    }
-  };
-
+export default function Home() {
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-              <Gamepad2 className="w-8 h-8" />
-            </div>
+    // The main container ensures content is centered and properly spaced.
+    // `relative z-10` is used to make sure the content appears on top of the animated background.
+    <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-between p-4 sm:p-6 lg:p-8">
+      {/* This wrapper constrains the width of the content for better readability on larger screens. */}
+      <div className="w-full max-w-3xl flex-grow flex flex-col justify-center">
+        {/* The `space-y-*` classes add vertical spacing between each child component. */}
+        <div className="w-full space-y-6 md:space-y-8">
+          <ProfileSection />
+          <LinkCards />
+          <Separator className="bg-border/50" />
+           <div className="text-center">
+             <Link href="/about">
+              <Button variant="outline" className="bg-card/30 border-border/40">
+                Read More About Me
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
-          <AlertDialogTitle className="text-center text-2xl text-primary">
-            Welcome to the Experiment!
-          </AlertDialogTitle>
-          <AlertDialogDescription className="text-center text-foreground/80 pt-2">
-            This portfolio isn't just for reading. Scroll down to find the
-            <span className="font-bold text-primary/90"> "Quantum Conundrum"</span>, an interactive game. Your observation will determine the outcome. Give it a try!
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter className="mt-4">
-          <AlertDialogAction asChild>
-            <Button onClick={handleClose} className="w-full">Let's Play!</Button>
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          <Separator className="bg-border/50" />
+          {/* The Projects component is configured to show only featured projects on the homepage. */}
+          <Projects featuredOnly />
+          <Separator className="bg-border/50" />
+          <Skills />
+          <Separator className="bg-border/50" />
+          <EasterEgg />
+        </div>
+      </div>
+      <PageFooter />
+    </div>
   );
 }
