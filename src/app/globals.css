@@ -171,6 +171,17 @@ body {
     100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0); }
   }
 
+  /* More intense glow for guided tour call to actions */
+  @keyframes tour-glow-pulse {
+    0% { box-shadow: 0 0 0 0px hsl(var(--primary) / 0.9), 0 0 0 0px hsl(var(--accent-foreground) / 0.7); }
+    70% { box-shadow: 0 0 0 12px hsl(var(--primary) / 0), 0 0 0 20px hsl(var(--accent-foreground) / 0); }
+    100% { box-shadow: 0 0 0 0px hsl(var(--primary) / 0), 0 0 0 0px hsl(var(--accent-foreground) / 0); }
+  }
+
+  .animate-tour-glow {
+      animation: tour-glow-pulse 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
+  }
+
   .animate-button-glow {
       animation: button-glow-pulse 2s infinite;
   }
@@ -250,6 +261,37 @@ body {
 
   .animate-ghost-colors {
     animation: ghost-color-cycle 6s linear infinite;
+  }
+  
+  /* Animations for Mobile Nav */
+  @keyframes nav-item-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes nav-item-out {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(10px) scale(0.8);
+    }
+  }
+
+  .animate-nav-item-in {
+    animation: nav-item-in 0.3s ease-out forwards;
+  }
+
+  .animate-nav-item-out {
+    animation: nav-item-out 0.2s ease-in forwards;
   }
 }
 

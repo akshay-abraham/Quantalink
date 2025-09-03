@@ -32,11 +32,11 @@ export default function GuidedTour() {
 
   const currentStep: TourStep | null = tourSteps[stepIndex] || null;
 
-  // Cleanup function to clear all timers.
+  // Cleanup function to clear all timers and animations.
   const cleanup = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
-    const highlightedElement = document.querySelector('.animate-button-glow');
-    highlightedElement?.classList.remove('animate-button-glow');
+    const highlightedElement = document.querySelector('.animate-tour-glow');
+    highlightedElement?.classList.remove('animate-tour-glow');
   }, []);
 
   const advanceTour = useCallback((forceNextStep?: number) => {
@@ -66,7 +66,8 @@ export default function GuidedTour() {
       element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       
       const targetButton = document.getElementById(action.pointTo);
-      targetButton?.classList.add('animate-button-glow');
+      // Use the new, more prominent glow animation
+      targetButton?.classList.add('animate-tour-glow');
 
       // Minimize the tour window to not obscure the view
       setDisplayState('closed'); 
@@ -75,9 +76,6 @@ export default function GuidedTour() {
   
   const restartTour = () => {
     cleanup();
-    try {
-      localStorage.removeItem(TOUR_STORAGE_KEY);
-    } catch (error) { console.error("Could not write to localStorage:", error); }
     setStatus('running');
     setDisplayState('open');
     setStepIndex(0);
@@ -125,7 +123,7 @@ export default function GuidedTour() {
       const targetId = currentStep.action?.pointTo;
       if(targetId) {
         const targetButton = document.getElementById(targetId);
-        targetButton?.classList.add('animate-button-glow');
+        targetButton?.classList.add('animate-tour-glow');
       }
 
       if(pathname === currentStep.action?.path) {
@@ -176,8 +174,15 @@ export default function GuidedTour() {
     });
 
     observer.observe(gameContainer, { attributes: true });
-    return () => observer.disconnect();
-  }, []);
+
+    const gameCompletedListener = () => advanceTour();
+    window.addEventListener('gameCompleted', gameCompletedListener);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('gameCompleted', gameCompletedListener);
+    };
+  }, [advanceTour]);
 
   /**
    * Handles closing the tour. It sets the display state to 'closed' to trigger

@@ -98,11 +98,11 @@ export default function MobileNav() {
                   'flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-lg text-xs font-medium transition-all duration-300 ease-in-out',
                   isActive ? 'text-primary' : 'text-foreground/70 hover:text-primary',
                   // Scale in/out animation for each icon.
-                  isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
+                  isOpen ? 'animate-nav-item-in' : 'animate-nav-item-out'
                 )}
                 style={{
                   // Stagger the animation for a "fanning out" effect.
-                  transitionDelay: isOpen ? `${index * 50}ms` : '0ms'
+                  animationDelay: isOpen ? `${index * 50}ms` : '0ms'
                 }}
                 tabIndex={isOpen ? 0 : -1} // Make icons non-tabbable when closed.
               >
