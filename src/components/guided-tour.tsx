@@ -45,7 +45,7 @@ export default function GuidedTour() {
     
     if (nextStepIndex >= tourSteps.length) {
       setStatus('completed');
-      setDisplayState('closed'); // Close it, but it will be rendered as the minimized icon
+      setDisplayState('open'); // Keep it open on the final step
       try {
         localStorage.setItem(TOUR_STORAGE_KEY, 'true');
         posthog.capture('tour_completed');
@@ -184,7 +184,7 @@ export default function GuidedTour() {
     advanceTour(tourSteps.length); // Advance to end
   };
 
-  if (status === 'inactive' || (isGameActive && displayState !== 'open')) {
+  if (status === 'inactive' || isGameActive) {
     return null;
   }
   

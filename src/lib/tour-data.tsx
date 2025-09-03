@@ -69,17 +69,30 @@ export const tourSteps: TourStep[] = [
     awaits: 'path_change',
   },
   {
-    id: 'outro',
+    id: 'outro-1',
     title: "Thanks for Visiting!",
+    content: "That's the grand tour! Feel free to explore the rest of the site at your own pace.",
+    autoAdvanceAfter: 3000,
+  },
+  {
+    id: 'outro-2',
+    title: "Feedback is Welcome!",
+    content: "If you have any ideas for improvement or find any bugs, I'd love to hear from you.",
+    autoAdvanceAfter: 3000,
+  },
+  {
+    id: 'outro-final',
+    title: "Get in Touch",
     content: (
       <>
-        <p className="mb-4">Feel free to explore the rest of the site. If you're curious about the code or have ideas for improvement, the entire project is open source.</p>
+        <p className="mb-4 text-sm">The code for this entire project is open-source. For details or to contribute, please visit the repository.</p>
         <a href="https://github.com/akshay-abraham/Quantalink" target="_blank" rel="noopener noreferrer">
           <Button variant="outline" className="w-full">
             <Github className="mr-2 h-4 w-4" />
             View on GitHub
           </Button>
         </a>
+        <p className="text-xs text-foreground/50 text-center mt-3">Copyright © Akshay Abraham</p>
       </>
     ),
   }
