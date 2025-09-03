@@ -38,6 +38,7 @@ export default function MobileNav() {
   const pathname = usePathname();
   const navRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const prevPathnameRef = useRef(pathname);
 
   // Auto-collapse the menu after a delay of inactivity to save screen space.
   useEffect(() => {
@@ -65,19 +66,21 @@ export default function MobileNav() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
   
-  // Close the menu and trigger navigation animation when the user changes pages.
+  // Animate menu on page change, triggered from anywhere in the app.
   useEffect(() => {
-    setIsOpen(false);
-    
-    // Don't animate on initial page load
-    if (pathname !== window.location.pathname) {
+    // Only trigger animation if the path has actually changed.
+    if (prevPathnameRef.current !== pathname) {
+      setIsOpen(false); // Always close the full menu on navigation.
       setIsNavigating(true);
       const navAnimTimeout = setTimeout(() => {
         setIsNavigating(false);
-      }, 500); // Duration of the expand/contract animation
+      }, 500); // Duration of the expand/contract animation.
+
+      // Update the ref to the new pathname.
+      prevPathnameRef.current = pathname;
+      
       return () => clearTimeout(navAnimTimeout);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   // **Definitive Overflow Fix:** Calculate the exact width required for the expanded menu.
