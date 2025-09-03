@@ -35,10 +35,15 @@ const TOGGLE_BUTTON_WIDTH = 48;   // h-12 w-12 -> 3rem
 export default function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
   const navRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const prevPathnameRef = useRef(pathname);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Auto-collapse the menu after a delay of inactivity to save screen space.
   useEffect(() => {
@@ -84,7 +89,7 @@ export default function MobileNav() {
   }, [pathname]);
 
   // **Definitive Overflow Fix:** Calculate the exact width required for the expanded menu.
-  const navWidth = isOpen || isNavigating
+  const navWidth = (isOpen || isNavigating) && isMounted
     ? (navLinks.length * ICON_CONTAINER_WIDTH) + ((navLinks.length) * GAP_WIDTH) + HORIZONTAL_PADDING + TOGGLE_BUTTON_WIDTH
     : TOGGLE_BUTTON_WIDTH;
     
