@@ -22,13 +22,11 @@ export interface TourStep {
     type: 'scroll_to';
     label: string;
     elementId: string;
-    pointTo?: string;
+    pointTo: string; // The ID of the button to highlight.
     path?: string;
   };
   /** Optional: Specifies what user interaction the tour should wait for. */
-  awaits?: 'click' | 'game_completion' | 'path_change';
-  /** Optional: Milliseconds to wait *after* an awaited event before advancing. */
-  advancesAfter?: number;
+  awaits?: 'click' | 'path_change';
 }
 
 
@@ -37,13 +35,13 @@ export const tourSteps: TourStep[] = [
     id: 'welcome',
     title: "Hi there!",
     content: "I'm your guide. Let's take a quick tour...",
-    autoAdvanceAfter: 1500,
+    autoAdvanceAfter: 2000,
   },
   {
     id: 'background',
     title: "A Living Background",
     content: "This isn't just a static image. It's a real-time particle simulation inspired by quantum physics, running right in your browser.",
-    autoAdvanceAfter: 5000,
+    autoAdvanceAfter: 4000,
   },
   {
     id: 'game-prompt',
@@ -58,16 +56,9 @@ export const tourSteps: TourStep[] = [
     awaits: 'click'
   },
   {
-    id: 'wait-for-game',
-    title: "Your Turn!",
-    content: "Go on, press the button! Your observation will collapse the wave function.",
-    awaits: 'game_completion',
-    advancesAfter: 2000,
-  },
-  {
     id: 'skills-prompt',
-    title: "Nice work!",
-    content: "Now that you've created your own reality, let's check out some of the tech that made it possible.",
+    title: "While you play...",
+    content: "The tech behind this site is just as interesting! When you're ready, let's explore the skills that made it possible.",
     action: {
         type: 'scroll_to',
         label: 'Show me the skills!',
@@ -76,7 +67,6 @@ export const tourSteps: TourStep[] = [
         path: '/skills'
     },
     awaits: 'path_change',
-    advancesAfter: 4000,
   },
   {
     id: 'outro',

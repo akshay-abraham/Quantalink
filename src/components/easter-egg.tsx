@@ -283,15 +283,8 @@ export default function EasterEgg() {
     cleanupTimers();
     setGameState('revealing');
     setTimeout(() => {
-      let result: PetType;
-      // Implement fair randomness for the first two plays.
-      if (stats.plays === 0) {
-        result = Math.random() > 0.5 ? 'alive' : 'ghost';
-      } else if (stats.plays === 1) {
-        result = stats.lastResult === 'alive' ? 'ghost' : 'alive';
-      } else {
-        result = Math.random() > 0.5 ? 'alive' : 'ghost';
-      }
+      // The probability of the cat being alive is 1/3.
+      const result: PetType = Math.random() < (1 / 3) ? 'alive' : 'ghost';
       
       setCatState(result);
       // **Timeline (Level) Progression:** Only increment the play count on a successful observation.

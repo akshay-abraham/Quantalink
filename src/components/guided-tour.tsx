@@ -2,71 +2,41 @@
  * @file src/components/guided-tour.tsx
  * @description An advanced, non-intrusive guided tour for first-time visitors.
  *              It uses a cat mascot to provide contextual, auto-advancing tips,
- *              and can point to specific elements to guide user interaction.
+ *              and can highlight specific elements to guide user interaction.
  * @note This is a client component due to its heavy use of state, effects, and localStorage.
  */
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Cat, X, Github, ArrowRight, MessageSquare } from 'lucide-react';
+import { Cat, X, Github } from 'lucide-react';
 import { Button } from './ui/button';
 import { tourSteps, TourStep } from '@/lib/tour-data';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
+import { usePostHog } from 'posthog-js/react';
 
 export const TOUR_STORAGE_KEY = 'hasCompletedQuantumTour_v2';
 
 type TourStatus = 'inactive' | 'running' | 'completed';
-type TourDisplayState = 'closed' | 'open' | 'pointing' | 'minimized';
-
-/**
- * A pointing arrow component to guide the user's attention.
- * @param {{ targetElementId: string }} props - Props for the component.
- * @returns {JSX.Element | null} The rendered arrow.
- */
-const PointingArrow = ({ targetElementId }: { targetElementId: string }) => {
-    const [position, setPosition] = useState<{ top: number, left: number } | null>(null);
-
-    useEffect(() => {
-        const target = document.getElementById(targetElementId);
-        if (target) {
-            const rect = target.getBoundingClientRect();
-            setPosition({
-                top: rect.top + rect.height / 2,
-                left: rect.right + 10,
-            });
-        }
-    }, [targetElementId]);
-
-    if (!position) return null;
-
-    return (
-        <div 
-            className="fixed z-[101] text-primary animate-point-and-blink"
-            style={{ top: `${position.top}px`, left: `${position.left}px`, transform: 'translateY(-50%)' }}
-        >
-            <ArrowRight className="w-10 h-10" />
-        </div>
-    );
-};
+type TourDisplayState = 'closed' | 'open' | 'pointing';
 
 export default function GuidedTour() {
   const [status, setStatus] = useState<TourStatus>('inactive');
   const [displayState, setDisplayState] = useState<TourDisplayState>('closed');
   const [stepIndex, setStepIndex] = useState(0);
-  const [targetElementId, setTargetElementId] = useState<string | null>(null);
+  const [isGameActive, setIsGameActive] = useState(false);
   
   const pathname = usePathname();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const gameActiveRef = useRef<boolean>(false);
-  const gameContainerObserver = useRef<MutationObserver>();
+  const posthog = usePostHog();
 
   const currentStep: TourStep | null = tourSteps[stepIndex] || null;
 
-  // Cleanup function to clear all timers and observers.
+  // Cleanup function to clear all timers.
   const cleanup = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
-    if (gameContainerObserver.current) gameContainerObserver.current.disconnect();
+    const highlightedElement = document.querySelector('.animate-button-glow');
+    highlightedElement?.classList.remove('animate-button-glow');
   }, []);
 
   const advanceTour = useCallback((forceNextStep?: number) => {
@@ -75,14 +45,15 @@ export default function GuidedTour() {
     
     if (nextStepIndex >= tourSteps.length) {
       setStatus('completed');
-      setDisplayState('minimized');
+      setDisplayState('closed'); // Close it, but it will be rendered as the minimized icon
       try {
         localStorage.setItem(TOUR_STORAGE_KEY, 'true');
+        posthog.capture('tour_completed');
       } catch (error) { console.error("Could not write to localStorage:", error); }
     } else {
       setStepIndex(nextStepIndex);
     }
-  }, [stepIndex, cleanup]);
+  }, [stepIndex, cleanup, posthog]);
   
   const handleAction = useCallback((action?: TourStep['action']) => {
     if (!action) {
@@ -94,12 +65,11 @@ export default function GuidedTour() {
       const element = document.getElementById(action.elementId);
       element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       
-      setTimeout(() => {
-          if (action.pointTo) {
-            setTargetElementId(action.pointTo);
-            setDisplayState('pointing');
-          }
-      }, 700); // Wait for scroll to finish
+      const targetButton = document.getElementById(action.pointTo);
+      targetButton?.classList.add('animate-button-glow');
+
+      // Minimize the tour window to not obscure the view
+      setDisplayState('closed'); 
     }
   }, [advanceTour]);
   
@@ -111,9 +81,10 @@ export default function GuidedTour() {
     setStatus('running');
     setDisplayState('open');
     setStepIndex(0);
+    posthog.capture('tour_restarted');
   };
-
-  // Main effect to control tour logic based on the current step
+  
+  // Effect to manage tour logic based on the current step
   useEffect(() => {
     if (status !== 'running' || !currentStep) return;
 
@@ -126,19 +97,22 @@ export default function GuidedTour() {
       }, currentStep.autoAdvanceAfter);
     }
 
-    // Listener logic
+    // Listener for a button click
     if (currentStep.awaits === 'click') {
       const targetId = currentStep.action?.pointTo;
       if (!targetId) return;
-
+      
       const target = document.getElementById(targetId);
       const listener = () => {
-        setDisplayState('minimized');
-        setTargetElementId(null);
-        if (currentStep.advancesAfter) {
-            timerRef.current = setTimeout(() => {
-                advanceTour();
-            }, currentStep.advancesAfter);
+        cleanup(); // Remove glow
+        
+        // This is a special case for the game start
+        if(targetId === 'begin-experiment-button') {
+          setDisplayState('closed');
+          // Wait 25 seconds, then advance.
+          timerRef.current = setTimeout(() => {
+            advanceTour();
+          }, 25000);
         }
       };
       
@@ -146,27 +120,25 @@ export default function GuidedTour() {
       return () => target?.removeEventListener('click', listener);
     }
 
-    // Game completion listener
-    if (currentStep.awaits === 'game_completion') {
-        const listener = () => {
-            advanceTour();
-        };
-        window.addEventListener('gameCompleted', listener, { once: true });
-        return () => window.removeEventListener('gameCompleted', listener);
-    }
-    
     // Path change listener
     if (currentStep.awaits === 'path_change') {
+      const targetId = currentStep.action?.pointTo;
+      if(targetId) {
+        const targetButton = document.getElementById(targetId);
+        targetButton?.classList.add('animate-button-glow');
+      }
+
       if(pathname === currentStep.action?.path) {
-        if (currentStep.advancesAfter) {
-          timerRef.current = setTimeout(() => {
-              advanceTour();
-          }, currentStep.advancesAfter);
-        }
+        cleanup(); // Remove glow
+        timerRef.current = setTimeout(() => {
+          advanceTour();
+        }, 2000); // Wait 2s on the new page before showing final step
       }
     }
 
-  }, [status, currentStep, advanceTour, pathname]);
+    return cleanup;
+
+  }, [status, currentStep, advanceTour, pathname, handleAction, cleanup]);
 
 
   // Initial check on mount
@@ -175,17 +147,18 @@ export default function GuidedTour() {
       const hasCompletedTour = localStorage.getItem(TOUR_STORAGE_KEY);
       if (hasCompletedTour) {
         setStatus('completed');
-        setDisplayState('minimized');
       } else {
         const startTimeout = setTimeout(() => {
           setStatus('running');
           setDisplayState('open');
+          posthog.capture('tour_started');
         }, 1500); // Initial delay to let page load
         return () => clearTimeout(startTimeout);
       }
     } catch (error) {
       console.error("Could not access localStorage:", error);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Observer to hide widget during game
@@ -197,16 +170,12 @@ export default function GuidedTour() {
       for (let mutation of mutations) {
         if (mutation.attributeName === 'class') {
           const target = mutation.target as HTMLElement;
-          gameActiveRef.current = target.classList.contains('fixed');
-          // This forces a re-render to hide/show the widget
-          setDisplayState(d => d); 
+          setIsGameActive(target.classList.contains('fixed'));
         }
       }
     });
 
     observer.observe(gameContainer, { attributes: true });
-    gameContainerObserver.current = observer;
-
     return () => observer.disconnect();
   }, []);
 
@@ -215,40 +184,29 @@ export default function GuidedTour() {
     advanceTour(tourSteps.length); // Advance to end
   };
 
-  // Don't render anything if the tour is inactive or closed.
-  if (status === 'inactive' || displayState === 'closed') {
+  if (status === 'inactive' || (isGameActive && displayState !== 'open')) {
     return null;
   }
   
-  if (gameActiveRef.current && displayState === 'minimized') {
-      return null;
-  }
-
-  // Minimized state / Completed state
-  if (displayState === 'minimized' || status === 'completed') {
-    return (
+  // Render minimized/completed button if tour is not open
+  if (displayState !== 'open') {
+     return (
         <div className="fixed bottom-4 left-4 z-[100]">
              <Button
                 variant="outline"
                 size="icon"
-                className="rounded-full h-14 w-14 bg-card/70 backdrop-blur-md border-border/60 shadow-lg"
+                className="rounded-full h-14 w-14 bg-card/70 backdrop-blur-md border-border/60 shadow-lg hover:scale-110 transition-transform"
                 onClick={() => setDisplayState('open')}
               >
                 <Cat className="h-7 w-7 text-primary" />
-                <span className="sr-only">Restart Tour</span>
+                <span className="sr-only">Open Tour Guide</span>
             </Button>
         </div>
     );
   }
-  
-  // Pointing state
-  if (displayState === 'pointing' && targetElementId) {
-      return <PointingArrow targetElementId={targetElementId} />;
-  }
 
   // Open state (main tour window)
   if (displayState === 'open' && currentStep) {
-     const isLastStep = stepIndex === tourSteps.length - 1;
      return (
       <div 
         className={cn(
@@ -276,9 +234,9 @@ export default function GuidedTour() {
                 <Button onClick={() => handleAction(currentStep.action)} size="sm">
                   {currentStep.action.label}
                 </Button>
-              ) : !currentStep.autoAdvanceAfter ? (
+              ) : !currentStep.autoAdvanceAfter && status !== 'completed' ? (
                 <Button onClick={() => advanceTour()} size="sm">
-                  {isLastStep ? 'Finish Tour' : 'Next'}
+                  Next
                 </Button>
               ) : null}
             </div>
