@@ -16,12 +16,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPopper, Skull, Star, CheckCircle2 } from 'lucide-react';
+import { Box, Cat, Ghost, Timer, X, Atom, Dna, Biohazard, FlaskConical, PartyPopper, Skull, Star, CheckCircle2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
 import { setPet, PetType } from '@/lib/pet-state';
 import { usePostHog } from 'posthog-js/react';
+import { TOUR_STORAGE_KEY } from './guided-tour';
 
 // Defines the possible states of the game.
 type GameState = 'idle' | 'playing' | 'revealing' | 'result' | 'failed';
@@ -118,22 +119,22 @@ const QuantumAnomaly = ({ anomaly, onClick }: { anomaly: Anomaly, onClick: (id: 
 const getDifficulty = (winCount: number) => {
     // Capped difficulty after many plays to prevent it being impossible.
     if (winCount > 10) {
-      return { time: 4, anomalies: 15, spawnRate: 250 };
+      return { time: 8, anomalies: 15, spawnRate: 350 };
     }
     // Linear increase up to win 3
     if (winCount <= 3) {
       return {
-          time: 15 - winCount * 3, // 15s -> 12s -> 9s -> 6s
-          anomalies: 5 + winCount * 2, // 5 -> 7 -> 9 -> 11
-          spawnRate: 900 - winCount * 150 // 900ms -> 750ms -> 600ms -> 450ms
+          time: 15 - winCount * 2,
+          anomalies: 5 + winCount * 2,
+          spawnRate: 900 - winCount * 100
       }
     }
     // After win 3, the difficulty increases at a compounding rate.
     const compoundFactor = Math.pow(1.1, winCount - 3);
     return {
-        time: Math.max(4, 6 / compoundFactor), // Time decreases but won't go below 4s
-        anomalies: 11 + Math.floor(2 * compoundFactor), // Anomalies increase
-        spawnRate: Math.max(250, 450 / compoundFactor) // Spawn rate gets faster but won't go below 250ms
+        time: Math.max(8, 9 / compoundFactor), // Time decreases but won't go below 8s
+        anomalies: 12 + Math.floor(2 * compoundFactor), // Anomalies increase
+        spawnRate: Math.max(350, 600 / compoundFactor) // Spawn rate gets faster
     }
 }
 
@@ -206,8 +207,7 @@ export default function EasterEgg() {
     setAnomalies(prevAnomalies => {
       // Smart spawning: only add if there's room.
       if (prevAnomalies.length >= 7) {
-        // To prevent overflow, remove the oldest anomaly.
-        return prevAnomalies.slice(1);
+        return prevAnomalies;
       }
       const newAnomaly: Anomaly = {
         id: `${Date.now()}-${Math.random()}`, // Use a more unique ID
@@ -319,10 +319,23 @@ export default function EasterEgg() {
   const factoryReset = () => {
     try {
       localStorage.removeItem('quantumConundrumStats');
+      localStorage.removeItem(TOUR_STORAGE_KEY);
       setStats({ alive: 0, ghost: 0, plays: 0, lastResult: null });
       setDifficulty(getDifficulty(0));
+      // Force a reload to re-trigger the tour logic
+      window.location.reload(); 
     } catch (error) {
       console.error("Failed to reset stats in localStorage", error);
+    }
+  }
+
+  /** A button to specifically restart the guided tour. */
+  const restartTour = () => {
+    try {
+      localStorage.removeItem(TOUR_STORAGE_KEY);
+      window.location.reload();
+    } catch (error) {
+      console.error("Failed to restart tour via localStorage", error);
     }
   }
 
@@ -489,14 +502,23 @@ export default function EasterEgg() {
                       </div>
                   )}
               </CardContent>
-              {/* A subtle button to reset all stats and progress. */}
-              <button 
-                onClick={factoryReset} 
-                className="absolute bottom-1 right-1 text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-[6px] p-0.5 rounded-sm hover:bg-muted/50"
-                title="Reset all game statistics"
-              >
-                Reset
-              </button>
+              {/* Developer/Testing tools */}
+              <div className="absolute bottom-1 right-1 flex gap-1">
+                <button 
+                  onClick={factoryReset} 
+                  className="text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-[6px] p-0.5 rounded-sm hover:bg-muted/50"
+                  title="Reset all game statistics and restart the guided tour."
+                >
+                  Reset All
+                </button>
+                <button 
+                  onClick={restartTour} 
+                  className="text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-[6px] p-0.5 rounded-sm hover:bg-muted/50"
+                  title="Restart the guided tour."
+                >
+                  Restart Tour
+                </button>
+              </div>
           </Card>
       </section>
     </>

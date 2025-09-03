@@ -13,7 +13,7 @@ import { tourSteps, TourStep } from '@/lib/tour-data';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 
-const TOUR_STORAGE_KEY = 'hasCompletedQuantumTour';
+export const TOUR_STORAGE_KEY = 'hasCompletedQuantumTour';
 
 export default function GuidedTour() {
   const [stepIndex, setStepIndex] = useState(0);
@@ -42,12 +42,16 @@ export default function GuidedTour() {
       setStepIndex(prev => prev + 1);
     } else {
       // End of the tour
-      setIsOpen(false);
-      try {
-        localStorage.setItem(TOUR_STORAGE_KEY, 'true');
-      } catch (error) {
-        console.error("Could not write to localStorage:", error);
-      }
+      setIsExiting(true);
+      setTimeout(() => {
+        setIsOpen(false);
+        setIsExiting(false);
+         try {
+          localStorage.setItem(TOUR_STORAGE_KEY, 'true');
+        } catch (error) {
+          console.error("Could not write to localStorage:", error);
+        }
+      }, 300);
     }
   }, [stepIndex]);
 
@@ -70,13 +74,20 @@ export default function GuidedTour() {
       setIsOpen(false);
       return;
     }
-
-    const shouldBeVisible = currentStep.path === pathname || currentStep.path === 'all';
     
-    if (isOpen && !shouldBeVisible) {
+    // Determine if the current step should be visible on the current page.
+    const pathMatches = currentStep.path === 'all' || currentStep.path === pathname;
+
+    // Check if the tour has been completed.
+    const hasCompletedTour = typeof window !== 'undefined' ? localStorage.getItem(TOUR_STORAGE_KEY) : false;
+
+    // If the tour is open but the path no longer matches, hide the pop-up.
+    if (isOpen && !pathMatches) {
       setIsOpen(false);
-    } else if (!isOpen && shouldBeVisible && !localStorage.getItem(TOUR_STORAGE_KEY)) {
-      // Re-open if navigating to a relevant page and tour isn't complete
+    } 
+    // If the tour is closed, but the user navigates to a new page relevant to the current step,
+    // and the tour hasn't been completed, re-open it.
+    else if (!isOpen && pathMatches && !hasCompletedTour) {
       setIsOpen(true);
     }
 
@@ -110,15 +121,15 @@ export default function GuidedTour() {
         {/* Content */}
         <div className="flex-grow space-y-3">
           <h3 className="font-bold text-primary">{currentStep.title}</h3>
-          <p className="text-sm text-foreground/80 leading-relaxed">
+          <div className="text-sm text-foreground/80 leading-relaxed">
             {currentStep.content}
-          </p>
+          </div>
           <div className="flex items-center justify-between pt-2">
              <span className="text-xs text-foreground/60">
               {stepIndex + 1} / {tourSteps.length}
             </span>
             <Button onClick={handleNext} size="sm">
-              {isLastStep ? "Got it!" : "Next"}
+              {isLastStep ? "Finish Tour" : "Next"}
             </Button>
           </div>
         </div>
