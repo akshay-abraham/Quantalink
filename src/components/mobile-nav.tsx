@@ -74,7 +74,7 @@ export default function MobileNav() {
       setIsNavigating(true);
       const navAnimTimeout = setTimeout(() => {
         setIsNavigating(false);
-      }, 500); // Duration of the expand/contract animation.
+      }, 700); // Duration of the expand/contract animation.
 
       // Update the ref to the new pathname.
       prevPathnameRef.current = pathname;
@@ -94,10 +94,10 @@ export default function MobileNav() {
     <div ref={navRef} className="relative h-12">
       <nav 
         className={cn(
-            'absolute right-0 top-0 h-12 flex items-center justify-end rounded-full bg-card/50 border border-border/60 backdrop-blur-md transition-[width] duration-500 ease-in-out'
+            'absolute right-0 top-0 h-12 flex items-center justify-end rounded-full bg-card/50 border border-border/60 backdrop-blur-md transition-[width] duration-700'
         )}
         // The calculated width is applied via inline style.
-        style={{ width: `${navWidth}px`}}
+        style={{ width: `${navWidth}px`, transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)'}}
       >
         {/* Nav Links Container */}
         <div className={cn(
@@ -111,14 +111,14 @@ export default function MobileNav() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-lg text-xs font-medium transition-all duration-300 ease-in-out',
+                  'flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-lg text-xs font-medium transition-all duration-500 ease-in-out',
                   isActive ? 'text-primary' : 'text-foreground/70 hover:text-primary',
                   // Scale in/out animation for each icon.
                   showIcons ? 'animate-nav-item-in' : 'animate-nav-item-out'
                 )}
                 style={{
                   // Stagger the animation for a "fanning out" effect.
-                  animationDelay: showIcons ? `${index * 50}ms` : '0ms'
+                  animationDelay: showIcons ? `${index * 75}ms` : '0ms'
                 }}
                 tabIndex={isOpen ? 0 : -1} // Make icons non-tabbable when closed.
               >
