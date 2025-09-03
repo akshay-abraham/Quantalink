@@ -179,9 +179,22 @@ export default function GuidedTour() {
     return () => observer.disconnect();
   }, []);
 
+  /**
+   * Handles closing the tour. It sets the display state to 'closed' to trigger
+   * the minimizing animation and marks the tour as completed in localStorage.
+   */
   const handleClose = () => {
     cleanup();
-    advanceTour(tourSteps.length); // Advance to end
+    setDisplayState('closed');
+    if (status !== 'completed') {
+      try {
+        localStorage.setItem(TOUR_STORAGE_KEY, 'true');
+        posthog.capture('tour_closed_manually');
+      } catch (error) {
+        console.error("Could not write to localStorage:", error);
+      }
+      setStatus('completed');
+    }
   };
 
   if (status === 'inactive' || isGameActive) {
