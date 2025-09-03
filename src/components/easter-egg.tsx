@@ -202,6 +202,13 @@ export default function EasterEgg() {
     if (anomalySpawnerRef.current) clearInterval(anomalySpawnerRef.current);
   };
   
+  const endGame = useCallback((finalState: 'failed' | 'result') => {
+      cleanupTimers();
+      setGameState(finalState);
+      const gameCompletedEvent = new CustomEvent('gameCompleted', { detail: { state: finalState } });
+      window.dispatchEvent(gameCompletedEvent);
+  }, []);
+  
   /** Function to spawn a new anomaly. */
   const spawnAnomaly = useCallback(() => {
     setAnomalies(prevAnomalies => {
@@ -236,8 +243,7 @@ export default function EasterEgg() {
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
-          cleanupTimers();
-          setGameState('failed');
+          endGame('failed');
           return 0;
         }
         return prev - 1;
@@ -263,7 +269,6 @@ export default function EasterEgg() {
     setAnomaliesToClick(prev => {
       const newCount = prev - 1;
       if (newCount <= 0) {
-        cleanupTimers();
         observe(); // All anomalies collected, trigger the reveal.
         return 0;
       }
@@ -275,6 +280,7 @@ export default function EasterEgg() {
 
   /** Triggers the "wave function collapse" animation sequence. */
   const observe = () => {
+    cleanupTimers();
     setGameState('revealing');
     setTimeout(() => {
       let result: PetType;
@@ -291,7 +297,7 @@ export default function EasterEgg() {
       // **Timeline (Level) Progression:** Only increment the play count on a successful observation.
       updateStats(result, true); 
       setIsResultIconVisible(true); // Ensure icon is visible initially
-      setGameState('result');
+      endGame('result');
       // Delay setting the pet to create the illusion of it "coming from" the card.
       setTimeout(() => {
         if (resultIconRef.current) {
@@ -351,7 +357,8 @@ export default function EasterEgg() {
           onClick={reset}
         ></div>
       )}
-      <section 
+      <section
+        id="quantum-conundrum-section" 
         ref={ref}
         className={cn(
           "space-y-4 text-center transition-opacity duration-1000 ease-out", 
@@ -397,7 +404,7 @@ export default function EasterEgg() {
                              <p>Cats Decohered: <span className="font-bold text-sky-400">{stats.ghost}</span></p>
                            </div>
                           <div className="w-full pt-4">
-                            <Button onClick={startExperiment} size="lg" className="w-full sm:w-auto">
+                            <Button id="begin-experiment-button" onClick={startExperiment} size="lg" className="w-full sm:w-auto">
                               Begin Experiment
                             </Button>
                           </div>

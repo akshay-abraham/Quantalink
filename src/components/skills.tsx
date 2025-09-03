@@ -41,6 +41,7 @@ export default function Skills() {
         "space-y-6 text-center transition-opacity duration-1000 ease-out",
         isVisible ? "opacity-100" : "opacity-0"
       )}
+      id="skills-section"
       style={{
         transitionDelay: isVisible ? '150ms' : '0ms'
       }}
@@ -99,7 +100,7 @@ export default function Skills() {
         )}
         style={{ transitionDelay: '500ms'}}
       >
-        <Link href="/skills">
+        <Link href="/skills" id="see-all-skills-button">
           <Button variant="outline" className="bg-card/30 border-border/40">
             See Full Technical Skillset
             <ArrowRight className="ml-2 h-4 w-4" />
