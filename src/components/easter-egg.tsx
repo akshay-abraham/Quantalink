@@ -314,27 +314,15 @@ export default function EasterEgg() {
     setAnomaliesToClick(currentDifficulty.anomalies);
   };
   
-  /** A "very not noticeable" button to reset all stats and progress. */
+  /** A unified "Dev Reset" button to reset all stats and progress. */
   const factoryReset = () => {
     try {
       localStorage.removeItem('quantumConundrumStats');
       localStorage.removeItem(TOUR_STORAGE_KEY);
-      setStats({ alive: 0, ghost: 0, plays: 0, lastResult: null });
-      setDifficulty(getDifficulty(0));
-      // Force a reload to re-trigger the tour logic
+      // Force a reload to re-trigger all initialization logic, including the tour.
       window.location.reload(); 
     } catch (error) {
-      console.error("Failed to reset stats in localStorage", error);
-    }
-  }
-
-  /** A button to specifically restart the guided tour. */
-  const restartTour = () => {
-    try {
-      localStorage.removeItem(TOUR_STORAGE_KEY);
-      window.location.reload();
-    } catch (error) {
-      console.error("Failed to restart tour via localStorage", error);
+      console.error("Failed to reset state in localStorage", error);
     }
   }
 
@@ -503,20 +491,13 @@ export default function EasterEgg() {
                   )}
               </CardContent>
               {/* Developer/Testing tools */}
-              <div className="absolute bottom-1 right-1 flex gap-1">
+              <div className="absolute bottom-1 right-1">
                 <button 
                   onClick={factoryReset} 
-                  className="text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-[6px] p-0.5 rounded-sm hover:bg-muted/50"
+                  className="text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-[10px] p-1 rounded-sm hover:bg-muted/50"
                   title="Reset all game statistics and restart the guided tour."
                 >
-                  Reset All
-                </button>
-                <button 
-                  onClick={restartTour} 
-                  className="text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-[6px] p-0.5 rounded-sm hover:bg-muted/50"
-                  title="Restart the guided tour."
-                >
-                  Restart Tour
+                  Dev Reset
                 </button>
               </div>
           </Card>
