@@ -34,6 +34,7 @@ const TOGGLE_BUTTON_WIDTH = 48;   // h-12 w-12 -> 3rem
  */
 export default function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const pathname = usePathname();
   const navRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -64,15 +65,27 @@ export default function MobileNav() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
   
-  // Close the menu when the user navigates to a new page.
+  // Close the menu and trigger navigation animation when the user changes pages.
   useEffect(() => {
     setIsOpen(false);
+    
+    // Don't animate on initial page load
+    if (pathname !== window.location.pathname) {
+      setIsNavigating(true);
+      const navAnimTimeout = setTimeout(() => {
+        setIsNavigating(false);
+      }, 500); // Duration of the expand/contract animation
+      return () => clearTimeout(navAnimTimeout);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   // **Definitive Overflow Fix:** Calculate the exact width required for the expanded menu.
-  const navWidth = isOpen 
+  const navWidth = isOpen || isNavigating
     ? (navLinks.length * ICON_CONTAINER_WIDTH) + ((navLinks.length) * GAP_WIDTH) + HORIZONTAL_PADDING + TOGGLE_BUTTON_WIDTH
     : TOGGLE_BUTTON_WIDTH;
+    
+  const showIcons = isOpen || isNavigating;
 
   return (
     <div ref={navRef} className="relative h-12">
@@ -86,7 +99,7 @@ export default function MobileNav() {
         {/* Nav Links Container */}
         <div className={cn(
           "flex items-center gap-1 px-1 mr-12 h-full transition-opacity duration-300",
-          isOpen ? 'opacity-100' : 'opacity-0'
+          showIcons ? 'opacity-100' : 'opacity-0'
         )}>
           {navLinks.map((link, index) => {
             const isActive = pathname === link.href;
@@ -98,11 +111,11 @@ export default function MobileNav() {
                   'flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-lg text-xs font-medium transition-all duration-300 ease-in-out',
                   isActive ? 'text-primary' : 'text-foreground/70 hover:text-primary',
                   // Scale in/out animation for each icon.
-                  isOpen ? 'animate-nav-item-in' : 'animate-nav-item-out'
+                  showIcons ? 'animate-nav-item-in' : 'animate-nav-item-out'
                 )}
                 style={{
                   // Stagger the animation for a "fanning out" effect.
-                  animationDelay: isOpen ? `${index * 50}ms` : '0ms'
+                  animationDelay: showIcons ? `${index * 50}ms` : '0ms'
                 }}
                 tabIndex={isOpen ? 0 : -1} // Make icons non-tabbable when closed.
               >
