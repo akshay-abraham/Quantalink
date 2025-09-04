@@ -8,7 +8,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Cat, X, Github } from 'lucide-react';
+import { Cat, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { tourSteps, TourStep } from '@/lib/tour-data';
 import { cn } from '@/lib/utils';
@@ -18,11 +18,12 @@ import { usePostHog } from 'posthog-js/react';
 export const TOUR_STORAGE_KEY = 'hasCompletedQuantumTour_v2';
 
 type TourStatus = 'inactive' | 'running' | 'completed';
-type TourDisplayState = 'closed' | 'open' | 'pointing';
+type TourDisplayState = 'closed' | 'open';
 
 export default function GuidedTour() {
   const [status, setStatus] = useState<TourStatus>('inactive');
   const [displayState, setDisplayState] = useState<TourDisplayState>('closed');
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [isGameActive, setIsGameActive] = useState(false);
   
@@ -31,6 +32,7 @@ export default function GuidedTour() {
   const posthog = usePostHog();
 
   const currentStep: TourStep | null = tourSteps[stepIndex] || null;
+  const isFinalStep = stepIndex === tourSteps.length - 1;
 
   // Cleanup function to clear all timers and animations.
   const cleanup = useCallback(() => {
@@ -45,7 +47,7 @@ export default function GuidedTour() {
     
     if (nextStepIndex >= tourSteps.length) {
       setStatus('completed');
-      setDisplayState('open'); // Keep it open on the final step
+      setStepIndex(tourSteps.length - 1); // Stay on the last step
       try {
         localStorage.setItem(TOUR_STORAGE_KEY, 'true');
         posthog.capture('tour_completed');
@@ -76,17 +78,25 @@ export default function GuidedTour() {
   
   const restartTour = () => {
     cleanup();
+    setStepIndex(0);
     setStatus('running');
     setDisplayState('open');
-    setStepIndex(0);
     posthog.capture('tour_restarted');
   };
+
+  const handleOpen = () => {
+    setIsTransitioning(true);
+    setDisplayState('open');
+    setTimeout(() => setIsTransitioning(false), 1000); // Duration of the border animation
+  }
   
   // Effect to manage tour logic based on the current step
   useEffect(() => {
     if (status !== 'running' || !currentStep) return;
 
     setDisplayState('open');
+    setIsTransitioning(true);
+    const transitionTimeout = setTimeout(() => setIsTransitioning(false), 1000);
 
     // Auto-advance logic
     if (currentStep.autoAdvanceAfter) {
@@ -130,13 +140,22 @@ export default function GuidedTour() {
         cleanup(); // Remove glow
         timerRef.current = setTimeout(() => {
           advanceTour();
-        }, 2000); // Wait 2s on the new page before showing final step
+        }, 500); // Wait 0.5s on the new page before showing next step
       }
     }
 
-    return cleanup;
+    if (isFinalStep) {
+      timerRef.current = setTimeout(() => {
+         setDisplayState('closed');
+      }, 5000); // Auto-minimize on the final step after 5s
+    }
 
-  }, [status, currentStep, advanceTour, pathname, handleAction, cleanup]);
+    return () => {
+      cleanup();
+      clearTimeout(transitionTimeout);
+    };
+
+  }, [status, currentStep, advanceTour, pathname, handleAction, cleanup, isFinalStep]);
 
 
   // Initial check on mount
@@ -148,7 +167,6 @@ export default function GuidedTour() {
       } else {
         const startTimeout = setTimeout(() => {
           setStatus('running');
-          setDisplayState('open');
           posthog.capture('tour_started');
         }, 1500); // Initial delay to let page load
         return () => clearTimeout(startTimeout);
@@ -213,8 +231,8 @@ export default function GuidedTour() {
              <Button
                 variant="outline"
                 size="icon"
-                className="rounded-full h-14 w-14 bg-card/70 backdrop-blur-md border-border/60 shadow-lg hover:scale-110 transition-transform"
-                onClick={() => setDisplayState('open')}
+                className="rounded-full h-14 w-14 bg-card/70 backdrop-blur-md border-border/60 shadow-lg hover:scale-110 transition-transform p-3 sm:p-0"
+                onClick={handleOpen}
               >
                 <Cat className="h-7 w-7 text-primary" />
                 <span className="sr-only">Open Tour Guide</span>
@@ -228,8 +246,9 @@ export default function GuidedTour() {
      return (
       <div 
         className={cn(
-          "fixed bottom-4 left-4 sm:left-4 z-[100] w-[calc(100%-2rem)] sm:w-full sm:max-w-sm rounded-xl border border-border/40 bg-card/60 p-4 shadow-2xl backdrop-blur-lg",
-          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom-and-left data-[state=closed]:slide-out-to-bottom-and-left"
+          "fixed bottom-4 left-4 z-[100] w-[calc(100%-2rem)] sm:max-w-sm rounded-xl border p-4 shadow-2xl backdrop-blur-lg bg-card/80",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom-and-left data-[state=closed]:slide-out-to-bottom-and-left",
+           isTransitioning && "animate-border-glow-fade"
         )}
         data-state={displayState === 'open' ? 'open' : 'closed'}
       >
@@ -246,19 +265,19 @@ export default function GuidedTour() {
             </div>
             <div className="flex items-center justify-between pt-2">
               <span className="text-xs text-foreground/60">
-                {stepIndex + 1} / {tourSteps.length}
+                {isFinalStep ? `Final Step` : `${stepIndex + 1} / ${tourSteps.length}`}
               </span>
-               {currentStep.action ? (
+               {currentStep.action && !isFinalStep ? (
                 <Button onClick={() => handleAction(currentStep.action)} size="sm">
                   {currentStep.action.label}
                 </Button>
-              ) : !currentStep.autoAdvanceAfter && status !== 'completed' ? (
+              ) : !currentStep.autoAdvanceAfter && !isFinalStep ? (
                 <Button onClick={() => advanceTour()} size="sm">
                   Next
                 </Button>
               ) : null}
             </div>
-             {status === 'completed' && (
+             {isFinalStep && (
                 <Button onClick={restartTour} size="sm" variant="outline" className="w-full mt-2">
                   Restart Tour
                 </Button>
@@ -267,7 +286,7 @@ export default function GuidedTour() {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="absolute top-2 right-2 h-7 w-7 rounded-full bg-card/80 hover:bg-muted sm:-top-2 sm:-right-2"
+            className="absolute top-2 right-2 h-8 w-8 rounded-full bg-background/80 hover:bg-muted sm:h-7 sm:w-7 sm:-top-2 sm:-right-2"
             onClick={handleClose}
           >
             <X className="h-4 w-4" />

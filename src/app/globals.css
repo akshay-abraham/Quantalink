@@ -239,6 +239,21 @@ body {
     opacity: 0.5;
   }
 
+  @keyframes border-glow-fade {
+      from {
+        border-color: hsl(var(--primary) / 0.8);
+        box-shadow: 0 0 15px hsl(var(--primary) / 0.5);
+      }
+      to {
+        border-color: hsl(var(--border) / 0.4);
+        box-shadow: none;
+      }
+  }
+
+  .animate-border-glow-fade {
+      animation: border-glow-fade 1s ease-out forwards;
+  }
+
   @keyframes cat-color-cycle {
     0% { color: #ff7e5f; } /* Coral */
     25% { color: #feb47b; } /* Orange */
