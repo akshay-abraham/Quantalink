@@ -228,7 +228,7 @@ export default function GuidedTour() {
      return (
       <div 
         className={cn(
-          "fixed bottom-4 left-4 z-[100] w-full max-w-sm rounded-xl border border-border/40 bg-card/60 p-4 shadow-2xl backdrop-blur-lg",
+          "fixed bottom-4 left-4 sm:left-4 z-[100] w-[calc(100%-2rem)] sm:w-full sm:max-w-sm rounded-xl border border-border/40 bg-card/60 p-4 shadow-2xl backdrop-blur-lg",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom-and-left data-[state=closed]:slide-out-to-bottom-and-left"
         )}
         data-state={displayState === 'open' ? 'open' : 'closed'}
@@ -267,7 +267,7 @@ export default function GuidedTour() {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="absolute -top-2 -right-2 h-7 w-7 rounded-full bg-card/80 hover:bg-muted"
+            className="absolute top-2 right-2 h-7 w-7 rounded-full bg-card/80 hover:bg-muted sm:-top-2 sm:-right-2"
             onClick={handleClose}
           >
             <X className="h-4 w-4" />
