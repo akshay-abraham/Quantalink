@@ -53,8 +53,6 @@ export const PARTICLE_ICONS = {
   ghost: Skull,
   revealing: Star,
   anomaly: Star,
-  ambient_cat: Star,
-  ambient_ghost: Star,
 };
 
 // Defines the color palettes for different particle effects.
@@ -63,17 +61,14 @@ export const PARTICLE_COLORS = {
   ghost: ['#a5f3fc', '#67e8f9', '#c4b5fd', '#a78bfa', '#f0abfc', '#bae6fd'],
   revealing: ['#ffffff', '#f0f0f0', '#e0e0e0'],
   anomaly: ANOMALY_COLORS,
-  ambient_cat: ['#ff7e5f', '#feb47b', '#86A8E7', '#91EAE4'], // Coral, Orange, Light Blue, Teal
-  ambient_ghost: ['#89f7fe', '#66a6ff', '#a78bfa', '#c4b5fd'], // Cyan, Light Blue, Lavender
 };
 
 export type ParticleType = keyof typeof PARTICLE_COLORS;
 
 /** A single particle that animates flying outwards from a central point. */
 const Particle = ({ type }: { type: ParticleType }) => {
-  const isAmbient = type.startsWith('ambient');
-  const duration = isAmbient ? 1 + Math.random() * 1.5 : 0.6 + Math.random() * 0.8;
-  const travelDistance = isAmbient ? 40 : 150;
+  const duration = 0.6 + Math.random() * 0.8;
+  const travelDistance = 150;
   
   const tx = (Math.random() - 0.5) * travelDistance;
   const ty = (Math.random() - 0.5) * travelDistance;
@@ -86,8 +81,8 @@ const Particle = ({ type }: { type: ParticleType }) => {
     top: `50%`,
     animation: `fly-out ${duration}s ease-out forwards`,
     opacity: 0,
-    transform: `rotate(${Math.random() * 360}deg) scale(${isAmbient ? (0.2 + Math.random() * 0.5) : (0.5 + Math.random())})`,
-    animationDelay: `${Math.random() * (isAmbient ? duration : 0.1)}s`,
+    transform: `rotate(${Math.random() * 360}deg) scale(${0.5 + Math.random()})`,
+    animationDelay: `${Math.random() * 0.1}s`,
     color: color,
     '--tx': `${tx}px`,
     '--ty': `${ty}px`,
@@ -122,7 +117,10 @@ const GAME_SETTINGS = {
   spawnRate: 800, // Spawn a new anomaly every 800ms
 };
 
-/** The main Quantum Conundrum game component. */
+/**
+ * Main component for the "Quantum Conundrum" game.
+ * Manages game state, logic, and UI rendering for the interactive easter egg.
+ */
 export default function EasterEgg() {
   const [gameState, setGameState] = useState<GameState>('idle');
   const [catState, setCatState] = useState<PetType | null>(null);
@@ -148,6 +146,7 @@ export default function EasterEgg() {
     if (anomalySpawnerRef.current) clearInterval(anomalySpawnerRef.current);
   };
   
+  /** Central function to end the game and update its state. */
   const endGame = useCallback((finalState: 'failed' | 'result') => {
       cleanupTimers();
       setGameState(finalState);
@@ -155,15 +154,15 @@ export default function EasterEgg() {
       window.dispatchEvent(gameCompletedEvent);
   }, []);
   
-  /** Function to spawn a new anomaly. */
+  /** Function to spawn a new anomaly at a random position. */
   const spawnAnomaly = useCallback(() => {
     setAnomalies(prevAnomalies => {
-      // Smart spawning: only add if there's room.
+      // Limit on-screen anomalies to prevent clutter.
       if (prevAnomalies.length >= 7) {
         return prevAnomalies;
       }
       const newAnomaly: Anomaly = {
-        id: `${Date.now()}-${Math.random()}`, // Use a more unique ID
+        id: `${Date.now()}-${Math.random()}`, // Unique ID for React key
         x: 5 + Math.random() * 85,
         y: 5 + Math.random() * 85,
         Icon: ANOMALY_ICONS[Math.floor(Math.random() * ANOMALY_ICONS.length)],
@@ -173,6 +172,7 @@ export default function EasterEgg() {
     });
   }, []);
 
+  /** Starts the main game loop: timer and anomaly spawning. */
   const beginGame = () => {
     // Reset all game state variables
     setAnomaliesToClick(GAME_SETTINGS.anomalies);
@@ -187,6 +187,7 @@ export default function EasterEgg() {
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
+          posthog.capture('game_lost', { game_time_left: 0 });
           endGame('failed');
           return 0;
         }
@@ -199,9 +200,9 @@ export default function EasterEgg() {
     spawnAnomaly(); // Spawn the first one immediately.
   }
 
-  /** Shows instructions, then starts the game. */
+  /** Shows instructions, then starts the game after a short delay. */
   const showInstructionsAndStart = () => {
-    posthog.capture('easter_egg_game_started');
+    posthog.capture('game_started');
     setPet(null); // Clear any existing global pet
     setGameState('instructions');
 
@@ -214,7 +215,7 @@ export default function EasterEgg() {
   const handleAnomalyClick = (id: string, x: number, y: number) => {
     setAnomalies(prev => prev.filter(a => a.id !== id));
     
-    // Create a particle burst at the anomaly's location.
+    // Create a particle burst at the anomaly's location for visual feedback.
     const newEffect: ParticleEffect = { id: Date.now(), x, y, type: 'anomaly' };
     setParticleEffects(prev => [...prev, newEffect]);
     setTimeout(() => {
@@ -224,7 +225,8 @@ export default function EasterEgg() {
     setAnomaliesToClick(prev => {
       const newCount = prev - 1;
       if (newCount <= 0) {
-        observe(); // All anomalies collected, trigger the reveal.
+        posthog.capture('game_won', { game_time_left: timeLeft });
+        observe(); // All anomalies collected, trigger the win sequence.
         return 0;
       }
       // Spawn a new one immediately after a click to keep the pace up.
@@ -233,7 +235,7 @@ export default function EasterEgg() {
     });
   };
 
-  /** Triggers the "wave function collapse" animation sequence. */
+  /** Triggers the "wave function collapse" animation and determines the game's outcome. */
   const observe = () => {
     cleanupTimers();
     setGameState('revealing');
@@ -241,21 +243,23 @@ export default function EasterEgg() {
       // The probability of the cat being alive is 1/3.
       const result: PetType = Math.random() < (1 / 3) ? 'alive' : 'ghost';
       
+      posthog.capture('pet_spawned', { pet_type: result });
+      
       setCatState(result);
-      setIsResultIconVisible(true); // Ensure icon is visible initially
+      setIsResultIconVisible(true); // Ensure icon is visible before animation.
       endGame('result');
       // Delay setting the pet to create the illusion of it "coming from" the card.
       setTimeout(() => {
         if (resultIconRef.current) {
           const rect = resultIconRef.current.getBoundingClientRect();
           setPet(result, rect.left + rect.width / 2, rect.top + rect.height / 2);
-          setIsResultIconVisible(false); // Hide the icon as the pet spawns
+          setIsResultIconVisible(false); // Hide the icon as the pet spawns.
         }
       }, 250);
     }, 2500); // 2.5 second reveal animation.
   };
 
-  /** Resets the game to its initial state, but keeps the pet active. */
+  /** Resets the game to its initial state. */
   const reset = () => {
     cleanupTimers();
     setGameState('idle');
@@ -265,17 +269,17 @@ export default function EasterEgg() {
     setAnomaliesToClick(GAME_SETTINGS.anomalies);
   };
   
-  /** A unified "Dev Reset" button to reset all stats and progress. */
+  /** A developer utility to reset all progress, including the guided tour. */
   const factoryReset = () => {
     try {
       localStorage.removeItem(TOUR_STORAGE_KEY);
-      // Force a reload to re-trigger all initialization logic, including the tour.
       window.location.reload(); 
     } catch (error) {
       console.error("Failed to reset state in localStorage", error);
     }
   }
 
+  // Cleanup timers on component unmount.
   useEffect(() => {
     return cleanupTimers;
   }, []);
@@ -294,7 +298,7 @@ export default function EasterEgg() {
         className={cn(
           "space-y-4 text-center transition-opacity duration-1000 ease-out", 
           isVisible ? "opacity-100" : "opacity-0",
-           // When game is active, it becomes a fixed overlay.
+           // When game is active, it becomes a fixed overlay for modal behavior.
            isGameActive && "fixed inset-0 w-full h-full flex items-center justify-center z-50 p-4"
         )}
         style={{ transitionDelay: isVisible ? '150ms' : '0ms' }}

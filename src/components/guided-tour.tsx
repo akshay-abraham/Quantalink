@@ -20,6 +20,10 @@ export const TOUR_STORAGE_KEY = 'hasCompletedQuantumTour_v2';
 type TourStatus = 'inactive' | 'running' | 'completed';
 type TourDisplayState = 'closed' | 'open';
 
+/**
+ * An advanced guided tour component that provides contextual help to first-time users.
+ * It tracks completion status in localStorage and can be reset.
+ */
 export default function GuidedTour() {
   const [status, setStatus] = useState<TourStatus>('inactive');
   const [displayState, setDisplayState] = useState<TourDisplayState>('closed');
@@ -34,20 +38,21 @@ export default function GuidedTour() {
   const currentStep: TourStep | null = tourSteps[stepIndex] || null;
   const isFinalStep = stepIndex === tourSteps.length - 1;
 
-  // Cleanup function to clear all timers and animations.
+  // Cleanup function to clear all timers and element highlights.
   const cleanup = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
     const highlightedElement = document.querySelector('.animate-tour-glow');
     highlightedElement?.classList.remove('animate-tour-glow');
   }, []);
 
+  /** Advances the tour to the next step or completes it. */
   const advanceTour = useCallback((forceNextStep?: number) => {
     cleanup();
     const nextStepIndex = typeof forceNextStep === 'number' ? forceNextStep : stepIndex + 1;
     
     if (nextStepIndex >= tourSteps.length) {
       setStatus('completed');
-      setStepIndex(tourSteps.length - 1); // Stay on the last step
+      setStepIndex(tourSteps.length - 1); // Stay on the last step content
       try {
         localStorage.setItem(TOUR_STORAGE_KEY, 'true');
         posthog.capture('tour_completed');
@@ -57,6 +62,7 @@ export default function GuidedTour() {
     }
   }, [stepIndex, cleanup, posthog]);
   
+  /** Handles actions defined in a tour step, like scrolling and highlighting. */
   const handleAction = useCallback((action?: TourStep['action']) => {
     if (!action) {
       advanceTour();
@@ -68,14 +74,15 @@ export default function GuidedTour() {
       element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       
       const targetButton = document.getElementById(action.pointTo);
-      // Use the new, more prominent glow animation
+      // Use the prominent glow animation to guide the user's attention.
       targetButton?.classList.add('animate-tour-glow');
 
-      // Minimize the tour window to not obscure the view
+      // Minimize the tour window to not obscure the view of the highlighted element.
       setDisplayState('closed'); 
     }
   }, [advanceTour]);
   
+  /** Restarts the tour from the beginning. */
   const restartTour = () => {
     cleanup();
     setStepIndex(0);
@@ -84,13 +91,14 @@ export default function GuidedTour() {
     posthog.capture('tour_restarted');
   };
 
+  /** Handles the opening animation of the tour window. */
   const handleOpen = () => {
     setIsTransitioning(true);
     setDisplayState('open');
-    setTimeout(() => setIsTransitioning(false), 1000); // Duration of the border animation
+    setTimeout(() => setIsTransitioning(false), 1000); // Duration matches border animation.
   }
   
-  // Effect to manage tour logic based on the current step
+  // Main effect to manage tour logic based on the current step.
   useEffect(() => {
     if (status !== 'running' || !currentStep) return;
 
@@ -98,26 +106,26 @@ export default function GuidedTour() {
     setIsTransitioning(true);
     const transitionTimeout = setTimeout(() => setIsTransitioning(false), 1000);
 
-    // Auto-advance logic
+    // Auto-advance logic for timed steps.
     if (currentStep.autoAdvanceAfter) {
       timerRef.current = setTimeout(() => {
         advanceTour();
       }, currentStep.autoAdvanceAfter);
     }
 
-    // Listener for a button click
+    // Listener for a button click when a step awaits it.
     if (currentStep.awaits === 'click') {
       const targetId = currentStep.action?.pointTo;
       if (!targetId) return;
       
       const target = document.getElementById(targetId);
       const listener = () => {
-        cleanup(); // Remove glow
+        cleanup();
         
-        // This is a special case for the game start
+        // Special case for the game: close tour window and wait for game completion.
         if(targetId === 'begin-experiment-button') {
           setDisplayState('closed');
-          // Wait 25 seconds, then advance.
+          // Set a long timeout, which will be cancelled by the 'gameCompleted' event.
           timerRef.current = setTimeout(() => {
             advanceTour();
           }, 25000);
@@ -128,7 +136,7 @@ export default function GuidedTour() {
       return () => target?.removeEventListener('click', listener);
     }
 
-    // Path change listener
+    // Listener for a page navigation change.
     if (currentStep.awaits === 'path_change') {
       const targetId = currentStep.action?.pointTo;
       if(targetId) {
@@ -137,17 +145,18 @@ export default function GuidedTour() {
       }
 
       if(pathname === currentStep.action?.path) {
-        cleanup(); // Remove glow
+        cleanup();
         timerRef.current = setTimeout(() => {
           advanceTour();
-        }, 500); // Wait 0.5s on the new page before showing next step
+        }, 500); // Wait briefly on new page before showing next step.
       }
     }
 
+    // On the final step, automatically minimize the tour after a few seconds.
     if (isFinalStep) {
       timerRef.current = setTimeout(() => {
          setDisplayState('closed');
-      }, 5000); // Auto-minimize on the final step after 5s
+      }, 5000); 
     }
 
     return () => {
@@ -158,7 +167,7 @@ export default function GuidedTour() {
   }, [status, currentStep, advanceTour, pathname, handleAction, cleanup, isFinalStep]);
 
 
-  // Initial check on mount
+  // Effect to check on mount if the tour has been completed before.
   useEffect(() => {
     try {
       const hasCompletedTour = localStorage.getItem(TOUR_STORAGE_KEY);
@@ -168,7 +177,7 @@ export default function GuidedTour() {
         const startTimeout = setTimeout(() => {
           setStatus('running');
           posthog.capture('tour_started');
-        }, 1500); // Initial delay to let page load
+        }, 1500); // Initial delay to let page load.
         return () => clearTimeout(startTimeout);
       }
     } catch (error) {
@@ -177,11 +186,12 @@ export default function GuidedTour() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Observer to hide widget during game
+  // Effect to listen for game activity to hide the tour widget.
   useEffect(() => {
     const gameContainer = document.getElementById('quantum-conundrum-section');
     if (!gameContainer) return;
     
+    // Use a MutationObserver to detect when the game modal becomes active.
     const observer = new MutationObserver(mutations => {
       for (let mutation of mutations) {
         if (mutation.attributeName === 'class') {
@@ -190,9 +200,9 @@ export default function GuidedTour() {
         }
       }
     });
-
     observer.observe(gameContainer, { attributes: true });
 
+    // Custom event listener to advance the tour once the game is finished.
     const gameCompletedListener = () => advanceTour();
     window.addEventListener('gameCompleted', gameCompletedListener);
 
@@ -202,10 +212,7 @@ export default function GuidedTour() {
     };
   }, [advanceTour]);
 
-  /**
-   * Handles closing the tour. It sets the display state to 'closed' to trigger
-   * the minimizing animation and marks the tour as completed in localStorage.
-   */
+  /** Closes the tour and marks it as completed in localStorage. */
   const handleClose = () => {
     cleanup();
     setDisplayState('closed');
@@ -224,7 +231,7 @@ export default function GuidedTour() {
     return null;
   }
   
-  // Render minimized/completed button if tour is not open
+  // Render minimized/completed button if tour is not open.
   if (displayState !== 'open') {
      return (
         <div className="fixed bottom-4 left-4 z-[100]">
@@ -241,7 +248,7 @@ export default function GuidedTour() {
     );
   }
 
-  // Open state (main tour window)
+  // Render the main tour window when it is open.
   if (displayState === 'open' && currentStep) {
      return (
       <div 
