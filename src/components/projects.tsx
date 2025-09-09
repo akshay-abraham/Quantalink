@@ -1,3 +1,4 @@
+
 /**
  * @file src/components/projects.tsx
  * @description This component displays a list of projects. It can either show all projects
@@ -125,3 +126,5 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
     </section>
   );
 }
+
+    

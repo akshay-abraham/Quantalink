@@ -1,3 +1,4 @@
+
 /**
  * @file src/components/skills-client-page.tsx
  * @description A client component that renders the animated, interactive content
@@ -65,22 +66,22 @@ export default function SkillsClientPage() {
       {/* Use the InfiniteScroller for a dynamic, moving display of skills. */}
        <InfiniteScroller speed={index % 2 === 0 ? "slow" : "normal"}>
         {category.skills.map((skill) => (
-          <Card 
+          <Card
             key={skill.name}
             className={cn(
-              "bg-card/40 border-border/40 shadow-lg text-center flex flex-col items-center justify-center w-[160px] h-[120px] shrink-0 p-4 transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl hover:bg-card/60",
+              "bg-card/40 border-border/40 shadow-lg text-center flex flex-col items-center justify-center w-[160px] h-[120px] shrink-0 p-4 transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl hover:bg-card/60 relative overflow-hidden group",
               skill.isPriority && "border-primary/40"
             )}
           >
              {skill.isPriority && <div className="animate-border-glow"></div>}
-            <CardHeader className="p-0 flex-grow flex flex-col items-center justify-center gap-2">
-               <div className={cn("h-12 w-12 flex items-center justify-center text-foreground", skill.iconClassName)}>
-                 <div className="h-10 w-10 flex items-center justify-center">
-                   {skill.icon}
-                 </div>
+             <div className="relative z-10 flex flex-col items-center justify-center gap-2 h-full">
+                <div className={cn("h-12 w-12 flex items-center justify-center text-foreground", skill.iconClassName)}>
+                  <div className="h-10 w-10 flex items-center justify-center">
+                    {skill.icon}
+                  </div>
+                </div>
+                <p className="text-sm font-medium text-foreground/90">{skill.name}</p>
               </div>
-              <p className="text-sm font-medium text-foreground/90">{skill.name}</p>
-            </CardHeader>
           </Card>
         ))}
       </InfiniteScroller>
@@ -93,3 +94,4 @@ export default function SkillsClientPage() {
     </>
   );
 }
+

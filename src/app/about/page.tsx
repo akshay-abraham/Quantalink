@@ -1,3 +1,4 @@
+
 /**
  * @file src/app/about/page.tsx
  * @description The dedicated "About Me" page, providing a detailed look at my journey.
@@ -93,3 +94,5 @@ export default function AboutPage() {
     </>
   );
 }
+
+    
