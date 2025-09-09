@@ -68,7 +68,7 @@ export const skillsData: SkillCategory[] = [
     skills: [
       { name: 'C', icon: <CIcon />, isPriority: true },
       { name: 'Python', icon: <PythonIcon />, isPriority: true },
-      { name: 'JavaScript / TypeScript', icon: <TypescriptIcon />, iconClassName: 'p-1' },
+      { name: 'JS / TS', icon: <TypescriptIcon />, iconClassName: 'p-1' },
     ],
   },
   {
@@ -76,7 +76,7 @@ export const skillsData: SkillCategory[] = [
     icon: <Code size={32} />,
     subtitle: 'Technologies I use for web projects and data analysis, with help from generative AI for prototyping and debugging.',
     skills: [
-      { name: 'HTML & CSS', icon: <HtmlIcon /> },
+      { name: 'HTML/CSS', icon: <HtmlIcon /> },
       { name: 'React', icon: <ReactIcon /> },
       { name: 'NumPy', icon: <NumpyIcon /> },
       { name: 'Pandas', icon: <PandasIcon /> },
