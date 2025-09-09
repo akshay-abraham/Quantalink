@@ -300,13 +300,15 @@ export default function EasterEgg() {
         style={{ transitionDelay: isVisible ? '150ms' : '0ms' }}
       >
           <Card className={cn(
-              "relative border-border/40 shadow-lg transition-all duration-700 ease-out text-center overflow-hidden w-full",
+              "group relative border-border/40 shadow-lg transition-all duration-700 ease-out text-center overflow-hidden w-full",
               isVisible && !isGameActive ? "opacity-100 translate-y-0 bg-card/30" : !isGameActive ? "opacity-0 translate-y-5" : "",
               // Use a solid background when the game is active for better visibility.
               isGameActive ? "max-w-3xl h-auto md:h-[550px] flex flex-col bg-background" : "max-w-full"
           )}
           style={{ transitionDelay: isVisible ? `200ms` : '0ms' }}
           >
+              {gameState === 'idle' && <div className="animate-border-glow"></div>}
+
               {isGameActive && (
                 <Button variant="ghost" size="icon" className="absolute top-2 right-2 z-20" onClick={reset}>
                   <X className="h-5 w-5" />
@@ -344,7 +346,12 @@ export default function EasterEgg() {
                   {gameState === 'instructions' && (
                      <div className="space-y-4 animate-fade-in text-center relative w-full h-full flex flex-col items-center justify-center">
                         <h3 className="text-2xl font-bold text-primary">Get Ready!</h3>
-                        <p className="text-foreground/80 text-lg">Tap the anomalies before time runs out!</p>
+                        <div className="flex items-center gap-4 p-4 rounded-lg bg-primary/10 border border-primary/20">
+                          <div className="relative w-12 h-12 rounded-full flex items-center justify-center" style={{ color: ANOMALY_COLORS[0], backgroundColor: `${ANOMALY_COLORS[0]}20`}}>
+                             <Atom className="w-8 h-8" />
+                          </div>
+                          <p className="text-foreground/80 text-lg">Tap anomalies like this before time runs out!</p>
+                        </div>
                         <Progress value={100} className="w-1/2" />
                     </div>
                   )}
@@ -463,5 +470,3 @@ export default function EasterEgg() {
     </>
   );
 }
-
-    
