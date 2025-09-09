@@ -25,7 +25,7 @@ import { usePostHog } from 'posthog-js/react';
 import { TOUR_STORAGE_KEY } from './guided-tour';
 
 // Defines the possible states of the game.
-type GameState = 'idle' | 'playing' | 'revealing' | 'result' | 'failed';
+type GameState = 'idle' | 'instructions' | 'playing' | 'revealing' | 'result' | 'failed';
 
 // Icons used for the clickable "anomalies" in the game.
 const ANOMALY_ICONS = [Atom, Dna, Biohazard, FlaskConical];
@@ -115,101 +115,24 @@ const QuantumAnomaly = ({ anomaly, onClick }: { anomaly: Anomaly, onClick: (id: 
   </button>
 );
 
-/** Calculates game difficulty based on the number of times played (i.e., wins). */
-const getDifficulty = (winCount: number) => {
-    // Capped difficulty after many plays to prevent it being impossible.
-    if (winCount > 10) {
-      return { time: 8, anomalies: 15, spawnRate: 350 };
-    }
-    // Linear increase up to win 3
-    if (winCount <= 3) {
-      return {
-          time: 15 - winCount * 2,
-          anomalies: 5 + winCount * 2,
-          spawnRate: 900 - winCount * 100
-      }
-    }
-    // After win 3, the difficulty increases at a compounding rate.
-    const compoundFactor = Math.pow(1.1, winCount - 3);
-    return {
-        time: Math.max(8, 9 / compoundFactor), // Time decreases but won't go below 8s
-        anomalies: 12 + Math.floor(2 * compoundFactor), // Anomalies increase
-        spawnRate: Math.max(350, 600 / compoundFactor) // Spawn rate gets faster
-    }
-}
-
-/** A self-contained, simplified pet for the pre-game "diorama" display. */
-const AmbientPet = ({ type }: { type: 'alive' | 'ghost' }) => {
-  const [position, setPosition] = useState({ x: 50, y: 50 });
-  const [velocity, setVelocity] = useState({ vx: Math.random() * 2 - 1, vy: Math.random() * 2 - 1 });
-  const animationFrameId = useRef<number>();
-
-  useEffect(() => {
-    const animate = () => {
-      setPosition(prevPos => {
-        let newX = prevPos.x + velocity.vx;
-        let newY = prevPos.y + velocity.vy;
-        let newVx = velocity.vx;
-        let newVy = velocity.vy;
-
-        if (newX <= 5 || newX >= 95) {
-          newVx *= -1;
-          newX = prevPos.x + newVx;
-        }
-        if (newY <= 5 || newY >= 95) {
-          newVy *= -1;
-          newY = prevPos.y + newVy;
-        }
-        
-        setVelocity({ vx: newVx, vy: newVy });
-        return { x: newX, y: newY };
-      });
-      animationFrameId.current = requestAnimationFrame(animate);
-    };
-
-    animationFrameId.current = requestAnimationFrame(animate);
-    return () => {
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
-    };
-  }, [velocity]);
-
-  const PetIcon = type === 'alive' ? Cat : Ghost;
-  const particleType: ParticleType = type === 'alive' ? 'ambient_cat' : 'ambient_ghost';
-  const colorClass = type === 'alive' ? 'animate-cat-colors' : 'animate-ghost-colors';
-
-  return (
-    <div
-      className={cn("absolute w-14 h-14", colorClass)}
-      style={{
-        left: `${position.x}%`,
-        top: `${position.y}%`,
-        transform: 'translate(-50%, -50%)',
-      }}
-    >
-      <div className="relative w-full h-full">
-        <FunParticles type={particleType} count={5} />
-        <PetIcon className="w-full h-full" />
-      </div>
-    </div>
-  );
+// Simplified game settings. No more levels or difficulty scaling.
+const GAME_SETTINGS = {
+  time: 15, // 15 seconds
+  anomalies: 5, // 5 anomalies to click
+  spawnRate: 800, // Spawn a new anomaly every 800ms
 };
-
 
 /** The main Quantum Conundrum game component. */
 export default function EasterEgg() {
   const [gameState, setGameState] = useState<GameState>('idle');
   const [catState, setCatState] = useState<PetType | null>(null);
-  const [stats, setStats] = useState({ alive: 0, ghost: 0, plays: 0, lastResult: null as PetType | null });
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
   const [particleEffects, setParticleEffects] = useState<ParticleEffect[]>([]);
   const [isResultIconVisible, setIsResultIconVisible] = useState(true);
   const posthog = usePostHog();
   
-  const [difficulty, setDifficulty] = useState(getDifficulty(0));
-  const [anomaliesToClick, setAnomaliesToClick] = useState(difficulty.anomalies);
-  const [timeLeft, setTimeLeft] = useState(difficulty.time);
+  const [anomaliesToClick, setAnomaliesToClick] = useState(GAME_SETTINGS.anomalies);
+  const [timeLeft, setTimeLeft] = useState(GAME_SETTINGS.time);
 
   const ref = useRef<HTMLDivElement>(null);
   const resultIconRef = useRef<HTMLDivElement>(null);
@@ -217,44 +140,8 @@ export default function EasterEgg() {
   const anomalySpawnerRef = useRef<NodeJS.Timeout | null>(null);
   const isVisible = useInView(ref);
 
-  const isGameActive = gameState === 'playing' || gameState === 'failed' || gameState === 'revealing' || gameState === 'result';
+  const isGameActive = gameState !== 'idle';
 
-  // Load stats from localStorage on component mount.
-  useEffect(() => {
-    try {
-      const storedStats = localStorage.getItem('quantumConundrumStats');
-      if (storedStats) {
-        const parsedStats = JSON.parse(storedStats);
-        setStats(parsedStats);
-        setDifficulty(getDifficulty(parsedStats.plays || 0));
-      }
-    } catch (error) {
-      console.error("Failed to parse stats from localStorage", error);
-    }
-  }, []);
-
-  /** Updates game stats and saves them to localStorage. */
-  const updateStats = useCallback((result: PetType | null, incrementPlayCount: boolean) => {
-    setStats(prevStats => {
-      const newStats = { ...prevStats };
-      if (result) {
-          newStats[result as 'alive' | 'ghost']++;
-          newStats.lastResult = result;
-      }
-      if (incrementPlayCount) {
-          newStats.plays++;
-      }
-      // Difficulty is always based on the number of successful plays (wins).
-      setDifficulty(getDifficulty(newStats.plays));
-      try {
-        localStorage.setItem('quantumConundrumStats', JSON.stringify(newStats));
-      } catch (error) {
-        console.error("Failed to save stats to localStorage", error);
-      }
-      return newStats;
-    });
-  }, []);
-  
   /** Clears all active game timers. */
   const cleanupTimers = () => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -286,16 +173,14 @@ export default function EasterEgg() {
     });
   }, []);
 
-  /** Starts a new game session. */
-  const startExperiment = () => {
-    posthog.capture('easter_egg_game_started');
-    setPet(null); // Clear any existing global pet
-    const currentDifficulty = getDifficulty(stats.plays);
-    setDifficulty(currentDifficulty);
-    setAnomaliesToClick(currentDifficulty.anomalies);
-    setTimeLeft(currentDifficulty.time);
+  const beginGame = () => {
+    // Reset all game state variables
+    setAnomaliesToClick(GAME_SETTINGS.anomalies);
+    setTimeLeft(GAME_SETTINGS.time);
     setAnomalies([]);
     setParticleEffects([]);
+
+    // Start the game logic
     setGameState('playing');
     
     // Start the countdown timer.
@@ -310,8 +195,19 @@ export default function EasterEgg() {
     }, 1000);
 
     // Start the anomaly spawner.
-    anomalySpawnerRef.current = setInterval(spawnAnomaly, currentDifficulty.spawnRate);
-    spawnAnomaly();
+    anomalySpawnerRef.current = setInterval(spawnAnomaly, GAME_SETTINGS.spawnRate);
+    spawnAnomaly(); // Spawn the first one immediately.
+  }
+
+  /** Shows instructions, then starts the game. */
+  const showInstructionsAndStart = () => {
+    posthog.capture('easter_egg_game_started');
+    setPet(null); // Clear any existing global pet
+    setGameState('instructions');
+
+    setTimeout(() => {
+        beginGame();
+    }, 2500); // Show instructions for 2.5 seconds.
   };
 
   /** Handles the click event on a quantum anomaly. */
@@ -346,8 +242,6 @@ export default function EasterEgg() {
       const result: PetType = Math.random() < (1 / 3) ? 'alive' : 'ghost';
       
       setCatState(result);
-      // **Timeline (Level) Progression:** Only increment the play count on a successful observation.
-      updateStats(result, true); 
       setIsResultIconVisible(true); // Ensure icon is visible initially
       endGame('result');
       // Delay setting the pet to create the illusion of it "coming from" the card.
@@ -368,15 +262,12 @@ export default function EasterEgg() {
     setCatState(null);
     setAnomalies([]);
     setParticleEffects([]);
-    const currentDifficulty = getDifficulty(stats.plays);
-    setDifficulty(currentDifficulty);
-    setAnomaliesToClick(currentDifficulty.anomalies);
+    setAnomaliesToClick(GAME_SETTINGS.anomalies);
   };
   
   /** A unified "Dev Reset" button to reset all stats and progress. */
   const factoryReset = () => {
     try {
-      localStorage.removeItem('quantumConundrumStats');
       localStorage.removeItem(TOUR_STORAGE_KEY);
       // Force a reload to re-trigger all initialization logic, including the tour.
       window.location.reload(); 
@@ -435,24 +326,27 @@ export default function EasterEgg() {
                   
                   {gameState === 'idle' && (
                       <div className="space-y-6 animate-fade-in w-full max-w-sm px-4">
-                          <div className="relative w-full h-48 bg-primary/5 border border-primary/20 rounded-lg overflow-hidden">
-                              <AmbientPet type="alive" />
-                              <AmbientPet type="ghost" />
-                          </div>
                           <blockquote className='space-y-2'>
-                            <p className="font-medium text-foreground/90">My fate is in superposition. Click the anomalies to observe the outcome.</p>
+                            <p className="font-medium text-foreground/90">My fate is in superposition. Click the button to observe the outcome.</p>
                           </blockquote>
                            <div className="text-sm text-foreground/80">
-                             <p>Level (Timeline) #{stats.plays + 1}</p>
-                             <p>Cats Observed Alive: <span className="font-bold text-green-500">{stats.alive}</span></p>
-                             <p>Cats Decohered: <span className="font-bold text-sky-400">{stats.ghost}</span></p>
+                             <p>This is a simple game of chance and speed.</p>
+                             <p>A roaming pet awaits the result!</p>
                            </div>
                           <div className="w-full pt-4">
-                            <Button id="begin-experiment-button" onClick={startExperiment} size="lg" className="w-full sm:w-auto animate-tour-glow">
-                              Begin Experiment
+                            <Button id="begin-experiment-button" onClick={showInstructionsAndStart} size="lg" className="w-full sm:w-auto animate-tour-glow">
+                              Begin Game
                             </Button>
                           </div>
                       </div>
+                  )}
+
+                  {gameState === 'instructions' && (
+                     <div className="space-y-4 animate-fade-in text-center relative w-full h-full flex flex-col items-center justify-center">
+                        <h3 className="text-2xl font-bold text-primary">Get Ready!</h3>
+                        <p className="text-foreground/80 text-lg">Tap the anomalies before time runs out!</p>
+                        <Progress value={100} className="w-1/2" />
+                    </div>
                   )}
                   
                   {(gameState === 'playing' || gameState === 'failed') && (
@@ -506,7 +400,7 @@ export default function EasterEgg() {
                                ))}
                           </div>
                            <p className="text-xs text-foreground/80 pt-2 flex items-center justify-center gap-2">
-                            {gameState === 'failed' ? 'The quantum state destabilized. The timeline has been purged.' : `Collect ${difficulty.anomalies} anomalies in ${Math.round(difficulty.time)} seconds!`}
+                            {gameState === 'failed' ? 'The quantum state destabilized. The timeline has been purged.' : `Collect ${GAME_SETTINGS.anomalies} anomalies in ${Math.round(GAME_SETTINGS.time)} seconds!`}
                           </p>
                       </div>
                   )}
