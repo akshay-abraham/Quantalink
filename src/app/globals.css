@@ -232,12 +232,8 @@ body {
     border-radius: inherit; /* Use the parent's border-radius */
     animation: border-chase 4s linear infinite;
     z-index: 0;
-    opacity: 0.25;
+    opacity: 0.75;
     transition: opacity 0.3s ease-in-out;
-  }
-  
-  .group:hover .animate-border-glow::before {
-    opacity: 0.5;
   }
 
   @keyframes border-glow-fade {
@@ -351,5 +347,3 @@ body {
         opacity: 0;
     }
 }
-
-    
