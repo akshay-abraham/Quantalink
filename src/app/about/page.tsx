@@ -5,15 +5,15 @@
  */
 import AnimatedBackground from "@/components/animated-background";
 import PageFooter from "@/components/page-footer";
-import { Target, Cpu, Users } from "lucide-react";
+import { BookOpen, Telescope, Users } from "lucide-react";
 import type { Metadata } from 'next';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 // Page-specific metadata for SEO.
 export const metadata: Metadata = {
-  title: 'About Akshay K Rooben Abraham | Story & Journey',
-  description: 'Learn more about Akshay K Rooben Abraham, a Class 11 PCMB student with a passion for theoretical physics, electronics, and open-source technology.',
+  title: 'About Akshay K Rooben Abraham | My Journey',
+  description: 'Learn more about Akshay K Rooben Abraham, a student with a passion for physics, electronics, and open-source technology.',
   // Provides the canonical URL for this page.
   alternates: {
     canonical: '/about',
@@ -23,19 +23,19 @@ export const metadata: Metadata = {
 // Data for the different sections of the "About Me" page.
 const aboutSections = [
   {
-    icon: <Target className="h-8 w-8" />,
-    title: "Academic Aspiration",
-    content: "I am currently a Class 11 PCMB student at Girideepam Bethany Central School, pursuing a path toward theoretical physics. My academic goal is to build a deep, foundational understanding of the principles that govern our universe.",
+    icon: <BookOpen className="h-8 w-8" />,
+    title: "My Studies",
+    content: "I'm currently a high school student focusing on Physics, Chemistry, Math, and Biology (PCMB). I find the fundamental principles of science deeply fascinating and enjoy the process of learning how the world works.",
   },
   {
-    icon: <Cpu className="h-8 w-8" />,
-    title: "Technical Journey",
-    content: "Alongside academics, I have been actively working with electronics and technology for over three years—ranging from practical electrical work to building with Arduino, ESP boards, and sensors. I have experience with C, Python, and command-line tools like Git.",
+    icon: <Telescope className="h-8 w-8" />,
+    title: "Curiosity & Hobbies",
+    content: "Outside of my core subjects, I have a strong interest in electronics and how software and hardware can work together. For the past few years, I've enjoyed tinkering with Arduino and ESP boards, and I'm always trying to learn more about C, Python, and using tools like Git.",
   },
   {
     icon: <Users className="h-8 w-8" />,
-    title: "Leadership & Collaboration",
-    content: "At school, I have consistently taken up leadership roles since Class 9, including serving on the student council and as a Prefect. These experiences have honed my ability to take responsibility, collaborate, and stay disciplined in group efforts.",
+    title: "Collaboration",
+    content: "I believe that working with others is one of the best ways to learn. In school, I've had opportunities to participate in group activities and student bodies, which has been a valuable experience in teamwork and responsibility.",
   }
 ];
 
@@ -51,10 +51,10 @@ export default function AboutPage() {
         <div className="w-full max-w-5xl">
           <header className="mb-12 text-center pt-20">
             <h1 className="text-4xl font-bold text-primary tracking-tight animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-              My Story
+              About Me
             </h1>
             <p className="text-foreground/70 mt-2 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '350ms' }}>
-              A brief look into my academic, technical, and personal journey.
+              A little bit about my interests and journey.
             </p>
           </header>
           <main>

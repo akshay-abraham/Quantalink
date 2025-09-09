@@ -17,23 +17,23 @@ import GuidedTour from '@/components/guided-tour';
 // Define metadata for the website, used for SEO and browser tab information.
 export const metadata: Metadata = {
   metadataBase: new URL('https://akshayabraham.vercel.app'),
-  title: 'Akshay K Rooben Abraham | Aspirant Theoretical Physicist',
-  description: 'The personal portfolio of Akshay K Rooben Abraham, an aspiring theoretical physicist, PCMB student, and open-source contributor exploring the intersection of science and technology.',
+  title: 'Akshay K Rooben Abraham | Portfolio',
+  description: 'The personal portfolio of Akshay K Rooben Abraham, a student and open-source enthusiast exploring the intersection of science and technology.',
   keywords: [
     'Akshay Abraham',
     'Akshay K Rooben Abraham',
     'Akshay K Ruben Abraham',
-    'Theoretical Physicist',
     'Portfolio',
     'Next.js',
     'React',
     'TypeScript',
     'PCMB Student',
-    'Open Source'
+    'Open Source',
+    'Physics'
   ],
   openGraph: {
-    title: 'Akshay K Rooben Abraham | Personal Portfolio',
-    description: 'Aspirant Theoretical Physicist · PCMB Student · Open-Source Contributor',
+    title: 'Akshay K Rooben Abraham | Portfolio',
+    description: 'Student · Physics Enthusiast · Open-Source Contributor',
     url: 'https://akshayabraham.vercel.app',
     siteName: 'Akshay Abraham Portfolio',
     images: [
@@ -49,8 +49,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Akshay K Rooben Abraham | Personal Portfolio',
-    description: 'Aspirant Theoretical Physicist · PCMB Student · Open-Source Contributor',
+    title: 'Akshay K Rooben Abraham | Portfolio',
+    description: 'Student · Physics Enthusiast · Open-Source Contributor',
     images: ['https://akshayabraham.vercel.app/og-image.png'],
   },
   robots: {
@@ -77,8 +77,8 @@ const jsonLd = {
   name: 'Akshay K Rooben Abraham',
   alternateName: ['Akshay Abraham', 'Akshay K Ruben Abraham'],
   url: 'https://akshayabraham.vercel.app',
-  jobTitle: 'Aspirant Theoretical Physicist & PCMB Student',
-  worksFor: {
+  jobTitle: 'Student & Open-Source Contributor',
+  alumniOf: {
     '@type': 'Organization',
     name: 'Girideepam Bethany Central School',
   },

@@ -34,11 +34,8 @@ export default function Home() {
           <LinkCards />
           <Separator className="bg-border/50" />
            <div className="text-center">
-             <Link href="/about">
-              <Button variant="outline" className="bg-card/30 border-border/40">
-                Read More About Me
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+             <Link href="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                Read more about my journey &rarr;
             </Link>
           </div>
           <Separator className="bg-border/50" />

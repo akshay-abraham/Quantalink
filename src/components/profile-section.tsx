@@ -61,7 +61,7 @@ export default function ProfileSection() {
             </h1>
         </div>
         <p className="text-sm md:text-base text-foreground/70 mt-1 text-shadow">
-          Aspirant Theoretical Physicist · PCMB Student · Open-Source Contributor
+          Physics Enthusiast · Student · Open-Source Contributor
         </p>
       </div>
     </section>

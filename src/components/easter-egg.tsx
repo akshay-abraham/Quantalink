@@ -377,7 +377,7 @@ export default function EasterEgg() {
                   {gameState === 'idle' && (
                       <div className="space-y-6 animate-fade-in w-full max-w-sm px-4">
                           <blockquote className='space-y-2'>
-                            <p className="font-medium text-foreground/90">"My fate is in superposition. Collect quantum anomalies to observe the outcome."</p>
+                            <p className="font-medium text-foreground/90">"My fate is in superposition. Click the anomalies to observe the outcome."</p>
                           </blockquote>
                            <div className="text-sm text-foreground/80">
                              <p>Level (Timeline) #{stats.plays + 1}</p>
@@ -385,8 +385,8 @@ export default function EasterEgg() {
                              <p>Cats Decohered: <span className="font-bold text-sky-400">{stats.ghost}</span></p>
                            </div>
                           <div className="w-full pt-4">
-                            <Button id="begin-experiment-button" onClick={startExperiment} size="lg" className="w-full sm:w-auto animate-button-glow">
-                              Begin Experiment
+                            <Button id="begin-experiment-button" onClick={startExperiment} size="lg" className="w-full sm:w-auto animate-tour-glow">
+                              Observe the Outcome
                             </Button>
                           </div>
                       </div>
@@ -504,5 +504,5 @@ export default function EasterEgg() {
           </Card>
       </section>
     </>
-  )
+  );
 }
