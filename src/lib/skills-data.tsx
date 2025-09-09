@@ -74,7 +74,7 @@ export const skillsData: SkillCategory[] = [
   {
     title: 'Web & Data Technologies',
     icon: <Code size={32} />,
-    subtitle: 'Technologies I use for web projects and data analysis, with help from generative AI for prototyping and debugging.',
+    subtitle: 'Technologies I use for web projects and data analysis',
     skills: [
       { name: 'HTML/CSS', icon: <HtmlIcon /> },
       { name: 'React', icon: <ReactIcon /> },
