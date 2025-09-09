@@ -138,6 +138,65 @@ const getDifficulty = (winCount: number) => {
     }
 }
 
+/** A self-contained, simplified pet for the pre-game "diorama" display. */
+const AmbientPet = ({ type }: { type: 'alive' | 'ghost' }) => {
+  const [position, setPosition] = useState({ x: 50, y: 50 });
+  const [velocity, setVelocity] = useState({ vx: Math.random() * 2 - 1, vy: Math.random() * 2 - 1 });
+  const animationFrameId = useRef<number>();
+
+  useEffect(() => {
+    const animate = () => {
+      setPosition(prevPos => {
+        let newX = prevPos.x + velocity.vx;
+        let newY = prevPos.y + velocity.vy;
+        let newVx = velocity.vx;
+        let newVy = velocity.vy;
+
+        if (newX <= 5 || newX >= 95) {
+          newVx *= -1;
+          newX = prevPos.x + newVx;
+        }
+        if (newY <= 5 || newY >= 95) {
+          newVy *= -1;
+          newY = prevPos.y + newVy;
+        }
+        
+        setVelocity({ vx: newVx, vy: newVy });
+        return { x: newX, y: newY };
+      });
+      animationFrameId.current = requestAnimationFrame(animate);
+    };
+
+    animationFrameId.current = requestAnimationFrame(animate);
+    return () => {
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+    };
+  }, [velocity]);
+
+  const PetIcon = type === 'alive' ? Cat : Ghost;
+  const particleType: ParticleType = type === 'alive' ? 'ambient_cat' : 'ambient_ghost';
+  const colorClass = type === 'alive' ? 'animate-cat-colors' : 'animate-ghost-colors';
+
+  return (
+    <div
+      className={cn("absolute w-14 h-14", colorClass)}
+      style={{
+        left: `${position.x}%`,
+        top: `${position.y}%`,
+        transform: 'translate(-50%, -50%)',
+      }}
+    >
+      <div className="relative w-full h-full">
+        <FunParticles type={particleType} count={5} />
+        <PetIcon className="w-full h-full" />
+      </div>
+    </div>
+  );
+};
+
+
 /** The main Quantum Conundrum game component. */
 export default function EasterEgg() {
   const [gameState, setGameState] = useState<GameState>('idle');
@@ -376,8 +435,12 @@ export default function EasterEgg() {
                   
                   {gameState === 'idle' && (
                       <div className="space-y-6 animate-fade-in w-full max-w-sm px-4">
+                          <div className="relative w-full h-48 bg-primary/5 border border-primary/20 rounded-lg overflow-hidden">
+                              <AmbientPet type="alive" />
+                              <AmbientPet type="ghost" />
+                          </div>
                           <blockquote className='space-y-2'>
-                            <p className="font-medium text-foreground/90">"My fate is in superposition. Click the anomalies to observe the outcome."</p>
+                            <p className="font-medium text-foreground/90">My fate is in superposition. Click the anomalies to observe the outcome.</p>
                           </blockquote>
                            <div className="text-sm text-foreground/80">
                              <p>Level (Timeline) #{stats.plays + 1}</p>
@@ -386,7 +449,7 @@ export default function EasterEgg() {
                            </div>
                           <div className="w-full pt-4">
                             <Button id="begin-experiment-button" onClick={startExperiment} size="lg" className="w-full sm:w-auto animate-tour-glow">
-                              Observe the Outcome
+                              Begin Experiment
                             </Button>
                           </div>
                       </div>
@@ -506,3 +569,5 @@ export default function EasterEgg() {
     </>
   );
 }
+
+    
