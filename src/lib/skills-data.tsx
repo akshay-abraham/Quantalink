@@ -66,10 +66,9 @@ export const skillsData: SkillCategory[] = [
     icon: <Languages size={32} />,
     subtitle: "The foundational languages I use for problem-solving and building projects.",
     skills: [
-      { name: 'Python', icon: <PythonIcon />, isPriority: true },
       { name: 'C', icon: <CIcon />, isPriority: true },
-      { name: 'JavaScript', icon: <JavascriptIcon />, iconClassName: 'p-1' },
-      { name: 'TypeScript', icon: <TypescriptIcon />, iconClassName: 'p-1' },
+      { name: 'Python', icon: <PythonIcon />, isPriority: true },
+      { name: 'JavaScript / TypeScript', icon: <TypescriptIcon />, iconClassName: 'p-1' },
     ],
   },
   {
@@ -77,8 +76,7 @@ export const skillsData: SkillCategory[] = [
     icon: <Code size={32} />,
     subtitle: 'Technologies I use for web projects and data analysis, with help from generative AI for prototyping and debugging.',
     skills: [
-      { name: 'HTML5', icon: <HtmlIcon /> },
-      { name: 'CSS3', icon: <CssIcon /> },
+      { name: 'HTML & CSS', icon: <HtmlIcon /> },
       { name: 'React', icon: <ReactIcon /> },
       { name: 'NumPy', icon: <NumpyIcon /> },
       { name: 'Pandas', icon: <PandasIcon /> },
