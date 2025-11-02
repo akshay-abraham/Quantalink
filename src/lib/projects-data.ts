@@ -52,7 +52,7 @@ export const projects: Project[] = [
     description: 'Lyra is an AI-powered educational framework that provides guided, ethical, and customizable learning support — helping students think independently while enabling teachers to personalize AI tutoring for every learner, including those with special needs.',
     githubUrl: 'https://github.com/akshay-abraham/lyra',
     license:  '',
-    isFeatured: true,
+    isFeatured: false,
   },
   // To add another project, copy the object structure below:
   // {
