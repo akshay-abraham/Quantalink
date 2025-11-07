@@ -1,57 +1,65 @@
 /**
  * @file /src/components/special-event-tester.tsx
- * @description A client component that provides a dropdown to test different special events.
+ * @description A client component that provides a discrete popover calendar to test special events.
  */
 'use client';
 
+import { useState } from 'react';
+import { format } from 'date-fns';
+import { Calendar as CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { specialEvents } from "@/lib/special-events-data.tsx";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { specialEvents } from '@/lib/special-events-data.tsx';
 
 interface SpecialEventTesterProps {
-  onTestEvent: (eventName: string) => void;
+  onTestEvent: (date: Date | undefined) => void;
 }
 
 /**
- * SpecialEventTester allows users to preview any event from the data file.
+ * A discrete, developer-focused tool to test special events using a calendar popover.
  * @param {SpecialEventTesterProps} props - The component props.
- * @returns {JSX.Element} A select dropdown for testing events.
+ * @returns {JSX.Element} A small button that opens a calendar for testing.
  */
 export default function SpecialEventTester({ onTestEvent }: SpecialEventTesterProps) {
+  const [date, setDate] = useState<Date | undefined>();
+
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    onTestEvent(selectedDate);
+  };
+
   return (
-    <div className="w-full max-w-xs mx-auto mt-8">
-      <Card className="bg-card/50 border-border/40">
-        <CardHeader>
-            <CardTitle className="text-base text-primary text-center">Event Tester</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <Select onValueChange={(value) => onTestEvent(value)}>
-                <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select an event to test" />
-                </SelectTrigger>
-                <SelectContent>
-                <SelectGroup>
-                    <SelectLabel>Events</SelectLabel>
-                    {specialEvents.map((event) => (
-                    <SelectItem key={event.title} value={event.title}>
-                        {event.title} ({event.date})
-                    </SelectItem>
-                    ))}
-                </SelectGroup>
-                </SelectContent>
-            </Select>
-        </CardContent>
-      </Card>
+    <div className="fixed bottom-4 right-4 z-50">
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant={'outline'}
+            size={'icon'}
+            className={cn(
+              'h-12 w-12 rounded-full bg-card/70 backdrop-blur-md border-border/60 shadow-lg hover:scale-110 transition-transform p-3',
+              !date && 'text-muted-foreground'
+            )}
+            title="Test a specific date"
+          >
+            <CalendarIcon className="h-5 w-5" />
+            <span className="sr-only">Pick a date to test</span>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="end">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={handleDateSelect}
+            initialFocus
+          />
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }
-
-// These imports are needed inside the tester component
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

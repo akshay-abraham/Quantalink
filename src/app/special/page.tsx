@@ -7,7 +7,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { specialEvents, SpecialEvent } from '@/lib/special-events-data';
+import { specialEvents, SpecialEvent } from '@/lib/special-events-data.tsx';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { FunParticles, ParticleType } from '@/components/easter-egg';
 import AnimatedBackground from '@/components/animated-background';
@@ -24,29 +24,33 @@ import SpecialEventTester from '@/components/special-event-tester';
 export default function SpecialPage() {
   const [activeEvent, setActiveEvent] = useState<SpecialEvent | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const [testDate, setTestDate] = useState<Date | undefined>();
 
   useEffect(() => {
     // This effect runs only on the client, ensuring `new Date()` is safe.
     setIsClient(true);
     
-    // Get today's date in the 'MM-DD' format.
-    const today = new Date();
-    const formattedDate = format(today, 'MM-dd');
+    // Use the test date if available, otherwise use the real current date.
+    const dateTo_check = testDate || new Date();
+    const formattedDate = format(dateTo_check, 'MM-dd');
     
-    // Find if there's an event for today.
-    const todaysEvent = specialEvents.find(e => e.date === formattedDate);
+    // Find if there's an event for the checked date.
+    const eventForDate = specialEvents.find(e => e.date === formattedDate);
     
-    setActiveEvent(todaysEvent || null);
-  }, []);
+    setActiveEvent(eventForDate || null);
+  }, [testDate]);
   
   // This function is passed to the tester component to update the displayed event.
-  const handleTestEvent = (eventName: string) => {
-    const eventToTest = specialEvents.find(e => e.title === eventName);
-    setActiveEvent(eventToTest || null);
+  const handleTestEvent = (date: Date | undefined) => {
+    setTestDate(date);
   };
 
   const currentEvent = activeEvent;
   const particleType: ParticleType = currentEvent?.particleType || 'revealing';
+
+  const defaultMessage = testDate
+    ? `There are no special events scheduled for ${format(testDate, 'MMMM do')}.`
+    : "There are no special events scheduled for today, but I hope you have a great one anyway!";
 
   return (
     <>
@@ -70,7 +74,7 @@ export default function SpecialPage() {
                   {isClient && (currentEvent ? currentEvent.title : "Have a Wonderful Day!")}
                 </CardTitle>
                 <CardDescription className="text-foreground/80 text-base pt-2">
-                   {isClient && (currentEvent ? currentEvent.message : "There are no special events scheduled for today, but I hope you have a great one anyway!")}
+                   {isClient && (currentEvent ? currentEvent.message : defaultMessage)}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -82,7 +86,7 @@ export default function SpecialPage() {
           </Card>
         </div>
 
-        {/* The event tester component */}
+        {/* The event tester component is now just a discrete button. */}
         {isClient && <SpecialEventTester onTestEvent={handleTestEvent} />}
 
         <div className="w-full max-w-4xl flex-grow" />
