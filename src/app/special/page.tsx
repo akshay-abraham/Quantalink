@@ -17,6 +17,10 @@ import { format } from 'date-fns';
 import SpecialEventTester from '@/components/special-event-tester';
 import { cn } from '@/lib/utils';
 
+// Note: Metadata cannot be exported from a Client Component.
+// This page will inherit its base metadata from the root layout.
+// The unique OG tags for this page have been removed to resolve a build error.
+
 /**
  * SpecialPage component displays a personalized greeting if the current date
  * matches an entry in the special events data file.
