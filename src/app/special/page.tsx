@@ -15,11 +15,27 @@ import { Smile } from 'lucide-react';
 import PageFooter from '@/components/page-footer';
 import { format } from 'date-fns';
 import SpecialEventTester from '@/components/special-event-tester';
-import { cn } from '@/lib/utils';
+import { BirthdayCard } from '@/components/special-cards/birthday-card';
+import { HomageCard } from '@/components/special-cards/homage-card';
+import { HolidayCard } from '@/components/special-cards/holiday-card';
+import { PersonalEventCard } from '@/components/special-cards/personal-event-card';
 
 // Note: Metadata cannot be exported from a Client Component.
 // This page will inherit its base metadata from the root layout.
 // The unique OG tags for this page have been removed to resolve a build error.
+
+const eventCardMap = {
+  friendBirthday: BirthdayCard,
+  teacherBirthday: BirthdayCard,
+  personalBirthday: PersonalEventCard,
+  homage: HomageCard,
+  halloween: HolidayCard,
+  christmas: HolidayCard,
+  newYear: HolidayCard,
+  holiday: HolidayCard,
+  science: HolidayCard,
+};
+
 
 /**
  * SpecialPage component displays a personalized greeting if the current date
@@ -51,7 +67,6 @@ export default function SpecialPage() {
   };
 
   const isBirthday = isClient && activeEvents.some(event => event.isBirthday);
-  const isHomage = isClient && activeEvents.some(event => event.isHomage);
 
   const defaultMessage = testDate
     ? `There are no special events scheduled for ${format(testDate, 'MMMM do')}.`
@@ -62,43 +77,16 @@ export default function SpecialPage() {
       <AnimatedBackground />
        {isBirthday && (
         <div className="fixed inset-0 z-20 pointer-events-none">
-          <FunParticles type="popper" count={200} />
+          <FunParticles type="popper" count={50} />
         </div>
       )}
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-2xl space-y-6">
           {isClient && activeEvents.length > 0 ? (
-            activeEvents.map((event) => (
-              <Card key={event.title} className="relative overflow-hidden bg-card/50 border-border/40 shadow-2xl animate-fade-in-up text-center">
-                <div className="absolute inset-0 pointer-events-none">
-                  {/* For homage, use a more serene particle effect */}
-                  <FunParticles type={isHomage ? 'revealing' : event.particleType} count={150} />
-                </div>
-                
-                <div className="relative z-10 p-6">
-                  <CardHeader>
-                    <div className="flex justify-center items-center gap-4 text-primary">
-                      {event.icon}
-                    </div>
-                    <CardTitle className={cn(
-                      "text-3xl sm:text-4xl font-bold tracking-tight pt-4",
-                      // Apply glowing animation for all events except homage
-                      !isHomage && "animate-cat-colors"
-                    )}>
-                      {event.title}
-                    </CardTitle>
-                    <CardDescription className="text-foreground/80 text-base pt-2">
-                       {event.message}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-xs text-foreground/60">
-                        - Akshay Abraham
-                    </p>
-                  </CardContent>
-                </div>
-              </Card>
-            ))
+            activeEvents.map((event) => {
+              const CardComponent = eventCardMap[event.eventType] || HolidayCard;
+              return <CardComponent key={event.title} event={event} />;
+            })
           ) : (
              isClient && (
               <Card className="bg-card/50 border-border/40 shadow-2xl animate-fade-in-up text-center">
