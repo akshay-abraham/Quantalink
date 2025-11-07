@@ -64,27 +64,33 @@ export const PARTICLE_COLORS = {
 
 export type ParticleType = keyof typeof PARTICLE_COLORS;
 
-/** A single particle that animates flying outwards from a central point. */
+/** A single particle that animates. Behavior changes based on type. */
 const Particle = ({ type }: { type: ParticleType }) => {
-  const duration = 0.6 + Math.random() * 0.8;
-  const travelDistance = 150;
+  const isBirthdayPopper = type === 'popper';
   
-  const tx = (Math.random() - 0.5) * travelDistance;
-  const ty = (Math.random() - 0.5) * travelDistance;
+  const duration = isBirthdayPopper ? 2 + Math.random() * 3 : 0.6 + Math.random() * 0.8;
+  const travelDistance = 150;
+
+  const startX = isBirthdayPopper ? `${Math.random() * 100}vw` : '50%';
+  const startY = isBirthdayPopper ? `${-10 - Math.random() * 20}vh` : '50%';
+  
+  const tx = isBirthdayPopper ? `${(Math.random() - 0.5) * 100}px` : `${(Math.random() - 0.5) * travelDistance}px`;
+  const ty = isBirthdayPopper ? `${120}vh` : `${(Math.random() - 0.5) * travelDistance}px`;
+
   const color = PARTICLE_COLORS[type][Math.floor(Math.random() * PARTICLE_COLORS[type].length)];
   const Icon = PARTICLE_ICONS[type];
 
   const style: React.CSSProperties = {
     position: 'absolute',
-    left: `50%`,
-    top: `50%`,
+    left: startX,
+    top: startY,
     animation: `fly-out ${duration}s ease-out forwards`,
     opacity: 0,
-    transform: `rotate(${Math.random() * 360}deg) scale(${0.5 + Math.random()})`,
-    animationDelay: `${Math.random() * 0.1}s`,
+    transform: `rotate(${Math.random() * 360}deg) scale(${0.8 + Math.random()})`,
+    animationDelay: `${Math.random() * 5}s`, // Stagger the rainfall
     color: color,
-    '--tx': `${tx}px`,
-    '--ty': `${ty}px`,
+    '--tx': tx,
+    '--ty': ty,
   } as React.CSSProperties;
 
   return <div style={style}><Icon className="w-5 h-5" /></div>;

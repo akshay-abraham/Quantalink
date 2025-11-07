@@ -42,12 +42,12 @@ export default function SpecialEventTester({ onTestEvent }: SpecialEventTesterPr
             variant={'outline'}
             size={'icon'}
             className={cn(
-              'h-12 w-12 rounded-full bg-card/70 backdrop-blur-md border-border/60 shadow-lg hover:scale-110 transition-transform p-3',
+              'h-10 w-10 rounded-full bg-card/70 backdrop-blur-md border-border/60 shadow-lg hover:scale-110 transition-transform p-2',
               !date && 'text-muted-foreground'
             )}
             title="Test a specific date"
           >
-            <CalendarIcon className="h-5 w-5" />
+            <CalendarIcon className="h-4 w-4" />
             <span className="sr-only">Pick a date to test</span>
           </Button>
         </PopoverTrigger>
