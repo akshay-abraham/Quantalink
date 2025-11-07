@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { specialEvents } from "@/lib/special-events-data";
+import { specialEvents } from "@/lib/special-events-data.tsx";
 
 interface SpecialEventTesterProps {
   onTestEvent: (eventName: string) => void;
