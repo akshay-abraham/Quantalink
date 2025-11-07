@@ -14,7 +14,6 @@ import { HtmlIcon } from '@/components/icons/html5';
 import { CssIcon } from '@/components/icons/css3';
 import { JavascriptIcon } from '@/components/icons/javascript';
 import { VscodeIcon } from '@/components/icons/vscode';
-import { ChatgptIcon } from '@/components/icons/chatgpt';
 import { GithubIcon } from '@/components/icons/github';
 import { GitIcon } from '@/components/icons/git';
 import { BashIcon } from '@/components/icons/bash';
@@ -26,7 +25,6 @@ import { NumpyIcon } from '@/components/icons/numpy';
 import { PandasIcon } from '@/components/icons/pandas';
 import { SciktLearnIcon } from '@/components/icons/scikt-learn';
 import { SqliteIcon } from '@/components/icons/sqlite';
-import { GeminiIcon } from '@/components/icons/gemini';
 import { ArduinoIcon } from '@/components/icons/arduino';
 import { EspressifIcon } from '@/components/icons/espressif';
 
@@ -92,8 +90,6 @@ export const skillsData: SkillCategory[] = [
        { name: 'Git', icon: <GitIcon /> },
        { name: 'GitHub', icon: <GithubIcon /> },
        { name: 'VS Code', icon: <VscodeIcon /> },
-       { name: 'ChatGPT', icon: <ChatgptIcon /> },
-       { name: 'Gemini', icon: <GeminiIcon /> },
        { name: 'Bash', icon: <BashIcon /> },
        { name: 'Zsh', icon: <ZshIcon /> },
        { name: 'Ubuntu', icon: <UbuntuIcon /> },
