@@ -59,7 +59,7 @@ export default function Skills() {
           {firstRowSkills.map((skill) => (
             <Card 
               key={skill.name}
-              className="bg-card/40 border-border/40 shadow-md text-center flex flex-col items-center justify-center w-[120px] h-[80px] shrink-0 p-2 transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl hover:bg-card/60"
+              className="bg-card/40 border-border/40 shadow-md text-center flex flex-col items-center justify-center w-[120px] h-[80px] shrink-0 p-2 transition-shadow,background-color duration-300 hover:shadow-xl hover:bg-card/60"
             >
               <CardHeader className="p-0 flex-grow flex flex-col items-center justify-center gap-2">
                  <div className={cn("h-10 w-10 flex items-center justify-center text-foreground", skill.iconClassName)}>
@@ -77,7 +77,7 @@ export default function Skills() {
           {secondRowSkills.map((skill) => (
              <Card 
               key={skill.name}
-              className="bg-card/40 border-border/40 shadow-md text-center flex flex-col items-center justify-center w-[120px] h-[80px] shrink-0 p-2 transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl hover:bg-card/60"
+              className="bg-card/40 border-border/40 shadow-md text-center flex flex-col items-center justify-center w-[120px] h-[80px] shrink-0 p-2 transition-shadow,background-color duration-300 hover:shadow-xl hover:bg-card/60"
             >
               <CardHeader className="p-0 flex-grow flex flex-col items-center justify-center gap-2">
                  <div className={cn("h-10 w-10 flex items-center justify-center text-foreground", skill.iconClassName)}>

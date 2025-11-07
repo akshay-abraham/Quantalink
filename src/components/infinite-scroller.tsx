@@ -25,7 +25,7 @@ export const InfiniteScroller = ({
   children,
   speed = 'normal',
   direction = 'left',
-  pauseOnHover = true,
+  pauseOnHover = false, // Changed default to false, though the class is removed
 }: InfiniteScrollerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLUListElement>(null);
@@ -85,9 +85,7 @@ export const InfiniteScroller = ({
       <ul
         ref={scrollerRef}
         className={cn(
-          'flex min-w-full shrink-0 gap-6 py-4 w-max flex-nowrap',
-          // Pauses the animation on hover if enabled.
-          pauseOnHover && 'hover:[animation-play-state:paused]'
+          'flex min-w-full shrink-0 gap-6 py-4 w-max flex-nowrap'
         )}
       >
         {React.Children.map(children, (child, idx) => (

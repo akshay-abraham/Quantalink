@@ -6,13 +6,10 @@
  * @note This file must have a `.tsx` extension because it imports and uses React components (icons).
  */
 
-import { BrainCircuit, Code, Wrench, Languages } from 'lucide-react';
+import { Code, Wrench, Languages } from 'lucide-react';
 import { PythonIcon } from '@/components/icons/python';
 import { TypescriptIcon } from '@/components/icons/typescript';
 import { ReactIcon } from '@/components/icons/react';
-import { HtmlIcon } from '@/components/icons/html5';
-import { CssIcon } from '@/components/icons/css3';
-import { JavascriptIcon } from '@/components/icons/javascript';
 import { VscodeIcon } from '@/components/icons/vscode';
 import { GithubIcon } from '@/components/icons/github';
 import { GitIcon } from '@/components/icons/git';
@@ -26,7 +23,6 @@ import { ArduinoIcon } from '@/components/icons/arduino';
 import { EspressifIcon } from '@/components/icons/espressif';
 import { NextjsIcon } from '@/components/icons/nextdotjs';
 import { TailwindIcon } from '@/components/icons/tailwind';
-import { GeminiIcon } from '@/components/icons/gemini';
 import { Database } from 'lucide-react';
 import { Brain } from 'lucide-react';
 
@@ -41,7 +37,6 @@ export interface Skill {
   name: string;
   icon: React.ReactNode;
   iconClassName?: string;
-  isPriority?: boolean;
 }
 
 /**
@@ -97,7 +92,8 @@ export const skillsData: SkillCategory[] = [
        { name: 'Bash / Zsh', icon: <BashIcon /> },
        { name: 'Vim', icon: <VercelIcon />, iconClassName: 'p-1' }, // Placeholder icon
        { name: 'Ubuntu', icon: <UbuntuIcon /> },
-       { name: 'Arch / Fedora', icon: <UbuntuIcon /> }, // Placeholder icon
+       { name: 'Arch Linux', icon: <UbuntuIcon /> }, // Placeholder icon
+       { name: 'Fedora Linux', icon: <UbuntuIcon /> }, // Placeholder icon
        { name: 'Vercel', icon: <VercelIcon /> },
        { name: 'Arduino', icon: <ArduinoIcon /> },
        { name: 'ESP32/ESP8266', icon: <EspressifIcon /> },
