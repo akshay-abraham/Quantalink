@@ -10,7 +10,6 @@ import { useState, useEffect } from 'react';
 import { specialEvents, SpecialEvent } from '@/lib/special-events-data.tsx';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { FunParticles } from '@/components/easter-egg';
-import AnimatedBackground from '@/components/animated-background';
 import { Smile } from 'lucide-react';
 import PageFooter from '@/components/page-footer';
 import { format } from 'date-fns';
@@ -74,10 +73,9 @@ export default function SpecialPage() {
 
   return (
     <>
-      <AnimatedBackground />
        {isBirthday && (
         <div className="fixed inset-0 z-20 pointer-events-none">
-          <FunParticles type="popper" count={50} />
+          <FunParticles type="popper" count={150} />
         </div>
       )}
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
@@ -89,21 +87,21 @@ export default function SpecialPage() {
             })
           ) : (
              isClient && (
-              <Card className="bg-card/50 border-border/40 shadow-2xl animate-fade-in-up text-center">
+              <Card className="bg-card/50 border-border/40 shadow-2xl animate-fade-in-up text-center font-handwriting">
                 <div className="relative z-10 p-6">
                   <CardHeader>
                     <div className="flex justify-center items-center gap-4 text-primary">
                         <Smile className="h-10 w-10" />
                     </div>
-                    <CardTitle className="text-3xl sm:text-4xl font-bold text-primary tracking-tight pt-4">
+                    <CardTitle className="text-4xl sm:text-5xl font-bold text-primary tracking-tight pt-4">
                       Have a Wonderful Day!
                     </CardTitle>
-                    <CardDescription className="text-foreground/80 text-base pt-2">
+                    <CardDescription className="text-foreground/80 text-lg pt-2 font-body">
                       {defaultMessage}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-xs text-foreground/60">
+                    <p className="text-sm text-foreground/60 font-body">
                         - Akshay Abraham
                     </p>
                   </CardContent>

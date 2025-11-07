@@ -3,6 +3,7 @@
  * @description A custom layout for the special page.
  *              This layout is nearly identical to the root layout but specifically
  *              omits the <GuidedTour /> component to provide a focused experience.
+ *              It also imports a custom font for the special event cards.
  */
 import type { Metadata } from 'next';
 import '../globals.css';
@@ -29,7 +30,8 @@ export default function SpecialLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+        {/* Import the "Space Grotesk" font for the main site and "Lobster" for the special cards. */}
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Lobster&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
           <AnimatedBackground />

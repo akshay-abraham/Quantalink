@@ -19,6 +19,7 @@ module.exports = {
       fontFamily: {
         body: ['"Space Grotesk"', 'sans-serif'],
         headline: ['"Space Grotesk"', 'sans-serif'],
+        handwriting: ['"Lobster"', 'cursive'],
       },
       colors: {
         border: "hsl(var(--border))",
