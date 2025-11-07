@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { Cake, Star, Sparkles, Sun, Moon, Atom, Flag, Rocket } from 'lucide-react';
+import { Cake, Ghost, Sparkles, Sun, Moon, Atom, Flag, Rocket } from 'lucide-react';
 import { ParticleType } from '@/components/easter-egg';
 
 /**
@@ -18,6 +18,8 @@ export interface SpecialEvent {
   message: string;
   icon: React.ReactNode;
   particleType: ParticleType;
+  /** Optional flag to trigger special birthday animations. */
+  isBirthday?: boolean;
 }
 
 /**
@@ -32,13 +34,15 @@ export const specialEvents: SpecialEvent[] = [
     message: 'Wishing you a fantastic day filled with joy and laughter. Happy Birthday!',
     icon: <Cake className="h-10 w-10" />,
     particleType: 'popper',
+    isBirthday: true,
   },
   {
     title: 'Happy Birthday, William!',
     date: '10-31',
     message: 'Happy Birthday! Hope you have a spooky and spectacular day.',
     icon: <Cake className="h-10 w-10" />,
-    particleType: 'ghost',
+    particleType: 'popper',
+    isBirthday: true,
   },
    {
     title: 'Happy Birthday, Akshay!',
@@ -46,6 +50,7 @@ export const specialEvents: SpecialEvent[] = [
     message: 'Happy Birthday to me! Time to celebrate another trip around the sun.',
     icon: <Cake className="h-10 w-10" />,
     particleType: 'popper',
+    isBirthday: true,
   },
 
   // --- Fixed Holidays ---
@@ -55,6 +60,13 @@ export const specialEvents: SpecialEvent[] = [
     message: 'Wishing you a bright and prosperous New Year! May it be filled with new adventures and good fortune.',
     icon: <Sparkles className="h-10 w-10" />,
     particleType: 'popper',
+  },
+  {
+    title: 'Happy Halloween!',
+    date: '10-31',
+    message: 'Wishing you a spooky and fun Halloween!',
+    icon: <Ghost className="h-10 w-10" />,
+    particleType: 'ghost',
   },
   {
     title: 'Merry Christmas!',
