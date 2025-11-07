@@ -15,6 +15,7 @@ import { Smile } from 'lucide-react';
 import PageFooter from '@/components/page-footer';
 import { format } from 'date-fns';
 import SpecialEventTester from '@/components/special-event-tester';
+import { cn } from '@/lib/utils';
 
 /**
  * SpecialPage component displays a personalized greeting if the current date
@@ -46,6 +47,7 @@ export default function SpecialPage() {
   };
 
   const isBirthday = isClient && activeEvents.some(event => event.isBirthday);
+  const isHomage = isClient && activeEvents.some(event => event.isHomage);
 
   const defaultMessage = testDate
     ? `There are no special events scheduled for ${format(testDate, 'MMMM do')}.`
@@ -65,7 +67,8 @@ export default function SpecialPage() {
             activeEvents.map((event) => (
               <Card key={event.title} className="relative overflow-hidden bg-card/50 border-border/40 shadow-2xl animate-fade-in-up text-center">
                 <div className="absolute inset-0 pointer-events-none">
-                  <FunParticles type={event.particleType} count={150} />
+                  {/* For homage, use a more serene particle effect */}
+                  <FunParticles type={isHomage ? 'revealing' : event.particleType} count={150} />
                 </div>
                 
                 <div className="relative z-10 p-6">
@@ -73,7 +76,11 @@ export default function SpecialPage() {
                     <div className="flex justify-center items-center gap-4 text-primary">
                       {event.icon}
                     </div>
-                    <CardTitle className="text-3xl sm:text-4xl font-bold text-primary tracking-tight pt-4">
+                    <CardTitle className={cn(
+                      "text-3xl sm:text-4xl font-bold tracking-tight pt-4",
+                      // Apply glowing animation for all events except homage
+                      !isHomage && "animate-cat-colors"
+                    )}>
                       {event.title}
                     </CardTitle>
                     <CardDescription className="text-foreground/80 text-base pt-2">

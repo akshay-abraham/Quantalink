@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { Cake, Ghost, Sparkles, Sun, Moon, Atom, Flag, Rocket } from 'lucide-react';
+import { Cake, Ghost, Sparkles, Sun, Moon, Atom, Flag, Rocket, Hand, Heart, GraduationCap } from 'lucide-react';
 import { ParticleType } from '@/components/easter-egg';
 
 /**
@@ -20,6 +20,8 @@ export interface SpecialEvent {
   particleType: ParticleType;
   /** Optional flag to trigger special birthday animations. */
   isBirthday?: boolean;
+  /** Optional flag for a respectful homage. */
+  isHomage?: boolean;
 }
 
 /**
@@ -51,6 +53,72 @@ export const specialEvents: SpecialEvent[] = [
     icon: <Cake className="h-10 w-10" />,
     particleType: 'popper',
     isBirthday: true,
+  },
+  {
+    title: "Happy Birthday, Papa!",
+    date: '11-22',
+    message: "To the person who's behind everything I do. Thank you for your endless support and craziness. Have the best day!",
+    icon: <Cake className="h-10 w-10" />,
+    particleType: 'popper',
+    isBirthday: true,
+  },
+  {
+    title: 'Happy Birthday, Ms. Asha!',
+    date: '12-10',
+    message: 'To my class teacher and an extreme supporter of my work in physics. Thank you for everything. Happy Birthday!',
+    icon: <GraduationCap className="h-10 w-10" />,
+    particleType: 'popper',
+    isBirthday: true,
+  },
+  {
+    title: 'Happy Birthday, Mrs. Neethu!',
+    date: '01-28',
+    message: 'Wishing a very happy birthday to a wonderful physics teacher!',
+    icon: <GraduationCap className="h-10 w-10" />,
+    particleType: 'popper',
+    isBirthday: true,
+  },
+  {
+    title: 'Happy Birthday, Mrs. Bency!',
+    date: '02-12',
+    message: 'To my dearest physics teacher, wishing you the happiest of birthdays!',
+    icon: <GraduationCap className="h-10 w-10" />,
+    particleType: 'popper',
+    isBirthday: true,
+  },
+  {
+    title: 'Happy Birthday, Fr. Joseph Noble!',
+    date: '02-11',
+    message: 'Wishing a very happy birthday to my former principal. Thank you for your guidance.',
+    icon: <GraduationCap className="h-10 w-10" />,
+    particleType: 'popper',
+    isBirthday: true,
+  },
+  {
+    title: 'Happy Birthday, Steve!',
+    date: '09-05',
+    message: 'Happy birthday to a great friend! Have a fantastic day.',
+    icon: <Cake className="h-10 w-10" />,
+    particleType: 'popper',
+    isBirthday: true,
+  },
+  {
+    title: 'Happy Birthday, Snitha!',
+    date: '09-11',
+    message: 'Happy birthday to my dear friend Snitha Ann Shinu! Wishing you all the best.',
+    icon: <Cake className="h-10 w-10" />,
+    particleType: 'popper',
+    isBirthday: true,
+  },
+
+  // --- Special Homage ---
+  {
+    title: 'In Loving Memory of Shiny Abraham',
+    date: '03-01',
+    message: 'Remembering my mother today and always. A homage to her love and light.',
+    icon: <Heart className="h-10 w-10" />,
+    particleType: 'revealing',
+    isHomage: true,
   },
 
   // --- Fixed Holidays ---
