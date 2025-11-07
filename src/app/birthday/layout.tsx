@@ -1,6 +1,6 @@
 /**
- * @file src/app/birthday/layout.tsx
- * @description A custom layout for the birthday page.
+ * @file src/app/special/layout.tsx
+ * @description A custom layout for the special page.
  *              This layout is nearly identical to the root layout but specifically
  *              omits the <GuidedTour /> component to provide a focused experience.
  */
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
    openGraph: {
     title: 'A Timed Anomaly',
     description: 'A special message prepared for a specific moment in spacetime.',
-    url: 'https://akshayabraham.vercel.app/birthday',
+    url: 'https://akshayabraham.vercel.app/special',
     siteName: 'Akshay Abraham Portfolio',
     images: [
       {
@@ -41,11 +41,11 @@ export const metadata: Metadata = {
 };
 
 /**
- * BirthdayLayout component serves as the template for the /birthday route.
+ * SpecialLayout component serves as the template for the /special route.
  * @param {Readonly<{ children: React.ReactNode }>} props - The props object.
- * @returns {JSX.Element} The HTML structure for the birthday page.
+ * @returns {JSX.Element} The HTML structure for the special page.
  */
-export default function BirthdayLayout({
+export default function SpecialLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

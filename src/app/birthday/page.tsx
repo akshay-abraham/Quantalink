@@ -1,27 +1,28 @@
 /**
- * @file src/app/birthday/page.tsx
- * @description A special page to celebrate birthdays.
- *              It checks the current date against a list of birthdays and displays a custom message.
- * @note This is a client component to safely get the current date in the user's browser.
+ * @file src/app/special/page.tsx
+ * @description A special page to celebrate holidays, birthdays, and other events.
+ *              It checks the current date against a list of events and displays a custom message.
+ * @note This is a client component to safely get the current date and handle state.
  */
 "use client";
 
 import { useState, useEffect } from 'react';
-import { birthdays, Birthday } from '@/lib/birthdays-data';
+import { specialEvents, SpecialEvent } from '@/lib/special-events-data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { FunParticles } from '@/components/easter-egg';
+import { FunParticles, ParticleType } from '@/components/easter-egg';
 import AnimatedBackground from '@/components/animated-background';
-import { Cake, Smile } from 'lucide-react';
+import { Smile } from 'lucide-react';
 import PageFooter from '@/components/page-footer';
 import { format } from 'date-fns';
+import SpecialEventTester from '@/components/special-event-tester';
 
 /**
- * BirthdayPage component displays a personalized birthday greeting if the current date
- * matches an entry in the birthdays data file.
- * @returns {JSX.Element} The rendered birthday page.
+ * SpecialPage component displays a personalized greeting if the current date
+ * matches an entry in the special events data file.
+ * @returns {JSX.Element} The rendered special events page.
  */
-export default function BirthdayPage() {
-  const [todaysBirthday, setTodaysBirthday] = useState<Birthday | null>(null);
+export default function SpecialPage() {
+  const [activeEvent, setActiveEvent] = useState<SpecialEvent | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -32,11 +33,20 @@ export default function BirthdayPage() {
     const today = new Date();
     const formattedDate = format(today, 'MM-dd');
     
-    // Find if there's a birthday entry for today.
-    const birthdayPerson = birthdays.find(b => b.date === formattedDate);
+    // Find if there's an event for today.
+    const todaysEvent = specialEvents.find(e => e.date === formattedDate);
     
-    setTodaysBirthday(birthdayPerson || null);
+    setActiveEvent(todaysEvent || null);
   }, []);
+  
+  // This function is passed to the tester component to update the displayed event.
+  const handleTestEvent = (eventName: string) => {
+    const eventToTest = specialEvents.find(e => e.title === eventName);
+    setActiveEvent(eventToTest || null);
+  };
+
+  const currentEvent = activeEvent;
+  const particleType: ParticleType = currentEvent?.particleType || 'revealing';
 
   return (
     <>
@@ -44,23 +54,23 @@ export default function BirthdayPage() {
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-2xl">
           <Card className="relative overflow-hidden bg-card/50 border-border/40 shadow-2xl animate-fade-in-up text-center">
-            {/* Render particle effects if it's someone's birthday */}
-            {todaysBirthday && (
+            {/* Render particle effects if it's a special day */}
+            {currentEvent && (
               <div className="absolute inset-0">
-                <FunParticles type="popper" count={150} />
+                <FunParticles type={particleType} count={150} />
               </div>
             )}
             
             <div className="relative z-10 p-6">
               <CardHeader>
                 <div className="flex justify-center items-center gap-4 text-primary">
-                    {todaysBirthday ? <Cake className="h-10 w-10" /> : <Smile className="h-10 w-10" />}
+                    {isClient && (currentEvent ? currentEvent.icon : <Smile className="h-10 w-10" />)}
                 </div>
                 <CardTitle className="text-3xl sm:text-4xl font-bold text-primary tracking-tight pt-4">
-                  {isClient && (todaysBirthday ? `Happy Birthday, ${todaysBirthday.name}!` : "Have a Wonderful Day!")}
+                  {isClient && (currentEvent ? currentEvent.title : "Have a Wonderful Day!")}
                 </CardTitle>
                 <CardDescription className="text-foreground/80 text-base pt-2">
-                   {isClient && (todaysBirthday ? todaysBirthday.message : "There are no birthdays scheduled for today, but I hope you have a great one anyway!")}
+                   {isClient && (currentEvent ? currentEvent.message : "There are no special events scheduled for today, but I hope you have a great one anyway!")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -71,6 +81,10 @@ export default function BirthdayPage() {
             </div>
           </Card>
         </div>
+
+        {/* The event tester component */}
+        {isClient && <SpecialEventTester onTestEvent={handleTestEvent} />}
+
         <div className="w-full max-w-4xl flex-grow" />
         <PageFooter />
       </div>
