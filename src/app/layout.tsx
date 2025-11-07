@@ -107,8 +107,8 @@ export default function RootLayout({
         {/* Preconnect to Google Fonts for performance optimization. */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Import the "Space Grotesk" font stylesheet. */}
-        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+        {/* Import the "Space Grotesk" font for the main site and "Lobster" for the special cards. */}
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Lobster&display=swap" rel="stylesheet" />
         <meta name="google-site-verification" content="-ggF-eMSfmD9YH-4yLzcQDEjUmv9WBmZuwxjsFAHifA" />
          {/* Add JSON-LD to the head to provide structured data to search engines. */}
         <script
