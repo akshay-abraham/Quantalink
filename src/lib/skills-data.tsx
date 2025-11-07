@@ -7,6 +7,7 @@
  */
 
 import { Code, Wrench, Languages } from 'lucide-react';
+import Image from 'next/image';
 import { PythonIcon } from '@/components/icons/python';
 import { TypescriptIcon } from '@/components/icons/typescript';
 import { ReactIcon } from '@/components/icons/react';
@@ -27,7 +28,6 @@ import { FirebaseIcon } from '@/components/icons/firebase';
 import { ArchlinuxIcon } from '@/components/icons/archlinux';
 import { FedoraIcon } from '@/components/icons/fedora';
 import { VimIcon } from '@/components/icons/vim';
-import { Brain } from 'lucide-react';
 
 
 /**
@@ -79,7 +79,7 @@ export const skillsData: SkillCategory[] = [
       { name: 'React', icon: <ReactIcon /> },
       { name: 'Tailwind CSS', icon: <TailwindIcon /> },
       { name: 'Firebase', icon: <FirebaseIcon /> },
-      { name: 'Genkit', icon: <Brain /> },
+      { name: 'Genkit', icon: <Image src="/genkit.webp" alt="Genkit Logo" width={32} height={32} /> },
       { name: 'NumPy', icon: <NumpyIcon /> },
       { name: 'Scikit-learn', icon: <SciktLearnIcon /> },
     ],
