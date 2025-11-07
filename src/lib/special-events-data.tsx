@@ -1,12 +1,12 @@
 /**
  * @file /src/lib/special-events-data.tsx
  * @description This file contains the data for all special events, holidays, and birthdays.
- *              To add a new event, add a new object to the `specialEvents` array.
- *              The date format should be 'MM-DD'.
+ *              To add a new event, add a new object or use one of the helper functions
+ *              at the bottom of the `specialEvents` array. The date format is 'MM-DD'.
  */
 
 import React from 'react';
-import { Cake, Ghost, Sparkles, Sun, Moon, Atom, Flag, Rocket, Hand, Heart, GraduationCap } from 'lucide-react';
+import { Cake, Ghost, Sparkles, Sun, Moon, Atom, Flag, Rocket, Heart, GraduationCap } from 'lucide-react';
 import { ParticleType } from '@/components/easter-egg';
 
 /**
@@ -24,94 +24,61 @@ export interface SpecialEvent {
   isHomage?: boolean;
 }
 
+// --- Helper Functions for Easy Event Creation ---
+
+/**
+ * Creates a standard birthday event object for a friend.
+ * @param name - The friend's name.
+ * @param date - The birthday date in 'MM-DD' format.
+ * @param message - A custom message. If not provided, a default one is used.
+ * @returns {SpecialEvent} A fully formed special event object.
+ */
+const createFriendBirthday = (name: string, date: string, message: string): SpecialEvent => ({
+  title: `Happy Birthday, ${name}!`,
+  date,
+  message,
+  icon: <Cake className="h-10 w-10" />,
+  particleType: 'popper',
+  isBirthday: true,
+});
+
+/**
+ * Creates a standard birthday event object for a teacher.
+ * @param name - The teacher's name.
+ * @param date - The birthday date in 'MM-DD' format.
+ * @param subject - The subject the teacher taught (e.g., "Physics").
+ * @param message - A custom message.
+ * @returns {SpecialEvent} A fully formed special event object.
+ */
+const createTeacherBirthday = (name: string, date: string, subject: string, message: string): SpecialEvent => ({
+  title: `Happy Birthday, ${name}!`,
+  date,
+  message: `${message} Wishing you the happiest of birthdays from your ${subject.toLowerCase()} student!`,
+  icon: <GraduationCap className="h-10 w-10" />,
+  particleType: 'popper',
+  isBirthday: true,
+});
+
+
 /**
  * An array of special event objects.
  * The /special page will check this list to see if today is a special day.
  */
 export const specialEvents: SpecialEvent[] = [
-  // --- Birthdays ---
-  {
-    title: 'Happy Birthday, Ephrim!',
-    date: '11-07',
-    message: 'Wishing you a fantastic day filled with joy and laughter. Happy Birthday!',
-    icon: <Cake className="h-10 w-10" />,
-    particleType: 'popper',
-    isBirthday: true,
-  },
-  {
-    title: 'Happy Birthday, William!',
-    date: '10-31',
-    message: 'Happy Birthday! Hope you have a spooky and spectacular day.',
-    icon: <Cake className="h-10 w-10" />,
-    particleType: 'popper',
-    isBirthday: true,
-  },
-   {
-    title: 'Happy Birthday, Akshay!',
-    date: '05-09',
-    message: 'Happy Birthday to me! Time to celebrate another trip around the sun.',
-    icon: <Cake className="h-10 w-10" />,
-    particleType: 'popper',
-    isBirthday: true,
-  },
-  {
-    title: "Happy Birthday, Papa!",
-    date: '11-22',
-    message: "To the person who's behind everything I do. Thank you for your endless support and craziness. Have the best day!",
-    icon: <Cake className="h-10 w-10" />,
-    particleType: 'popper',
-    isBirthday: true,
-  },
-  {
-    title: 'Happy Birthday, Ms. Asha!',
-    date: '12-10',
-    message: 'To my class teacher and an extreme supporter of my work in physics. Thank you for everything. Happy Birthday!',
-    icon: <GraduationCap className="h-10 w-10" />,
-    particleType: 'popper',
-    isBirthday: true,
-  },
-  {
-    title: 'Happy Birthday, Mrs. Neethu!',
-    date: '01-28',
-    message: 'Wishing a very happy birthday to a wonderful physics teacher!',
-    icon: <GraduationCap className="h-10 w-10" />,
-    particleType: 'popper',
-    isBirthday: true,
-  },
-  {
-    title: 'Happy Birthday, Mrs. Bency!',
-    date: '02-12',
-    message: 'To my dearest physics teacher, wishing you the happiest of birthdays!',
-    icon: <GraduationCap className="h-10 w-10" />,
-    particleType: 'popper',
-    isBirthday: true,
-  },
-  {
-    title: 'Happy Birthday, Fr. Joseph Noble!',
-    date: '02-11',
-    message: 'Wishing a very happy birthday to my former principal. Thank you for your guidance.',
-    icon: <GraduationCap className="h-10 w-10" />,
-    particleType: 'popper',
-    isBirthday: true,
-  },
-  {
-    title: 'Happy Birthday, Steve!',
-    date: '09-05',
-    message: 'Happy birthday to a great friend! Have a fantastic day.',
-    icon: <Cake className="h-10 w-10" />,
-    particleType: 'popper',
-    isBirthday: true,
-  },
-  {
-    title: 'Happy Birthday, Snitha!',
-    date: '09-11',
-    message: 'Happy birthday to my dear friend Snitha Ann Shinu! Wishing you all the best.',
-    icon: <Cake className="h-10 w-10" />,
-    particleType: 'popper',
-    isBirthday: true,
-  },
+  // --- Birthdays (using helper functions for simplicity) ---
+  createFriendBirthday('Ephrim', '11-07', 'Wishing you a fantastic day filled with joy and laughter!'),
+  createFriendBirthday('William', '10-31', 'Hope you have a spooky and spectacular day!'),
+  createFriendBirthday('Akshay', '05-09', 'Happy Birthday to me! Time to celebrate another trip around the sun.'),
+  createFriendBirthday('Papa', '11-22', "To the person who's behind everything I do, from the craziness to everything else. Thank you for your endless support!"),
+  createFriendBirthday('Steve', '09-05', 'Happy birthday to a great friend! Have a fantastic day.'),
+  createFriendBirthday('Snitha Ann Shinu', '09-11', 'Happy birthday to my dear friend! Wishing you all the best.'),
 
-  // --- Special Homage ---
+  createTeacherBirthday('Ms. Asha Rose Mathew', '12-10', 'Physics', 'To my class teacher and an extreme supporter of my work.'),
+  createTeacherBirthday('Mrs. Neethu', '01-28', 'Physics', 'Wishing a very happy birthday to a wonderful teacher!'),
+  createTeacherBirthday('Mrs. Bency Jacob', '02-12', 'Physics', 'To my dearest teacher, thank you for everything.'),
+  createTeacherBirthday('Fr. Joseph Noble OIC', '02-11', 'former principal', 'Thank you for your guidance and support.'),
+
+  // --- Special Homage (defined directly for its unique properties) ---
   {
     title: 'In Loving Memory of Shiny Abraham',
     date: '03-01',
@@ -121,7 +88,7 @@ export const specialEvents: SpecialEvent[] = [
     isHomage: true,
   },
 
-  // --- Fixed Holidays ---
+  // --- Fixed Holidays (defined directly) ---
   {
     title: 'Happy New Year!',
     date: '01-01',
@@ -158,8 +125,7 @@ export const specialEvents: SpecialEvent[] = [
     particleType: 'popper',
   },
 
-  // --- Dynamic Holidays (Hardcoded for 2024) ---
-  // Note: A robust solution would use a library or API to calculate these dates annually.
+  // --- Dynamic Holidays (Hardcoded for 2024 for simplicity) ---
   {
     title: 'Happy Onam!',
     date: '09-15', // 2024 date
@@ -196,7 +162,7 @@ export const specialEvents: SpecialEvent[] = [
     particleType: 'popper',
   },
 
-  // --- Notable Figures ---
+  // --- Notable Figures (defined directly) ---
    {
     title: 'Happy Birthday, Albert Einstein!',
     date: '03-14',
