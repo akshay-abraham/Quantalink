@@ -13,7 +13,6 @@ import { Button } from './ui/button';
 import { tourSteps, TourStep } from '@/lib/tour-data';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
-import { usePostHog } from 'posthog-js/react';
 
 export const TOUR_STORAGE_KEY = 'hasCompletedQuantumTour_v2';
 
@@ -33,7 +32,6 @@ export default function GuidedTour() {
   
   const pathname = usePathname();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const posthog = usePostHog();
 
   const currentStep: TourStep | null = tourSteps[stepIndex] || null;
   const isFinalStep = stepIndex === tourSteps.length - 1;
@@ -55,12 +53,11 @@ export default function GuidedTour() {
       setStepIndex(tourSteps.length - 1); // Stay on the last step content
       try {
         localStorage.setItem(TOUR_STORAGE_KEY, 'true');
-        posthog.capture('tour_completed');
       } catch (error) { console.error("Could not write to localStorage:", error); }
     } else {
       setStepIndex(nextStepIndex);
     }
-  }, [stepIndex, cleanup, posthog]);
+  }, [stepIndex, cleanup]);
   
   /** Handles actions defined in a tour step, like scrolling and highlighting. */
   const handleAction = useCallback((action?: TourStep['action']) => {
@@ -88,7 +85,6 @@ export default function GuidedTour() {
     setStepIndex(0);
     setStatus('running');
     setDisplayState('open');
-    posthog.capture('tour_restarted');
   };
 
   /** Handles the opening animation of the tour window. */
@@ -176,7 +172,6 @@ export default function GuidedTour() {
       } else {
         const startTimeout = setTimeout(() => {
           setStatus('running');
-          posthog.capture('tour_started');
         }, 1500); // Initial delay to let page load.
         return () => clearTimeout(startTimeout);
       }
@@ -219,7 +214,6 @@ export default function GuidedTour() {
     if (status !== 'completed') {
       try {
         localStorage.setItem(TOUR_STORAGE_KEY, 'true');
-        posthog.capture('tour_closed_manually');
       } catch (error) {
         console.error("Could not write to localStorage:", error);
       }

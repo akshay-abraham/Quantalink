@@ -21,7 +21,6 @@ import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
 import { setPet, PetType } from '@/lib/pet-state';
-import { usePostHog } from 'posthog-js/react';
 import { TOUR_STORAGE_KEY } from './guided-tour';
 
 // Defines the possible states of the game.
@@ -127,7 +126,6 @@ export default function EasterEgg() {
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
   const [particleEffects, setParticleEffects] = useState<ParticleEffect[]>([]);
   const [isResultIconVisible, setIsResultIconVisible] = useState(true);
-  const posthog = usePostHog();
   
   const [anomaliesToClick, setAnomaliesToClick] = useState(GAME_SETTINGS.anomalies);
   const [timeLeft, setTimeLeft] = useState(GAME_SETTINGS.time);
@@ -187,7 +185,6 @@ export default function EasterEgg() {
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
-          posthog.capture('game_lost', { game_time_left: 0 });
           endGame('failed');
           return 0;
         }
@@ -202,7 +199,6 @@ export default function EasterEgg() {
 
   /** Shows instructions, then starts the game after a short delay. */
   const showInstructionsAndStart = () => {
-    posthog.capture('game_started');
     setPet(null); // Clear any existing global pet
     setGameState('instructions');
 
@@ -225,7 +221,6 @@ export default function EasterEgg() {
     setAnomaliesToClick(prev => {
       const newCount = prev - 1;
       if (newCount <= 0) {
-        posthog.capture('game_won', { game_time_left: timeLeft });
         observe(); // All anomalies collected, trigger the win sequence.
         return 0;
       }
@@ -242,8 +237,6 @@ export default function EasterEgg() {
     setTimeout(() => {
       // The probability of the cat being alive is 1/3.
       const result: PetType = Math.random() < (1 / 3) ? 'alive' : 'ghost';
-      
-      posthog.capture('pet_spawned', { pet_type: result });
       
       setCatState(result);
       setIsResultIconVisible(true); // Ensure icon is visible before animation.

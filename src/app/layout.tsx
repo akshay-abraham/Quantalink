@@ -11,7 +11,6 @@ import AnimatedBackground from "@/components/animated-background"
 import MainNav from '@/components/main-nav';
 import GlobalPetRenderer from '@/components/global-pet-renderer';
 import { Analytics } from '@vercel/analytics/react';
-import { PostHogProvider } from './providers';
 import GuidedTour from '@/components/guided-tour';
 
 // Define metadata for the website, used for SEO and browser tab information.
@@ -118,7 +117,6 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        <PostHogProvider>
           {/* The AnimatedBackground component is rendered here to appear on all pages. */}
           <AnimatedBackground />
           {/* This component renders the roaming pet if one is active in the global state. */}
@@ -132,7 +130,6 @@ export default function RootLayout({
           <Toaster />
           <Analytics />
           <GuidedTour />
-        </PostHogProvider>
       </body>
     </html>
   );
