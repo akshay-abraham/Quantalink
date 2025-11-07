@@ -23,7 +23,10 @@ import { ArduinoIcon } from '@/components/icons/arduino';
 import { EspressifIcon } from '@/components/icons/espressif';
 import { NextjsIcon } from '@/components/icons/nextdotjs';
 import { TailwindIcon } from '@/components/icons/tailwind';
-import { Database } from 'lucide-react';
+import { FirebaseIcon } from '@/components/icons/firebase';
+import { ArchlinuxIcon } from '@/components/icons/archlinux';
+import { FedoraIcon } from '@/components/icons/fedora';
+import { VimIcon } from '@/components/icons/vim';
 import { Brain } from 'lucide-react';
 
 
@@ -74,8 +77,8 @@ export const skillsData: SkillCategory[] = [
     skills: [
       { name: 'Next.js', icon: <NextjsIcon /> },
       { name: 'React', icon: <ReactIcon /> },
-      { name: 'Tailwind', icon: <TailwindIcon /> },
-      { name: 'Firebase', icon: <Database /> },
+      { name: 'Tailwind CSS', icon: <TailwindIcon /> },
+      { name: 'Firebase', icon: <FirebaseIcon /> },
       { name: 'Genkit', icon: <Brain /> },
       { name: 'NumPy', icon: <NumpyIcon /> },
       { name: 'Scikit-learn', icon: <SciktLearnIcon /> },
@@ -90,10 +93,10 @@ export const skillsData: SkillCategory[] = [
        { name: 'GitHub', icon: <GithubIcon /> },
        { name: 'VS Code', icon: <VscodeIcon /> },
        { name: 'Bash / Zsh', icon: <BashIcon /> },
-       { name: 'Vim', icon: <VercelIcon />, iconClassName: 'p-1' }, // Placeholder icon
+       { name: 'Vim', icon: <VimIcon /> },
        { name: 'Ubuntu', icon: <UbuntuIcon /> },
-       { name: 'Arch Linux', icon: <UbuntuIcon /> }, // Placeholder icon
-       { name: 'Fedora Linux', icon: <UbuntuIcon /> }, // Placeholder icon
+       { name: 'Arch Linux', icon: <ArchlinuxIcon /> },
+       { name: 'Fedora Linux', icon: <FedoraIcon /> },
        { name: 'Vercel', icon: <VercelIcon /> },
        { name: 'Arduino', icon: <ArduinoIcon /> },
        { name: 'ESP32/ESP8266', icon: <EspressifIcon /> },
