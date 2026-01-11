@@ -8,7 +8,6 @@
 "use client"
 
 import React, { useRef } from 'react';
-import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /**
@@ -17,7 +16,7 @@ import { cn } from '@/lib/utils';
 interface LinkCardProps {
   href: string;
   title: string;
-  Icon: LucideIcon; // The icon component to display.
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>; // Accept both Lucide and custom SVG icons
   delay: number; // Animation delay for the fade-in effect.
   isVisible: boolean; // Flag from the parent to trigger the animation.
 }
@@ -38,7 +37,7 @@ export default function LinkCard({ href, title, Icon, delay, isVisible }: LinkCa
     if (!cardRef.current) return;
     const { clientX, clientY, currentTarget } = e;
     const { left, top, width, height } = currentTarget.getBoundingClientRect();
-    
+
     // Calculate mouse position relative to the card center.
     const x = clientX - left;
     const y = clientY - top;
@@ -47,7 +46,7 @@ export default function LinkCard({ href, title, Icon, delay, isVisible }: LinkCa
 
     // Apply the 3D transform for the tilt effect.
     cardRef.current.style.transform = `perspective(2000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.08, 1.08, 1.08)`;
-    
+
     // Update CSS custom properties for the background glow position.
     cardRef.current.style.setProperty('--glow-x', `${x}px`);
     cardRef.current.style.setProperty('--glow-y', `${y}px`);

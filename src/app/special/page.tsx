@@ -65,7 +65,7 @@ export default function SpecialPage() {
     setTestDate(date);
   };
 
-  const isBirthday = isClient && activeEvents.some(event => event.isBirthday);
+  const isBirthday = isClient && activeEvents.some((event: SpecialEvent) => event.isBirthday);
 
   const defaultMessage = testDate
     ? `There are no special events scheduled for ${format(testDate, 'MMMM do')}.`
@@ -81,7 +81,7 @@ export default function SpecialPage() {
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-2xl space-y-6">
           {isClient && activeEvents.length > 0 ? (
-            activeEvents.map((event) => {
+            activeEvents.map((event: SpecialEvent) => {
               const CardComponent = eventCardMap[event.eventType] || HolidayCard;
               return <CardComponent key={event.title} event={event} />;
             })
