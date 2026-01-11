@@ -11,6 +11,7 @@ import AnimatedBackground from "@/components/animated-background"
 import MainNav from '@/components/main-nav';
 import GlobalPetRenderer from '@/components/global-pet-renderer';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import GuidedTour from '@/components/guided-tour';
 
 // Define metadata for the website, used for SEO and browser tab information.
@@ -129,6 +130,7 @@ export default function RootLayout({
           {/* The Toaster component handles pop-up notifications. */}
           <Toaster />
           <Analytics />
+          <SpeedInsights />
           <GuidedTour />
       </body>
     </html>
