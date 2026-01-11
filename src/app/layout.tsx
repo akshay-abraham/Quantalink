@@ -4,6 +4,7 @@
  *              This component wraps all pages, providing a consistent HTML structure,
  *              loading global stylesheets and fonts, and setting up metadata for SEO.
  */
+import React from 'react';
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
