@@ -15,7 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { specialEvents } from '@/lib/special-events-data.tsx';
+import { specialEvents } from '@/lib/special-events-data';
 
 interface SpecialEventTesterProps {
   onTestEvent: (date: Date | undefined) => void;

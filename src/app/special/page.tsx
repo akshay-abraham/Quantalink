@@ -7,7 +7,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { specialEvents, SpecialEvent } from '@/lib/special-events-data.tsx';
+import { specialEvents, SpecialEvent } from '@/lib/special-events-data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { FunParticles } from '@/components/easter-egg';
 import { Smile } from 'lucide-react';
@@ -49,17 +49,17 @@ export default function SpecialPage() {
   useEffect(() => {
     // This effect runs only on the client, ensuring `new Date()` is safe.
     setIsClient(true);
-    
+
     // Use the test date if available, otherwise use the real current date.
     const dateToCheck = testDate || new Date();
     const formattedDate = format(dateToCheck, 'MM-dd');
-    
+
     // Find if there are any events for the checked date.
     const eventsForDate = specialEvents.filter(e => e.date === formattedDate);
-    
+
     setActiveEvents(eventsForDate);
   }, [testDate]);
-  
+
   // This function is passed to the tester component to update the displayed event.
   const handleTestEvent = (date: Date | undefined) => {
     setTestDate(date);
