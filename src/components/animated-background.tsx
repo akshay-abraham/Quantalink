@@ -29,7 +29,7 @@ const AnimatedBackground = () => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    
+
     // Animation constants for framerate capping.
     let lastFrameTime = 0;
     const targetFPS = 27; // Capped at 27 FPS for performance on all devices.
@@ -38,12 +38,12 @@ const AnimatedBackground = () => {
     // Simulation state variables.
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
-    
+
     // **Device Adaptation:** Performance and density settings are adapted based on device screen size.
     const isMobile = width <= 768;
     // **Mobile Priority:** Fewer particles for smoother animation.
     // **Desktop Priority:** More particles for a richer visual experience.
-    let maxParticles = isMobile ? 20 : 30; 
+    let maxParticles = isMobile ? 20 : 30;
     let virtualPairSpawnRate = isMobile ? 0.15 : 0.25;
 
     const particlePool: Particle[] = [];
@@ -52,16 +52,16 @@ const AnimatedBackground = () => {
     // --- Particle Class Definition ---
     // Represents a single point in the quantum field, either "real" or "virtual".
     class Particle {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      radius: number;
-      charge: 1 | -1;
-      color: string;
-      auraRadius: number;
-      auraPulse: number;
-      auraMax: number;
+      x: number = 0;
+      y: number = 0;
+      vx: number = 0;
+      vy: number = 0;
+      radius: number = 0;
+      charge: 1 | -1 = 1;
+      color: string = '';
+      auraRadius: number = 0;
+      auraPulse: number = 0;
+      auraMax: number = 0;
       inUse: boolean = false;
       isVirtual: boolean;
       life: number = 1;
@@ -87,7 +87,7 @@ const AnimatedBackground = () => {
         this.inUse = true;
         return this;
       }
-      
+
       /** Updates the particle's state for the current frame. */
       update(particles: Particle[]) {
         // Real particles interact with each other.
@@ -105,14 +105,14 @@ const AnimatedBackground = () => {
             }
           });
         }
-        
+
         this.x += this.vx;
         this.y += this.vy;
 
         // Bounce off edges.
         if (this.x < this.radius || this.x > width - this.radius) this.vx *= -1;
         if (this.y < this.radius || this.y > height - this.radius) this.vy *= -1;
-        
+
         this.auraPulse += 0.03;
         this.auraRadius = this.auraMax * (0.6 + Math.sin(this.auraPulse) * 0.4);
 
@@ -125,7 +125,7 @@ const AnimatedBackground = () => {
       /** Draws the particle and its aura onto the canvas. */
       draw() {
         if (!ctx) return;
-        
+
         const auraAlpha = this.isVirtual ? this.life * 0.25 : 0.15;
         ctx.beginPath();
         const gradient = ctx.createRadialGradient(this.x, this.y, this.radius, this.x, this.y, this.auraRadius);
@@ -151,7 +151,7 @@ const AnimatedBackground = () => {
         const available = particlePool.filter(p => !p.inUse && p.isVirtual === isVirtual);
         return available.length > 0 ? available[0].reset() : new Particle(isVirtual);
     }
-    
+
     // --- Initialization ---
     const init = () => {
       activeParticles.length = 0;
@@ -184,7 +184,7 @@ const AnimatedBackground = () => {
 
       ctx.fillStyle = 'hsl(180, 50%, 98%)';
       ctx.fillRect(0, 0, width, height);
-      
+
       if (Math.random() < virtualPairSpawnRate) {
           spawnVirtualPair();
       }
@@ -237,9 +237,9 @@ const AnimatedBackground = () => {
       virtualPairSpawnRate = newIsMobile ? 0.15 : 0.25;
       init();
     }
-    
+
     window.addEventListener('resize', handleResize);
-    
+
     init();
     animate(0);
 
@@ -249,7 +249,7 @@ const AnimatedBackground = () => {
         cancelAnimationFrame(animationFrameId.current);
       }
     };
-    
+
     return cleanup;
   }, []);
 
