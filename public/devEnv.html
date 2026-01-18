@@ -578,21 +578,186 @@
     <div class="toc">
         <h2>Table of Contents</h2>
         <ul>
-            <li><a href="#installation">System Installation & Update</a></li>
+            <li><a href="#windows-prerequisites">Windows Prerequisites</a></li>
+            <li><a href="#wsl2-install">Installing Arch Linux on WSL2</a></li>
+            <li><a href="#system-setup">Initial System Setup</a></li>
             <li><a href="#shell">Shell Configuration</a></li>
             <li><a href="#dev-tools">Development Tools</a></li>
             <li><a href="#programming-langs">Programming Languages</a></li>
             <li><a href="#extensions">VS Code Extensions</a></li>
-            <li><a href="#resources">Learning Resources</a></li>
-            <li><a href="#commands">Useful Commands</a></li>
         </ul>
     </div>
 
     <hr>
 
-    <!-- ========== SYSTEM INSTALLATION & UPDATE ========== -->
+    <!-- ========== WINDOWS PREREQUISITES ========== -->
     <section>
-        <h2 id="installation">System Installation & Update</h2>
+        <h2 id="windows-prerequisites">Windows Prerequisites</h2>
+
+        <h3>System Debloating & Optimization</h3>
+        <ul class="checklist">
+            <li>Debloat Windows aggressively</li>
+            <li>Run O&O ShutUp10++ for privacy optimization</li>
+            <li>Enable advanced Windows features</li>
+            <li>Restart PC after enabling features</li>
+            <li>Setup private DNS Cloudflare for WiFi and Ethernet</li>
+            <li>Go through Windows settings and optimize for performance</li>
+        </ul>
+
+        <h3>Enable Windows Features</h3>
+        <p>Run the following PowerShell commands as Administrator:</p>
+
+        <div class="command-group">
+            <pre><code class="language-powershell"># 1. Enable Windows Subsystem for Linux (WSL)
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+
+# 2. Enable Virtual Machine Platform (Required for WSL 2)
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+# 3. Enable Windows Sandbox (Isolated temporary environment)
+dism.exe /online /enable-feature /featurename:Containers-DisposableClientVM /all /norestart
+
+# Final Step: Restart your computer
+Write-Host "All features enabled. Please restart your computer to apply changes." -ForegroundColor Cyan</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <h3>Essential Applications</h3>
+        <p><strong>Browser Extensions (Chrome/Brave):</strong> uBlock Origin Lite, Privacy Badger, Bitwarden, SponsorBlock, Proton VPN</p>
+        <p><strong>Fonts:</strong> JetBrains Mono Nerd Font, Inter, Helvetica, Space Grotesk, Fira Code, IBM Plex</p>
+        <p><strong>Productivity Tools:</strong> PowerShell 7, Windows Terminal, VS Code, Flow Launcher, Everything Search, Google Drive, Obsidian, Affinity Designer/Photo</p>
+        <p><strong>Development Tools:</strong> Arduino IDE + ESP32 libraries, Silicon Labs USB Driver, ADB, scrcpy</p>
+        <p><strong>Utilities:</strong> SumatraPDF, qView, VLC Media Player, Remote Mouse, PC Manager</p>
+
+        <div class="success">
+            ✓ Windows is now configured for WSL2 development!
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- ========== INSTALLING ARCH LINUX ON WSL2 ========== -->
+    <section>
+        <h2 id="wsl2-install">Installing Arch Linux on WSL2</h2>
+
+        <h3>Using PowerShell</h3>
+        <p>Open PowerShell and run:</p>
+
+        <div class="command-group">
+            <pre><code class="language-powershell"># Install WSL2 (if not already installed)
+wsl --install
+
+# Install Arch Linux directly
+wsl --install archlinux
+
+# Update WSL
+wsl --update</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <h3>Initial Arch Configuration</h3>
+        <p>After launching Arch WSL for the first time, run these commands:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash"># Initialize pacman keyring
+pacman-key --init
+pacman-key --populate archlinux
+
+# Update system
+sudo pacman -Syu
+
+# Create a new user
+useradd -m -G wheel -s /bin/bash akshay
+passwd akshay
+
+# Enable sudo for wheel group
+sudo pacman -S sudo
+echo "%wheel ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <h3>Set Default WSL User</h3>
+        <p>Open PowerShell and run:</p>
+
+        <div class="command-group">
+            <pre><code class="language-powershell"># Set your new user as the default login
+wsl --manage archlinux --set-default-user akshay
+
+# Update WSL and restart
+wsl --update
+wsl --terminate Arch
+wsl -d Arch
+
+# Verify you're logged in as your user
+whoami</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- ========== INITIAL SYSTEM SETUP ========== -->
+    <section>
+        <h2 id="system-setup">Initial System Setup</h2>
+
+        <h3>Update System & Install Base Packages</h3>
+
+        <div class="command-group">
+            <pre><code class="language-bash"># Full system update
+sudo pacman -Syu
+
+# Install essential development tools
+sudo pacman -S --needed base-devel git curl wget unzip tar gzip \
+    zip less nano vim openssh</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <h3>Install AUR Helper (yay)</h3>
+
+        <div class="command-group">
+            <pre><code class="language-bash"># Clone and install yay
+cd /tmp
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+cd ~
+
+# Verify yay is installed
+yay --version</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <h3>Configure Git</h3>
+
+        <div class="command-group">
+            <pre><code class="language-bash"># Set global username and email
+git config --global user.name "Akshay Abraham"
+git config --global user.email "akshaykroobenabraham@gmail.com"
+
+# Use VS Code as default editor
+git config --global core.editor "code --wait"
+
+# Set default branch name to main
+git config --global init.defaultBranch main
+
+# Enable colored output
+git config --global color.ui auto
+
+# Verify settings
+git config --list --global</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <div class="success">
+            ✓ System setup complete!
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- ========== SHELL CONFIGURATION ========== -->
+    <section>
+        <h2 id="shell">Shell Configuration</h2>
 
         <h3>Initial System Update</h3>
         <p>After setting up Arch Linux on WSL2, update your system to the latest packages:</p>
@@ -678,28 +843,56 @@ git config --global core.editor "vim"</code></pre>
             <button class="copy-button">📋 Copy</button>
         </div>
 
-        <h3>Node.js & NPM</h3>
-        <p>Install Node.js Version Manager (nvm) for managing multiple Node versions:</p>
+        <h3>Node.js & JavaScript Development</h3>
 
         <div class="command-group">
-            <pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-nvm install 20
-npm install -g yarn pnpm</code></pre>
+            <pre><code class="language-bash"># Install Node.js and npm
+sudo pacman -S nodejs npm
+
+# Install global packages
+npm install -g yarn pnpm
+npm install -g vite typescript
+npm install -g http-server live-server
+npm install -g eslint prettier</code></pre>
             <button class="copy-button">📋 Copy</button>
         </div>
 
-        <h3>Docker Setup</h3>
-        <p>Install Docker for containerization:</p>
+        <h3>CLI Utilities & Tools</h3>
 
         <div class="command-group">
-            <pre><code class="language-bash">sudo pacman -S docker
-sudo systemctl start docker
-sudo usermod -aG docker $USER</code></pre>
+            <pre><code class="language-bash"># Modern CLI tools
+sudo pacman -S btop bat fastfetch eza tree
+sudo pacman -S jq httpie
+
+# GitHub CLI
+sudo pacman -S github-cli
+
+# Media tools
+sudo pacman -S ffmpeg</code></pre>
             <button class="copy-button">📋 Copy</button>
         </div>
 
-        <div class="note">
-            ⚠️ You may need to restart your WSL2 terminal after adding to docker group
+        <h3>Neovim + LazyVim</h3>
+
+        <div class="command-group">
+            <pre><code class="language-bash"># Install Neovim
+sudo pacman -S neovim
+
+# Install LazyVim dependencies
+sudo pacman -S git make unzip gcc ripgrep fd
+yay -S lazygit
+
+# Backup existing config (if any)
+mv ~/.config/nvim ~/.config/nvim.backup 2>/dev/null
+mv ~/.local/share/nvim ~/.local/share/nvim.backup 2>/dev/null
+
+# Install LazyVim
+git clone https://github.com/LazyVim/starter ~/.config/nvim
+rm -rf ~/.config/nvim/.git
+
+# Launch Neovim (plugins will auto-install)
+nvim</code></pre>
+            <button class="copy-button">📋 Copy</button>
         </div>
     </section>
 
@@ -720,30 +913,16 @@ pip install numpy pandas matplotlib scikit-learn</code></pre>
         </div>
 
         <h3>C/C++</h3>
-        <p>Install GCC and build essentials:</p>
 
         <div class="command-group">
-            <pre><code class="language-bash">sudo pacman -S gcc g++ gdb cmake make
-gcc --version</code></pre>
-            <button class="copy-button">📋 Copy</button>
-        </div>
+            <pre><code class="language-bash"># Install compilers and build tools
+sudo pacman -S gcc clang llvm lldb gdb cmake make
 
-        <h3>Rust</h3>
-        <p>Install Rust toolchain using rustup:</p>
+# Debugging and profiling
+sudo pacman -S valgrind bear
 
-        <div class="command-group">
-            <pre><code class="language-bash">curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source $HOME/.cargo/env
-rustc --version</code></pre>
-            <button class="copy-button">📋 Copy</button>
-        </div>
-
-        <h3>Java</h3>
-        <p>Install Java Development Kit:</p>
-
-        <div class="command-group">
-            <pre><code class="language-bash">sudo pacman -S jdk-openjdk
-java -version</code></pre>
+# Install additional libraries
+sudo pacman -S boost catch2</code></pre>
             <button class="copy-button">📋 Copy</button>
         </div>
     </section>
@@ -848,48 +1027,28 @@ java -version</code></pre>
         <h3>Language Support</h3>
         <div class="extension-grid">
             <div class="extension-item">
-                <strong>C/C++ Extension</strong>
-                <p>Full C/C++ support with IntelliSense and debugging.</p>
-                <code>ms-vscode.cpptools</code>
+                <strong>C/C++ Extension Pack</strong>
+                <p>Comprehensive C/C++ development tools with IntelliSense and debugging.</p>
+                <code>ms-vscode.cpptools-extension-pack</code>
             </div>
             <div class="extension-item">
-                <strong>Rust Analyzer</strong>
-                <p>Advanced Rust code analysis and completion.</p>
-                <code>rust-lang.rust-analyzer</code>
-            </div>
-            <div class="extension-item">
-                <strong>Java Extension Pack</strong>
-                <p>Complete Java development toolkit.</p>
-                <code>vscjava.vscode-java-pack</code>
-            </div>
-            <div class="extension-item">
-                <strong>Go</strong>
-                <p>Rich Go language support with debugging.</p>
-                <code>golang.Go</code>
+                <strong>Vim</strong>
+                <p>Vim emulation for VS Code.</p>
+                <code>vscodevim.vim</code>
             </div>
         </div>
 
         <h3>Database & Tools</h3>
         <div class="extension-grid">
             <div class="extension-item">
-                <strong>MongoDB for VS Code</strong>
-                <p>Work with MongoDB directly in VS Code.</p>
-                <code>mongodb.mongodb-vscode</code>
+                <strong>SQLite</strong>
+                <p>SQLite database viewer and editor.</p>
+                <code>alexcvzz.vscode-sqlite</code>
             </div>
             <div class="extension-item">
-                <strong>SQLTools</strong>
-                <p>Database manager for SQL databases.</p>
-                <code>mtxr.sqltools</code>
-            </div>
-            <div class="extension-item">
-                <strong>Docker</strong>
-                <p>Manage Docker containers and images.</p>
-                <code>ms-azuretools.vscode-docker</code>
-            </div>
-            <div class="extension-item">
-                <strong>Postman</strong>
-                <p>API collaboration platform integrated in VS Code.</p>
-                <code>Postman.postman-for-vscode</code>
+                <strong>GitHub Codespaces</strong>
+                <p>Develop in cloud-hosted environments directly from VS Code.</p>
+                <code>github.codespaces</code>
             </div>
         </div>
     </section>
