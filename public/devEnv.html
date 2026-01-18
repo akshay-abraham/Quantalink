@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ========== META & CHARACTER ENCODING ========== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arch Dev Environment Setup Guide</title>
+
+    <!-- ========== GOOGLE FONTS ========== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400;1,14..32,700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+    <!-- ========== SYNTAX HIGHLIGHTING (Highlight.js with improved theme) ========== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+
+    <style>
+        /* ========== RESET & BASE STYLES ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ========== DARK MODE COLOR SCHEME ========== */
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --accent-dark: #1f6feb;
+            --border: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+        }
+
+        /* ========== BODY & LAYOUT ========== */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* ========== TYPOGRAPHY - HEADINGS ========== */
+        h1 {
+            color: var(--accent);
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 15px;
+            margin: 40px 0 25px 0;
+            font-weight: 700;
+            font-size: 2.2em;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        h1:hover {
+            color: #79c0ff;
+            transform: translateX(5px);
+        }
+
+        h2 {
+            color: var(--accent);
+            margin-top: 45px;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            padding-top: 10px;
+            border-bottom: 2px solid var(--border);
+            font-weight: 700;
+            font-size: 1.8em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            user-select: none;
+        }
+
+        h2:hover {
+            border-bottom-color: var(--accent);
+            color: #79c0ff;
+            padding-left: 10px;
+        }
+
+        /* Collapse/Expand indicator arrow */
+        h2::before {
+            content: "▼ ";
+            display: inline-block;
+            transition: transform 0.3s ease;
+            margin-right: 8px;
+            font-size: 0.8em;
+            color: var(--accent);
+        }
+
+        h2.collapsed::before {
+            transform: rotate(-90deg);
+        }
+
+        h3 {
+            color: #79c0ff;
+            margin-top: 30px;
+            margin-bottom: 18px;
+            font-weight: 600;
+            font-size: 1.3em;
+            border-left: 4px solid var(--accent);
+            padding-left: 12px;
+        }
+
+        h4 {
+            color: var(--accent);
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        /* ========== CODE & PRE-FORMATTED TEXT ========== */
+        code {
+            background: var(--bg-tertiary);
+            color: #79c0ff;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95em;
+            border: 1px solid var(--border);
+        }
+
+        pre {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            margin: 20px 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 15px;
+            display: block;
+            border: none;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ========== ENHANCED SYNTAX HIGHLIGHTING ========== */
+        .hljs {
+            background: var(--bg-secondary) !important;
+            color: var(--text-primary) !important;
+        }
+
+        /* Strings */
+        .hljs-string,
+        .hljs-attr-string {
+            color: #a5d6ff !important;
+        }
+
+        /* Numbers */
+        .hljs-number {
+            color: #79c0ff !important;
+        }
+
+        /* Keywords */
+        .hljs-keyword,
+        .hljs-literal {
+            color: #ff7b72 !important;
+        }
+
+        /* Attributes */
+        .hljs-attr {
+            color: #79c0ff !important;
+        }
+
+        /* Functions/Methods */
+        .hljs-title,
+        .hljs-function .hljs-title {
+            color: #d2a8ff !important;
+        }
+
+        /* Built-in */
+        .hljs-built_in {
+            color: #79c0ff !important;
+        }
+
+        /* Comments */
+        .hljs-comment {
+            color: #8b949e !important;
+            font-style: italic;
+        }
+
+        /* Operators */
+        .hljs-operator {
+            color: #ff7b72 !important;
+        }
+
+        /* ========== COPY BUTTON ========== */
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            z-index: 10;
+            opacity: 0;
+        }
+
+        pre:hover .copy-button {
+            opacity: 1;
+        }
+
+        .copy-button:hover {
+            background: #79c0ff;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(88, 166, 255, 0.4);
+        }
+
+        .copy-button:active {
+            transform: translateY(0);
+        }
+
+        .copy-button.copied {
+            background: var(--success);
+        }
+
+        /* ========== EXTENSION GRID ========== */
+        .extension-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .extension-item {
+            background: var(--bg-secondary);
+            padding: 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .extension-item:hover {
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.2);
+            transform: translateY(-3px);
+            border-left-color: #79c0ff;
+            background: var(--bg-tertiary);
+        }
+
+        .extension-item strong {
+            display: block;
+            color: #79c0ff;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .extension-item code {
+            display: block;
+            margin-top: 10px;
+            word-break: break-all;
+            color: #a5d6ff;
+            font-size: 0.85em;
+            background: var(--bg-primary);
+            padding: 6px 8px;
+            border-radius: 3px;
+        }
+
+        /* ========== COMMAND GROUP ========== */
+        .command-group {
+            background: var(--bg-secondary);
+            padding: 16px;
+            border-radius: 6px;
+            margin: 15px 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            border-left: 4px solid #d29922;
+        }
+
+        /* ========== LINKS & BUTTONS ========== */
+        .resource-link {
+            display: inline-block;
+            margin: 8px 12px 8px 0;
+            padding: 8px 14px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.95em;
+            border: 2px solid var(--accent);
+        }
+
+        .resource-link:hover {
+            background: #79c0ff;
+            border-color: #79c0ff;
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        ul {
+            margin: 15px 0 15px 25px;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            border-bottom: 1px dotted transparent;
+        }
+
+        a:hover {
+            color: #79c0ff;
+            border-bottom-color: #79c0ff;
+        }
+
+        /* ========== CHECKLIST ========== */
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding-left: 28px;
+            position: relative;
+            margin: 10px 0;
+            transition: all 0.2s ease;
+        }
+
+        .checklist li:before {
+            content: "☐ ";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .checklist li:hover {
+            padding-left: 32px;
+            color: #79c0ff;
+        }
+
+        /* ========== ALERT BOXES ========== */
+        .note {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border: 1px solid var(--border);
+        }
+
+        .success {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--success);
+            padding: 16px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border: 1px solid var(--border);
+            font-size: 1.05em;
+            font-weight: 500;
+        }
+
+        /* ========== TABLE ========== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--bg-secondary);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--accent-dark);
+            color: white;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ========== SECTIONS & ANIMATIONS ========== */
+        section {
+            margin: 30px 0;
+            animation: fadeIn 0.4s ease-in;
+            transition: all 0.3s ease;
+        }
+
+        section.collapsed {
+            display: none;
+        }
+
+        section.expanded {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
+        /* ========== HORIZONTAL RULE ========== */
+        hr {
+            margin: 50px 0;
+            border: none;
+            border-top: 2px solid var(--border);
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        /* ========== TABLE OF CONTENTS ========== */
+        .toc {
+            background: var(--bg-secondary);
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            border-left: 6px solid var(--accent);
+            margin: 20px 0;
+        }
+
+        .toc h2 {
+            border: none;
+            padding: 0;
+            margin: 0 0 16px 0;
+            cursor: default;
+        }
+
+        .toc h2:hover {
+            border: none;
+            color: var(--accent);
+        }
+
+        .toc h2::before {
+            content: "";
+            margin: 0;
+        }
+
+        .toc ul {
+            margin: 0;
+        }
+
+        .toc ul li {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .toc ul li:before {
+            content: "▸ ";
+            color: var(--accent);
+            margin-right: 6px;
+            margin-left: -20px;
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 2px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .footer-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            padding: 6px 12px;
+            border-radius: 4px;
+        }
+
+        .footer-link:hover {
+            background: var(--bg-secondary);
+            color: #79c0ff;
+        }
+
+        .footer-divider {
+            width: 1px;
+            height: 20px;
+            background: var(--border);
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ========== HEADER SECTION ========== -->
+    <h1>🐧 Arch Linux WSL2 Development Environment Setup</h1>
+
+    <!-- ========== TABLE OF CONTENTS ========== -->
+    <div class="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#installation">System Installation & Update</a></li>
+            <li><a href="#shell">Shell Configuration</a></li>
+            <li><a href="#dev-tools">Development Tools</a></li>
+            <li><a href="#programming-langs">Programming Languages</a></li>
+            <li><a href="#extensions">VS Code Extensions</a></li>
+            <li><a href="#resources">Learning Resources</a></li>
+            <li><a href="#commands">Useful Commands</a></li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <!-- ========== SYSTEM INSTALLATION & UPDATE ========== -->
+    <section>
+        <h2 id="installation">System Installation & Update</h2>
+
+        <h3>Initial System Update</h3>
+        <p>After setting up Arch Linux on WSL2, update your system to the latest packages:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash">sudo pacman -Syu</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <h3>Essential Packages</h3>
+        <p>Install core development utilities:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash">sudo pacman -S base-devel git vim neovim curl wget openssh</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <div class="success">
+            ✓ Your Arch system is ready for development!
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- ========== SHELL CONFIGURATION ========== -->
+    <section>
+        <h2 id="shell">Shell Configuration</h2>
+
+        <h3>Zsh Setup</h3>
+        <p>Zsh is a powerful shell alternative with great completions and themes. Download and use the pre-configured <code>.zshrc</code>:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash">sudo pacman -S zsh
+curl -o ~/.zshrc https://akshayabraham.vercel.app/.zshrc
+chsh -s /bin/zsh</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <p><strong>Download .zshrc:</strong> <a href="https://akshayabraham.vercel.app/.zshrc" target="_blank">akshayabraham.vercel.app/.zshrc</a></p>
+
+        <h3>Oh My Zsh Installation</h3>
+        <p>Install Oh My Zsh framework for enhanced functionality:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash">sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <h3>Useful Aliases</h3>
+        <p>Common command shortcuts for productivity:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash">alias ll='ls -lah'
+alias la='ls -A'
+alias l='ls -CF'
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias cd..='cd ..'
+alias ...='cd ../../'</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <div class="note">
+            💡 Add these aliases to your <code>.zshrc</code> file in the aliases section
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- ========== DEVELOPMENT TOOLS ========== -->
+    <section>
+        <h2 id="dev-tools">Development Tools</h2>
+
+        <h3>Git Configuration</h3>
+        <p>Set up Git with your identity for commits:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash">git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+git config --global core.editor "vim"</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <h3>Node.js & NPM</h3>
+        <p>Install Node.js Version Manager (nvm) for managing multiple Node versions:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+nvm install 20
+npm install -g yarn pnpm</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <h3>Docker Setup</h3>
+        <p>Install Docker for containerization:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash">sudo pacman -S docker
+sudo systemctl start docker
+sudo usermod -aG docker $USER</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <div class="note">
+            ⚠️ You may need to restart your WSL2 terminal after adding to docker group
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- ========== PROGRAMMING LANGUAGES ========== -->
+    <section>
+        <h2 id="programming-langs">Programming Languages</h2>
+
+        <h3>Python</h3>
+        <p>Python is included with Arch, but install additional tools:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash">sudo pacman -S python python-pip python-virtualenv
+pip install --upgrade pip
+pip install numpy pandas matplotlib scikit-learn</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <h3>C/C++</h3>
+        <p>Install GCC and build essentials:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash">sudo pacman -S gcc g++ gdb cmake make
+gcc --version</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <h3>Rust</h3>
+        <p>Install Rust toolchain using rustup:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash">curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source $HOME/.cargo/env
+rustc --version</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+
+        <h3>Java</h3>
+        <p>Install Java Development Kit:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash">sudo pacman -S jdk-openjdk
+java -version</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- ========== VS CODE EXTENSIONS ========== -->
+    <section>
+        <h2 id="extensions">VS Code Extensions</h2>
+
+        <h3>Essentials</h3>
+        <div class="extension-grid">
+            <div class="extension-item">
+                <strong>Pylance</strong>
+                <p>Python language server with advanced features for Python development.</p>
+                <code>ms-python.vscode-pylance</code>
+            </div>
+            <div class="extension-item">
+                <strong>Python</strong>
+                <p>Official Python extension with debugging and testing support.</p>
+                <code>ms-python.python</code>
+            </div>
+            <div class="extension-item">
+                <strong>ESLint</strong>
+                <p>JavaScript linting tool integrated with VS Code.</p>
+                <code>dbaeumer.vscode-eslint</code>
+            </div>
+            <div class="extension-item">
+                <strong>Prettier</strong>
+                <p>Code formatter with support for multiple languages.</p>
+                <code>esbenp.prettier-vscode</code>
+            </div>
+        </div>
+
+        <h3>UI & Productivity</h3>
+        <div class="extension-grid">
+            <div class="extension-item">
+                <strong>Theme: One Dark Pro</strong>
+                <p>Clean dark theme inspired by Atom editor.</p>
+                <code>zhuangtongfa.Material-theme</code>
+            </div>
+            <div class="extension-item">
+                <strong>Icons: Material Icon Theme</strong>
+                <p>Beautiful file icons for better visual organization.</p>
+                <code>PKief.material-icon-theme</code>
+            </div>
+            <div class="extension-item">
+                <strong>GitLens</strong>
+                <p>Supercharge the Git capabilities within VS Code.</p>
+                <code>eamodio.gitlens</code>
+            </div>
+            <div class="extension-item">
+                <strong>Thunder Client</strong>
+                <p>Lightweight REST client for API testing.</p>
+                <code>rangav.vscode-thunder-client</code>
+            </div>
+        </div>
+
+        <h3>Remote & WSL Development</h3>
+        <div class="extension-grid">
+            <div class="extension-item">
+                <strong>Remote - WSL</strong>
+                <p>Develop in WSL directly from VS Code.</p>
+                <code>ms-vscode-remote.remote-wsl</code>
+            </div>
+            <div class="extension-item">
+                <strong>Remote - SSH</strong>
+                <p>Connect to remote machines over SSH.</p>
+                <code>ms-vscode-remote.remote-ssh</code>
+            </div>
+            <div class="extension-item">
+                <strong>Dev Containers</strong>
+                <p>Develop inside Docker containers directly in VS Code.</p>
+                <code>ms-vscode-remote.remote-containers</code>
+            </div>
+        </div>
+
+        <h3>Web Development</h3>
+        <div class="extension-grid">
+            <div class="extension-item">
+                <strong>HTML Preview</strong>
+                <p>Live preview for HTML files in editor.</p>
+                <code>george-alisson.html-preview-vscode</code>
+            </div>
+            <div class="extension-item">
+                <strong>CSS Peek</strong>
+                <p>View and go to CSS definitions inline.</p>
+                <code>pranaygp.vscode-css-peek</code>
+            </div>
+            <div class="extension-item">
+                <strong>Tailwind CSS IntelliSense</strong>
+                <p>IntelliSense for Tailwind CSS classes.</p>
+                <code>bradlc.vscode-tailwindcss</code>
+            </div>
+            <div class="extension-item">
+                <strong>REST Client</strong>
+                <p>Send HTTP requests directly from VS Code.</p>
+                <code>humao.rest-client</code>
+            </div>
+        </div>
+
+        <h3>Language Support</h3>
+        <div class="extension-grid">
+            <div class="extension-item">
+                <strong>C/C++ Extension</strong>
+                <p>Full C/C++ support with IntelliSense and debugging.</p>
+                <code>ms-vscode.cpptools</code>
+            </div>
+            <div class="extension-item">
+                <strong>Rust Analyzer</strong>
+                <p>Advanced Rust code analysis and completion.</p>
+                <code>rust-lang.rust-analyzer</code>
+            </div>
+            <div class="extension-item">
+                <strong>Java Extension Pack</strong>
+                <p>Complete Java development toolkit.</p>
+                <code>vscjava.vscode-java-pack</code>
+            </div>
+            <div class="extension-item">
+                <strong>Go</strong>
+                <p>Rich Go language support with debugging.</p>
+                <code>golang.Go</code>
+            </div>
+        </div>
+
+        <h3>Database & Tools</h3>
+        <div class="extension-grid">
+            <div class="extension-item">
+                <strong>MongoDB for VS Code</strong>
+                <p>Work with MongoDB directly in VS Code.</p>
+                <code>mongodb.mongodb-vscode</code>
+            </div>
+            <div class="extension-item">
+                <strong>SQLTools</strong>
+                <p>Database manager for SQL databases.</p>
+                <code>mtxr.sqltools</code>
+            </div>
+            <div class="extension-item">
+                <strong>Docker</strong>
+                <p>Manage Docker containers and images.</p>
+                <code>ms-azuretools.vscode-docker</code>
+            </div>
+            <div class="extension-item">
+                <strong>Postman</strong>
+                <p>API collaboration platform integrated in VS Code.</p>
+                <code>Postman.postman-for-vscode</code>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- ========== LEARNING RESOURCES ========== -->
+    <section>
+        <h2 id="resources">Learning Resources</h2>
+
+        <h3>Official Documentation</h3>
+        <ul>
+            <li><a href="https://wiki.archlinux.org/" target="_blank">Arch Linux Wiki</a> - Comprehensive documentation</li>
+            <li><a href="https://docs.microsoft.com/en-us/windows/wsl/" target="_blank">Windows WSL Documentation</a> - Official WSL guide</li>
+            <li><a href="https://code.visualstudio.com/docs" target="_blank">VS Code Documentation</a> - Complete VS Code guide</li>
+        </ul>
+
+        <h3>Development Tools</h3>
+        <ul>
+            <li><a href="https://git-scm.com/doc" target="_blank">Git Documentation</a> - Version control guide</li>
+            <li><a href="https://nodejs.org/en/docs/" target="_blank">Node.js Documentation</a> - JavaScript runtime</li>
+            <li><a href="https://www.python.org/doc/" target="_blank">Python Documentation</a> - Python official docs</li>
+        </ul>
+
+        <h3>Learning Platforms</h3>
+        <ul>
+            <li><a href="https://www.freecodecamp.org/" target="_blank">freeCodeCamp</a> - Free coding courses</li>
+            <li><a href="https://www.codecademy.com/" target="_blank">Codecademy</a> - Interactive coding lessons</li>
+            <li><a href="https://github.com/" target="_blank">GitHub</a> - Code repository and collaboration</li>
+        </ul>
+
+        <h3>Community & Support</h3>
+        <ul>
+            <li><a href="https://stackoverflow.com/" target="_blank">Stack Overflow</a> - Q&A for developers</li>
+            <li><a href="https://www.reddit.com/r/archlinux/" target="_blank">r/archlinux</a> - Arch Linux community</li>
+            <li><a href="https://discord.gg/archlinux" target="_blank">Arch Linux Discord</a> - Real-time community chat</li>
+        </ul>
+    </section>
+
+    <hr>
+
+    <!-- ========== USEFUL COMMANDS ========== -->
+    <section>
+        <h2 id="commands">Useful Commands Reference</h2>
+
+        <h3>System Commands</h3>
+        <p>Essential system management commands:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Command</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>sudo pacman -Syu</code></td>
+                    <td>Update all system packages</td>
+                </tr>
+                <tr>
+                    <td><code>sudo pacman -S package-name</code></td>
+                    <td>Install a package</td>
+                </tr>
+                <tr>
+                    <td><code>sudo pacman -R package-name</code></td>
+                    <td>Remove a package</td>
+                </tr>
+                <tr>
+                    <td><code>systemctl status service</code></td>
+                    <td>Check service status</td>
+                </tr>
+                <tr>
+                    <td><code>ls -la</code></td>
+                    <td>List files with details</td>
+                </tr>
+                <tr>
+                    <td><code>pwd</code></td>
+                    <td>Print working directory</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Git Workflow Commands</h3>
+        <p>Common Git operations:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Command</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>git clone repo-url</code></td>
+                    <td>Clone a repository</td>
+                </tr>
+                <tr>
+                    <td><code>git add .</code></td>
+                    <td>Stage all changes</td>
+                </tr>
+                <tr>
+                    <td><code>git commit -m "message"</code></td>
+                    <td>Create a commit with message</td>
+                </tr>
+                <tr>
+                    <td><code>git push origin main</code></td>
+                    <td>Push changes to remote</td>
+                </tr>
+                <tr>
+                    <td><code>git pull origin main</code></td>
+                    <td>Pull latest changes</td>
+                </tr>
+                <tr>
+                    <td><code>git status</code></td>
+                    <td>Show current status</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Development Commands</h3>
+        <p>Quick reference for development tasks:</p>
+
+        <div class="command-group">
+            <pre><code class="language-bash"># Python virtual environment
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Node.js project
+npm init -y
+npm install express axios
+npm run dev
+
+# Git quick setup
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin repo-url
+git push -u origin main</code></pre>
+            <button class="copy-button">📋 Copy</button>
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="footer-content">
+            <span class="footer-text">Arch Dev Environment Setup Guide</span>
+            <div class="footer-divider"></div>
+            <span class="footer-text">Last Updated: 2024</span>
+        </div>
+
+        <div class="footer-links">
+            <a href="https://github.com/akshayabraham" class="footer-link" target="_blank">GitHub</a>
+            <a href="https://linkedin.com/in/akshayabraham" class="footer-link" target="_blank">LinkedIn</a>
+            <a href="https://akshayabraham.vercel.app" class="footer-link" target="_blank">Portfolio</a>
+            <a href="mailto:contact@akshayabraham.com" class="footer-link">Contact</a>
+        </div>
+
+        <div class="footer-text" style="margin-top: 20px; font-size: 0.9em; color: var(--text-secondary);">
+            © 2024 Akshay Abraham. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- ========== JAVASCRIPT ========== -->
+    <script>
+        /* ========== SECTION COLLAPSE/EXPAND FUNCTIONALITY ========== */
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all h2 elements
+            const headings = document.querySelectorAll('h2');
+
+            headings.forEach(heading => {
+                // Skip TOC heading
+                if (heading.closest('.toc')) return;
+
+                // Click event to toggle section visibility
+                heading.addEventListener('click', function() {
+                    // Get the section this heading belongs to
+                    const section = heading.closest('section');
+
+                    if (!section) return;
+
+                    // Toggle the collapsed class
+                    section.classList.toggle('collapsed');
+                    heading.classList.toggle('collapsed');
+                });
+            });
+
+            // Initialize syntax highlighting
+            hljs.highlightAll();
+
+            // Add copy button functionality
+            document.querySelectorAll('pre').forEach(block => {
+                // Add copy button if it doesn't exist
+                if (!block.querySelector('.copy-button')) {
+                    const button = document.createElement('button');
+                    button.className = 'copy-button';
+                    button.textContent = '📋 Copy';
+                    block.appendChild(button);
+                }
+
+                const button = block.querySelector('.copy-button');
+
+                button.addEventListener('click', async function() {
+                    const code = block.querySelector('code').textContent;
+
+                    try {
+                        await navigator.clipboard.writeText(code);
+                        button.textContent = '✓ Copied!';
+                        button.classList.add('copied');
+
+                        setTimeout(() => {
+                            button.textContent = '📋 Copy';
+                            button.classList.remove('copied');
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy: ', err);
+                        button.textContent = '✗ Error';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
