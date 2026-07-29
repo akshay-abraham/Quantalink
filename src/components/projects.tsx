@@ -14,7 +14,8 @@ import { cn } from '@/lib/utils';
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Github } from 'lucide-react';
+import { GithubIcon } from '@/components/icons/github';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 /**
@@ -89,7 +90,7 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
                 </Badge>
                 <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
                   <Button variant="ghost">
-                    <Github className="mr-2 h-4 w-4" />
+                    <GithubIcon className="mr-2 h-4 w-4" />
                     View on GitHub
                   </Button>
                 </a>

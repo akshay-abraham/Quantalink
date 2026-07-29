@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Github } from 'lucide-react';
+import { GithubIcon } from '@/components/icons/github';
 
 export interface TourStep {
   /** A unique identifier for the step's content. */
@@ -97,7 +97,7 @@ export const tourSteps: TourStep[] = [
           rel="noopener noreferrer"
         >
           <Button variant="outline" className="w-full">
-            <Github className="mr-2 h-4 w-4" />
+            <GithubIcon className="mr-2 h-4 w-4" />
             View on GitHub
           </Button>
         </a>
