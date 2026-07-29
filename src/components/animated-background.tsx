@@ -18,7 +18,7 @@ import React, { useRef, useEffect } from 'react';
  */
 const AnimatedBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationFrameId = useRef<number>();
+  const animationFrameId = useRef<number | undefined>(undefined);
 
   /**
    * The `useEffect` hook runs the setup function once when the component mounts.

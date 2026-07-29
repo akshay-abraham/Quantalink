@@ -228,7 +228,7 @@ export default function GuidedTour() {
   // Render minimized/completed button if tour is not open.
   if (displayState !== 'open') {
      return (
-        <div className="fixed bottom-4 left-4 z-[100]">
+        <div className="fixed bottom-4 left-4 z-100">
              <Button
                 variant="outline"
                 size="icon"
@@ -247,19 +247,19 @@ export default function GuidedTour() {
      return (
       <div 
         className={cn(
-          "fixed bottom-4 left-4 z-[100] w-[calc(100%-2rem)] sm:max-w-sm rounded-xl border p-4 shadow-2xl backdrop-blur-lg bg-card/80",
+          "fixed bottom-4 left-4 z-100 w-[calc(100%-2rem)] sm:max-w-sm rounded-xl border p-4 shadow-2xl backdrop-blur-lg bg-card/80",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom-and-left data-[state=closed]:slide-out-to-bottom-and-left",
            isTransitioning && "animate-border-glow-fade"
         )}
         data-state={displayState === 'open' ? 'open' : 'closed'}
       >
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 mt-1">
+          <div className="shrink-0 mt-1">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
               <Cat className="h-6 w-6" />
             </div>
           </div>
-          <div className="flex-grow space-y-3">
+          <div className="grow space-y-3">
             <h3 className="font-bold text-primary">{currentStep.title}</h3>
             <div className="text-sm text-foreground/80 leading-relaxed">
               {currentStep.content}

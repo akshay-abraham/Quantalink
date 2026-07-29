@@ -71,10 +71,10 @@ export default function LinkCard({ href, title, Icon, delay, isVisible }: LinkCa
       className={cn(
         "group relative flex items-center justify-center w-full p-4 h-16 rounded-xl bg-card/30 border border-border/40 shadow-lg transition-all duration-700 ease-out",
         "hover:border-primary/70 hover:shadow-[0_0_60px_-15px_hsl(var(--primary)/0.5)]",
-        "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background",
+        "focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background",
         "overflow-hidden",
         // The ::before pseudo-element creates the radial glow effect. Its position is controlled by CSS variables.
-        "before:absolute before:w-56 before:h-56 before:left-[var(--glow-x)] before:top-[var(--glow-y)] before:-translate-x-1/2 before:-translate-y-1/2 before:bg-primary/20 before:blur-3xl before:opacity-0 before:transition-opacity before:duration-500",
+        "before:absolute before:w-56 before:h-56 before:left-(--glow-x) before:top-(--glow-y) before:-translate-x-1/2 before:-translate-y-1/2 before:bg-primary/20 before:blur-3xl before:opacity-0 before:transition-opacity before:duration-500",
         "is-hovering:before:opacity-100", // The glow becomes visible on hover.
         // Trigger fade-in animation when the card becomes visible in the viewport.
         isVisible ? "animate-fade-in-up" : "opacity-0"

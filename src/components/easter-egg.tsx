@@ -327,7 +327,7 @@ export default function EasterEgg() {
                     An interactive thought experiment. Your observation collapses the wave function.
                   </CardDescription>
               </CardHeader>
-              <CardContent className={cn("min-h-[300px] flex flex-col items-center justify-center space-y-6 p-6", isGameActive && "flex-grow")}>
+              <CardContent className={cn("min-h-[300px] flex flex-col items-center justify-center space-y-6 p-6", isGameActive && "grow")}>
                   
                   {gameState === 'idle' && (
                       <div className="space-y-6 animate-fade-in w-full max-w-sm px-4">
@@ -385,7 +385,7 @@ export default function EasterEgg() {
                              </div>
                           </div>
                           <div 
-                            className="relative w-full flex-grow bg-primary/5 border border-primary/20 rounded-lg mt-2 min-h-[250px] md:min-h-[350px] touch-none"
+                            className="relative w-full grow bg-primary/5 border border-primary/20 rounded-lg mt-2 min-h-[250px] md:min-h-[350px] touch-none"
                           >
                             {/* The "Failed" state UI */}
                             {gameState === 'failed' && (

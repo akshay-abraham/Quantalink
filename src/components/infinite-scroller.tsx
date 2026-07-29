@@ -79,7 +79,7 @@ export const InfiniteScroller = ({
       className={cn(
         'scroller-container relative w-full overflow-hidden',
         // Adds a fade effect to the edges of the scroller.
-        '[mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)]'
+        'mask-[linear-gradient(to_right,transparent,white_20%,white_80%,transparent)]'
       )}
     >
       <ul
@@ -89,7 +89,7 @@ export const InfiniteScroller = ({
         )}
       >
         {React.Children.map(children, (child, idx) => (
-            <li key={idx} className="flex-shrink-0">{child}</li>
+            <li key={idx} className="shrink-0">{child}</li>
         ))}
       </ul>
     </div>

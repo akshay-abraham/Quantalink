@@ -15,7 +15,7 @@ interface EventCardProps {
 export const PersonalEventCard = ({ event }: EventCardProps) => {
   return (
     <Card className={cn(
-      "relative overflow-hidden bg-gradient-to-br from-indigo-900/20 to-purple-900/20 border-purple-500/30 shadow-2xl animate-fade-in-up text-center font-handwriting",
+      "relative overflow-hidden bg-linear-to-br from-indigo-900/20 to-purple-900/20 border-purple-500/30 shadow-2xl animate-fade-in-up text-center font-handwriting",
       "transition-all duration-300 ease-out hover:scale-105 hover:shadow-primary/20"
       )}>
       <div className="relative z-10 p-6">

@@ -88,7 +88,7 @@ export default function AboutPage() {
             </div>
           </main>
         </div>
-        <div className="w-full max-w-4xl flex-grow" />
+        <div className="w-full max-w-4xl grow" />
         <PageFooter />
       </div>
     </>

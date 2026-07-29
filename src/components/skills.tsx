@@ -25,7 +25,7 @@ import { InfiniteScroller } from './infinite-scroller';
  */
 export default function Skills() {
   const ref = useRef<HTMLDivElement>(null);
-  const isVisible = useInView(ref, { once: true });
+  const isVisible = useInView(ref);
 
   // Flatten all skills from all categories into a single array.
   const allSkills = skillsData.flatMap(category => category.skills);
@@ -61,7 +61,7 @@ export default function Skills() {
               key={skill.name}
               className="bg-card/40 border-border/40 shadow-md text-center flex flex-col items-center justify-center w-[120px] h-[80px] shrink-0 p-2 transition-shadow,background-color duration-300 hover:shadow-xl hover:bg-card/60"
             >
-              <CardHeader className="p-0 flex-grow flex flex-col items-center justify-center gap-2">
+              <CardHeader className="p-0 grow flex flex-col items-center justify-center gap-2">
                  <div className={cn("h-10 w-10 flex items-center justify-center text-foreground", skill.iconClassName)}>
                    <div className="h-8 w-8 flex items-center justify-center">
                      {skill.icon}
@@ -79,7 +79,7 @@ export default function Skills() {
               key={skill.name}
               className="bg-card/40 border-border/40 shadow-md text-center flex flex-col items-center justify-center w-[120px] h-[80px] shrink-0 p-2 transition-shadow,background-color duration-300 hover:shadow-xl hover:bg-card/60"
             >
-              <CardHeader className="p-0 flex-grow flex flex-col items-center justify-center gap-2">
+              <CardHeader className="p-0 grow flex flex-col items-center justify-center gap-2">
                  <div className={cn("h-10 w-10 flex items-center justify-center text-foreground", skill.iconClassName)}>
                    <div className="h-8 w-8 flex items-center justify-center">
                      {skill.icon}

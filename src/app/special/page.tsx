@@ -113,7 +113,7 @@ export default function SpecialPage() {
 
         {isClient && <SpecialEventTester onTestEvent={handleTestEvent} />}
 
-        <div className="w-full max-w-4xl flex-grow" />
+        <div className="w-full max-w-4xl grow" />
         <PageFooter />
       </div>
     </>

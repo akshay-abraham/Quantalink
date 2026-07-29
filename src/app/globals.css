@@ -1,14 +1,230 @@
+@import 'tailwindcss';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@plugin 'tailwindcss-animate';
 
-body {
-  font-family: 'Space Grotesk', sans-serif;
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
-  /* Add subtle noise texture for a more realistic acrylic/glass effect */
-  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><g fill-opacity="0.015"><circle fill="hsl(180, 50%, 98%)" cx="400" cy="400" r="600"/><circle fill="hsl(180, 20%, 85%)" cx="400" cy="400" r="500"/><circle fill="hsl(180, 50%, 98%)" cx="400" cy="400" r="400"/><circle fill="hsl(180, 20%, 85%)" cx="400" cy="400" r="300"/><circle fill="hsl(180, 50%, 98%)" cx="400" cy="400" r="200"/><circle fill="hsl(180, 20%, 85%)" cx="400" cy="400" r="100"/></g></svg>');
+@custom-variant dark (&:is(.dark *));
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+  @media (width >= --theme(--breakpoint-sm)) {
+    max-width: none;
+  }
+  @media (width >= 1400px) {
+    max-width: 1400px;
+  }
+}
+
+@theme {
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-headline: 'Space Grotesk', sans-serif;
+  --font-handwriting: 'Lobster', cursive;
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility animate-fade-in {
+  animation: fade-in 1s ease-in-out forwards;
+}
+
+@utility animate-fade-in-up {
+  animation: fade-in-up 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  opacity: 0;
+}
+
+@utility animate-popper {
+  animation: popper-bounce 1s cubic-bezier(0.5, 2.5, 0.5, 1) infinite;
+}
+
+@utility animate-ghost {
+  animation: ghost-float 2.2s ease-in-out infinite;
+}
+
+@utility animate-orb-pop-in {
+  animation: orb-pop-in 0.4s ease-out forwards;
+}
+
+@utility animate-scrolling-logos {
+  animation: scrolling-logos var(--animation-duration, 40s) linear infinite
+    var(--animation-direction, normal);
+}
+
+@utility animate-fly-in {
+  animation: fly-in 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@utility animate-in {
+  /* Keyframes for the new Guided Tour component */
+
+  &.slide-in-from-bottom-and-left {
+    animation: slide-in-from-bottom-and-left 0.5s cubic-bezier(0.25, 1, 0.5, 1)
+      forwards;
+  }
+}
+
+@utility slide-in-from-bottom-and-left {
+  /* Keyframes for the new Guided Tour component */
+
+  &.animate-in {
+    animation: slide-in-from-bottom-and-left 0.5s cubic-bezier(0.25, 1, 0.5, 1)
+      forwards;
+  }
+}
+
+@utility animate-out {
+  &.slide-out-to-bottom-and-left {
+    animation: slide-out-to-bottom-and-left 0.3s ease-in forwards;
+  }
+}
+
+@utility slide-out-to-bottom-and-left {
+  &.animate-out {
+    animation: slide-out-to-bottom-and-left 0.3s ease-in forwards;
+  }
+}
+
+@utility animate-tour-glow {
+  /* More intense glow for guided tour call to actions */
+  animation: tour-glow-pulse 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+
+@utility animate-button-glow {
+  animation: button-glow-pulse 2s infinite;
+}
+
+@utility animate-point-and-blink {
+  animation: point-and-blink 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@utility text-shadow {
+  text-shadow: 0 1px 2px hsl(var(--foreground) / 0.1);
+}
+
+@utility animate-border-glow {
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    background:
+      radial-gradient(
+        circle 120px at -10% -10%,
+        hsl(var(--primary) / 0.5),
+        transparent
+      ),
+      radial-gradient(
+        circle 120px at 110% 110%,
+        hsl(var(--accent) / 0.4),
+        transparent
+      );
+    background-size: 200% 200%;
+    background-position: 0% 0%;
+    border-radius: inherit; /* Use the parent's border-radius */
+    animation: border-chase 4s linear infinite;
+    z-index: 0;
+    opacity: 0.75;
+    transition: opacity 0.3s ease-in-out;
+  }
+}
+
+@utility animate-border-glow-fade {
+  animation: border-glow-fade 1s ease-out forwards;
+}
+
+@utility animate-cat-colors {
+  animation: cat-color-cycle 8s linear infinite;
+}
+
+@utility animate-ghost-colors {
+  animation: ghost-color-cycle 6s linear infinite;
+}
+
+@utility animate-nav-item-in {
+  /* Animations for Mobile Nav */
+  animation: nav-item-in 0.3s ease-out forwards;
+}
+
+@utility animate-nav-item-out {
+  animation: nav-item-out 0.2s ease-in forwards;
+}
+
+@layer utilities {
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    /* Add subtle noise texture for a more realistic acrylic/glass effect */
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><g fill-opacity="0.015"><circle fill="hsl(180, 50%, 98%)" cx="400" cy="400" r="600"/><circle fill="hsl(180, 20%, 85%)" cx="400" cy="400" r="500"/><circle fill="hsl(180, 50%, 98%)" cx="400" cy="400" r="400"/><circle fill="hsl(180, 20%, 85%)" cx="400" cy="400" r="300"/><circle fill="hsl(180, 50%, 98%)" cx="400" cy="400" r="200"/><circle fill="hsl(180, 20%, 85%)" cx="400" cy="400" r="100"/></g></svg>');
+  }
 }
 
 @layer base {
@@ -48,34 +264,9 @@ body {
 }
 
 @layer utilities {
-  .animate-fade-in {
-    animation: fade-in 1s ease-in-out forwards;
-  }
-
-  .animate-fade-in-up {
-    animation: fade-in-up 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    opacity: 0;
-  }
-  
-  .animate-popper {
-      animation: popper-bounce 1s cubic-bezier(0.5, 2.5, 0.5, 1) infinite;
-  }
-
-  .animate-ghost {
-      animation: ghost-float 2.2s ease-in-out infinite;
-  }
-  
-  .animate-orb-pop-in {
-    animation: orb-pop-in 0.4s ease-out forwards;
-  }
-
   @keyframes scrolling-logos {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
-  }
-  
-  .animate-scrolling-logos {
-    animation: scrolling-logos var(--animation-duration, 40s) linear infinite var(--animation-direction, normal);
   }
 
 
@@ -130,12 +321,6 @@ body {
         opacity: 1;
       }
   }
-
-  .animate-fly-in {
-      animation: fly-in 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-  }
-
-  /* Keyframes for the new Guided Tour component */
   @keyframes slide-in-from-bottom-and-left {
     from {
       transform: translate(-100%, 100%) scale(0.8);
@@ -157,48 +342,21 @@ body {
       opacity: 0;
     }
   }
-
-  .animate-in.slide-in-from-bottom-and-left {
-    animation: slide-in-from-bottom-and-left 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-  }
-  
-  .animate-out.slide-out-to-bottom-and-left {
-    animation: slide-out-to-bottom-and-left 0.3s ease-in forwards;
-  }
   
    @keyframes button-glow-pulse {
     0% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.7); }
     70% { box-shadow: 0 0 0 10px hsl(var(--primary) / 0); }
     100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0); }
   }
-
-  /* More intense glow for guided tour call to actions */
   @keyframes tour-glow-pulse {
     0% { box-shadow: 0 0 0 0px hsl(var(--primary) / 0.9), 0 0 0 0px hsl(var(--accent-foreground) / 0.7); }
     70% { box-shadow: 0 0 0 12px hsl(var(--primary) / 0), 0 0 0 20px hsl(var(--accent-foreground) / 0); }
     100% { box-shadow: 0 0 0 0px hsl(var(--primary) / 0), 0 0 0 0px hsl(var(--accent-foreground) / 0); }
   }
-
-  .animate-tour-glow {
-      animation: tour-glow-pulse 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
-  }
-
-  .animate-button-glow {
-      animation: button-glow-pulse 2s infinite;
-  }
   
   @keyframes point-and-blink {
     0%, 100% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.1) translateX(5px); opacity: 0.7; }
-  }
-  
-  .animate-point-and-blink {
-    animation: point-and-blink 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-
-  .text-shadow {
-    text-shadow: 0 1px 2px hsl(var(--foreground) / 0.1);
   }
   
   @keyframes border-chase {
@@ -219,23 +377,6 @@ body {
     }
   }
 
-  .animate-border-glow::before {
-    content: '';
-    position: absolute;
-    top: -2px; left: -2px;
-    width: calc(100% + 4px);
-    height: calc(100% + 4px);
-    background: radial-gradient(circle 120px at -10% -10%, hsl(var(--primary) / 0.5), transparent),
-                radial-gradient(circle 120px at 110% 110%, hsl(var(--accent) / 0.4), transparent);
-    background-size: 200% 200%;
-    background-position: 0% 0%;
-    border-radius: inherit; /* Use the parent's border-radius */
-    animation: border-chase 4s linear infinite;
-    z-index: 0;
-    opacity: 0.75;
-    transition: opacity 0.3s ease-in-out;
-  }
-
   @keyframes border-glow-fade {
       from {
         border-color: hsl(var(--primary) / 0.8);
@@ -247,20 +388,12 @@ body {
       }
   }
 
-  .animate-border-glow-fade {
-      animation: border-glow-fade 1s ease-out forwards;
-  }
-
   @keyframes cat-color-cycle {
     0% { color: #ff7e5f; } /* Coral */
     25% { color: #feb47b; } /* Orange */
     50% { color: #86A8E7; } /* Light Blue */
     75% { color: #91EAE4; } /* Teal */
     100% { color: #ff7e5f; } /* Back to Coral */
-  }
-
-  .animate-cat-colors {
-    animation: cat-color-cycle 8s linear infinite;
   }
 
   @keyframes ghost-color-cycle {
@@ -270,12 +403,6 @@ body {
     75% { color: #c4b5fd; } /* Light Lavender */
     100% { color: #89f7fe; } /* Back to Light Cyan */
   }
-
-  .animate-ghost-colors {
-    animation: ghost-color-cycle 6s linear infinite;
-  }
-  
-  /* Animations for Mobile Nav */
   @keyframes nav-item-in {
     from {
       opacity: 0;
@@ -296,14 +423,6 @@ body {
       opacity: 0;
       transform: translateY(10px) scale(0.8);
     }
-  }
-
-  .animate-nav-item-in {
-    animation: nav-item-in 0.3s ease-out forwards;
-  }
-
-  .animate-nav-item-out {
-    animation: nav-item-out 0.2s ease-in forwards;
   }
 }
 

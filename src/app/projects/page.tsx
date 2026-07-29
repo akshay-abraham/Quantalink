@@ -30,7 +30,7 @@ export default function ProjectsPage() {
       <AnimatedBackground />
       {/* `relative z-10` ensures content is displayed above the background. */}
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-4xl flex-grow">
+        <div className="w-full max-w-4xl grow">
           <header className="mb-8 pt-20 text-center">
             <h1 className="text-4xl font-bold text-primary tracking-tight">
               Projects & Contributions

@@ -14,7 +14,7 @@ import { useState, useEffect, RefObject } from 'react';
  * @param {IntersectionObserverInit} [options] - Optional configuration for the Intersection Observer.
  * @returns {boolean} `true` if the element is in view, otherwise `false`.
  */
-export function useInView(ref: RefObject<Element>, options?: IntersectionObserverInit): boolean {
+export function useInView(ref: RefObject<Element | null>, options?: IntersectionObserverInit): boolean {
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {

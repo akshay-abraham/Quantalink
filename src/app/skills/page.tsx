@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 export default function SkillsPage() {
   return (
     <div className="relative z-10 flex min-h-screen w-full flex-col items-center p-4 sm:p-6 lg:p-8">
-      <div className="w-full max-w-7xl flex-grow">
+      <div className="w-full max-w-7xl grow">
         <header className="mb-12 pt-20 text-center">
           <h1 className="text-4xl font-bold text-primary tracking-tight">
             Skills & Technologies
