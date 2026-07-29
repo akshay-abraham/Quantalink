@@ -8,16 +8,22 @@
 
 import { useState, useEffect, RefObject } from 'react';
 
+type UseInViewOptions = IntersectionObserverInit & {
+  once?: boolean;
+};
+
 /**
  * A custom hook to track if a referenced element is in the viewport.
  * @param {RefObject<Element>} ref - A React ref attached to the element to observe.
- * @param {IntersectionObserverInit} [options] - Optional configuration for the Intersection Observer.
+ * @param {UseInViewOptions} [options] - Optional configuration for the Intersection Observer.
  * @returns {boolean} `true` if the element is in view, otherwise `false`.
  */
-export function useInView(ref: RefObject<Element>, options?: IntersectionObserverInit): boolean {
+export function useInView(ref: RefObject<Element>, options?: UseInViewOptions): boolean {
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
+    const { once = true, ...observerOptions } = options ?? {};
+
     // Create an Intersection Observer to watch for the element entering the viewport.
     const observer = new IntersectionObserver(([entry]) => {
       // If the element is intersecting (i.e., visible), update the state.
@@ -25,11 +31,11 @@ export function useInView(ref: RefObject<Element>, options?: IntersectionObserve
         setIsInView(true);
         // We can unobserve after it's in view once to save resources,
         // as the animations only need to trigger once.
-        if (ref.current) {
+        if (once && ref.current) {
           observer.unobserve(ref.current);
         }
       }
-    }, options);
+    }, observerOptions);
 
     // Start observing the element if the ref is attached.
     if (ref.current) {

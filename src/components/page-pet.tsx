@@ -249,7 +249,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   const initialRandomX = Math.random() * (window.innerWidth - 100) + 50;
   const initialRandomY = Math.random() * (window.innerHeight - 100) + 50;
   
-  const style: React.CSSProperties = isAnimatingIn
+  const style: React.CSSProperties & Record<`--${string}`, string> = isAnimatingIn
     ? {
         position: 'fixed',
         width: '48px',
