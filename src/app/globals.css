@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -56,28 +55,32 @@ body {
     animation: fade-in-up 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     opacity: 0;
   }
-  
+
   .animate-popper {
-      animation: popper-bounce 1s cubic-bezier(0.5, 2.5, 0.5, 1) infinite;
+    animation: popper-bounce 1s cubic-bezier(0.5, 2.5, 0.5, 1) infinite;
   }
 
   .animate-ghost {
-      animation: ghost-float 2.2s ease-in-out infinite;
+    animation: ghost-float 2.2s ease-in-out infinite;
   }
-  
+
   .animate-orb-pop-in {
     animation: orb-pop-in 0.4s ease-out forwards;
   }
 
   @keyframes scrolling-logos {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-  
-  .animate-scrolling-logos {
-    animation: scrolling-logos var(--animation-duration, 40s) linear infinite var(--animation-direction, normal);
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
 
+  .animate-scrolling-logos {
+    animation: scrolling-logos var(--animation-duration, 40s) linear infinite
+      var(--animation-direction, normal);
+  }
 
   @keyframes fade-in {
     from {
@@ -100,39 +103,64 @@ body {
   }
 
   @keyframes popper-bounce {
-    0%, 100% { transform: translateY(0) rotate(-10deg); }
-    50% { transform: translateY(-20px) rotate(10deg); }
+    0%,
+    100% {
+      transform: translateY(0) rotate(-10deg);
+    }
+    50% {
+      transform: translateY(-20px) rotate(10deg);
+    }
   }
 
   @keyframes ghost-float {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-15px) scale(1.1); }
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-15px) scale(1.1);
+    }
   }
 
   @keyframes orb-pop-in {
-    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
-    50% { transform: scale(1.2) rotate(10deg); opacity: 1; }
-    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    0% {
+      transform: scale(0) rotate(-180deg);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2) rotate(10deg);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
   }
-  
+
   @keyframes fly-out {
-      0% { transform: translate(0, 0) scale(0); opacity: 1; }
-      100% { transform: translate(var(--tx, 0), var(--ty, 0)) scale(1); opacity: 0; }
+    0% {
+      transform: translate(0, 0) scale(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--tx, 0), var(--ty, 0)) scale(1);
+      opacity: 0;
+    }
   }
-  
+
   @keyframes fly-in {
-      from {
-        transform: translate(var(--start-x), var(--start-y)) scale(0.5);
-        opacity: 0;
-      }
-      to {
-        transform: translate(var(--final-x), var(--final-y)) scale(1.2);
-        opacity: 1;
-      }
+    from {
+      transform: translate(var(--start-x), var(--start-y)) scale(0.5);
+      opacity: 0;
+    }
+    to {
+      transform: translate(var(--final-x), var(--final-y)) scale(1.2);
+      opacity: 1;
+    }
   }
 
   .animate-fly-in {
-      animation: fly-in 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation: fly-in 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
 
   /* Keyframes for the new Guided Tour component */
@@ -161,46 +189,70 @@ body {
   .animate-in.slide-in-from-bottom-and-left {
     animation: slide-in-from-bottom-and-left 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
-  
+
   .animate-out.slide-out-to-bottom-and-left {
     animation: slide-out-to-bottom-and-left 0.3s ease-in forwards;
   }
-  
-   @keyframes button-glow-pulse {
-    0% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.7); }
-    70% { box-shadow: 0 0 0 10px hsl(var(--primary) / 0); }
-    100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0); }
+
+  @keyframes button-glow-pulse {
+    0% {
+      box-shadow: 0 0 0 0 hsl(var(--primary) / 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 10px hsl(var(--primary) / 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 hsl(var(--primary) / 0);
+    }
   }
 
   /* More intense glow for guided tour call to actions */
   @keyframes tour-glow-pulse {
-    0% { box-shadow: 0 0 0 0px hsl(var(--primary) / 0.9), 0 0 0 0px hsl(var(--accent-foreground) / 0.7); }
-    70% { box-shadow: 0 0 0 12px hsl(var(--primary) / 0), 0 0 0 20px hsl(var(--accent-foreground) / 0); }
-    100% { box-shadow: 0 0 0 0px hsl(var(--primary) / 0), 0 0 0 0px hsl(var(--accent-foreground) / 0); }
+    0% {
+      box-shadow:
+        0 0 0 0px hsl(var(--primary) / 0.9),
+        0 0 0 0px hsl(var(--accent-foreground) / 0.7);
+    }
+    70% {
+      box-shadow:
+        0 0 0 12px hsl(var(--primary) / 0),
+        0 0 0 20px hsl(var(--accent-foreground) / 0);
+    }
+    100% {
+      box-shadow:
+        0 0 0 0px hsl(var(--primary) / 0),
+        0 0 0 0px hsl(var(--accent-foreground) / 0);
+    }
   }
 
   .animate-tour-glow {
-      animation: tour-glow-pulse 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
+    animation: tour-glow-pulse 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
   }
 
   .animate-button-glow {
-      animation: button-glow-pulse 2s infinite;
+    animation: button-glow-pulse 2s infinite;
   }
-  
+
   @keyframes point-and-blink {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.1) translateX(5px); opacity: 0.7; }
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.1) translateX(5px);
+      opacity: 0.7;
+    }
   }
-  
+
   .animate-point-and-blink {
     animation: point-and-blink 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
-
   .text-shadow {
     text-shadow: 0 1px 2px hsl(var(--foreground) / 0.1);
   }
-  
+
   @keyframes border-chase {
     0% {
       background-position: 0% 0%;
@@ -222,11 +274,13 @@ body {
   .animate-border-glow::before {
     content: '';
     position: absolute;
-    top: -2px; left: -2px;
+    top: -2px;
+    left: -2px;
     width: calc(100% + 4px);
     height: calc(100% + 4px);
-    background: radial-gradient(circle 120px at -10% -10%, hsl(var(--primary) / 0.5), transparent),
-                radial-gradient(circle 120px at 110% 110%, hsl(var(--accent) / 0.4), transparent);
+    background:
+      radial-gradient(circle 120px at -10% -10%, hsl(var(--primary) / 0.5), transparent),
+      radial-gradient(circle 120px at 110% 110%, hsl(var(--accent) / 0.4), transparent);
     background-size: 200% 200%;
     background-position: 0% 0%;
     border-radius: inherit; /* Use the parent's border-radius */
@@ -237,26 +291,36 @@ body {
   }
 
   @keyframes border-glow-fade {
-      from {
-        border-color: hsl(var(--primary) / 0.8);
-        box-shadow: 0 0 15px hsl(var(--primary) / 0.5);
-      }
-      to {
-        border-color: hsl(var(--border) / 0.4);
-        box-shadow: none;
-      }
+    from {
+      border-color: hsl(var(--primary) / 0.8);
+      box-shadow: 0 0 15px hsl(var(--primary) / 0.5);
+    }
+    to {
+      border-color: hsl(var(--border) / 0.4);
+      box-shadow: none;
+    }
   }
 
   .animate-border-glow-fade {
-      animation: border-glow-fade 1s ease-out forwards;
+    animation: border-glow-fade 1s ease-out forwards;
   }
 
   @keyframes cat-color-cycle {
-    0% { color: #ff7e5f; } /* Coral */
-    25% { color: #feb47b; } /* Orange */
-    50% { color: #86A8E7; } /* Light Blue */
-    75% { color: #91EAE4; } /* Teal */
-    100% { color: #ff7e5f; } /* Back to Coral */
+    0% {
+      color: #ff7e5f;
+    } /* Coral */
+    25% {
+      color: #feb47b;
+    } /* Orange */
+    50% {
+      color: #86a8e7;
+    } /* Light Blue */
+    75% {
+      color: #91eae4;
+    } /* Teal */
+    100% {
+      color: #ff7e5f;
+    } /* Back to Coral */
   }
 
   .animate-cat-colors {
@@ -264,17 +328,27 @@ body {
   }
 
   @keyframes ghost-color-cycle {
-    0% { color: #89f7fe; } /* Light Cyan */
-    25% { color: #66a6ff; } /* Light Blue */
-    50% { color: #a78bfa; } /* Lavender */
-    75% { color: #c4b5fd; } /* Light Lavender */
-    100% { color: #89f7fe; } /* Back to Light Cyan */
+    0% {
+      color: #89f7fe;
+    } /* Light Cyan */
+    25% {
+      color: #66a6ff;
+    } /* Light Blue */
+    50% {
+      color: #a78bfa;
+    } /* Lavender */
+    75% {
+      color: #c4b5fd;
+    } /* Light Lavender */
+    100% {
+      color: #89f7fe;
+    } /* Back to Light Cyan */
   }
 
   .animate-ghost-colors {
     animation: ghost-color-cycle 6s linear infinite;
   }
-  
+
   /* Animations for Mobile Nav */
   @keyframes nav-item-in {
     from {
@@ -309,41 +383,41 @@ body {
 
 /* Button glow and ripple effects */
 .btn-glow {
-    position: relative;
-    overflow: hidden;
-    --glow-color: hsl(var(--primary) / 0.6);
-    --glow-size: 200px;
+  position: relative;
+  overflow: hidden;
+  --glow-color: hsl(var(--primary) / 0.6);
+  --glow-size: 200px;
 }
 
 .btn-glow::before {
-    content: '';
-    position: absolute;
-    left: var(--glow-x);
-    top: var(--glow-y);
-    width: var(--glow-size);
-    height: var(--glow-size);
-    background-image: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    transition: opacity 0.4s ease-out;
+  content: '';
+  position: absolute;
+  left: var(--glow-x);
+  top: var(--glow-y);
+  width: var(--glow-size);
+  height: var(--glow-size);
+  background-image: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
 }
 
 .btn-glow:hover::before {
-    opacity: 1;
+  opacity: 1;
 }
 
 .btn-glow .ripple {
-    position: absolute;
-    border-radius: 50%;
-    background-color: hsl(var(--primary) / 0.3);
-    transform: scale(0);
-    animation: ripple-effect 0.6s linear;
-    pointer-events: none;
+  position: absolute;
+  border-radius: 50%;
+  background-color: hsl(var(--primary) / 0.3);
+  transform: scale(0);
+  animation: ripple-effect 0.6s linear;
+  pointer-events: none;
 }
 
 @keyframes ripple-effect {
-    to {
-        transform: scale(4);
-        opacity: 0;
-    }
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
 }

@@ -1,4 +1,3 @@
-
 /**
  * @file src/components/skills-client-page.tsx
  * @description A client component that renders the animated, interactive content
@@ -46,12 +45,12 @@ export default function SkillsClientPage() {
    * @returns {JSX.Element} A div containing the rendered category.
    */
   const renderCategory = (category: SkillCategory, index: number) => (
-    <div 
+    <div
       key={category.title}
       className={cn(
-        "space-y-6 transition-all duration-700 ease-out",
+        'space-y-6 transition-all duration-700 ease-out',
         // Only apply animation classes if the component is mounted on the client.
-        isMounted ? "animate-fade-in-up" : "opacity-0"
+        isMounted ? 'animate-fade-in-up' : 'opacity-0',
       )}
       style={{ animationDelay: `${200 + index * 150}ms` }}
     >
@@ -60,35 +59,36 @@ export default function SkillsClientPage() {
         <h2 className="text-2xl font-bold text-primary mb-2">{category.title}</h2>
         {/* Render the subtitle for the category if it exists */}
         {category.subtitle && (
-          <p className="text-foreground/70 max-w-2xl text-sm leading-relaxed">{category.subtitle}</p>
+          <p className="text-foreground/70 max-w-2xl text-sm leading-relaxed">
+            {category.subtitle}
+          </p>
         )}
       </div>
       {/* Use the InfiniteScroller for a dynamic, moving display of skills. */}
-       <InfiniteScroller speed={index % 2 === 0 ? "slow" : "normal"}>
+      <InfiniteScroller speed={index % 2 === 0 ? 'slow' : 'normal'}>
         {category.skills.map((skill) => (
           <Card
             key={skill.name}
             className={cn(
-              "bg-card/40 border-border/40 shadow-lg text-center flex flex-col items-center justify-center w-[160px] h-[120px] shrink-0 p-4 transition-shadow,background-color duration-300 hover:shadow-xl hover:bg-card/60 relative overflow-hidden group"
+              'bg-card/40 border-border/40 shadow-lg text-center flex flex-col items-center justify-center w-[160px] h-[120px] shrink-0 p-4 transition-shadow,background-color duration-300 hover:shadow-xl hover:bg-card/60 relative overflow-hidden group',
             )}
           >
-             <div className="relative z-10 flex flex-col items-center justify-center gap-2 h-full">
-                <div className={cn("h-12 w-12 flex items-center justify-center text-foreground", skill.iconClassName)}>
-                  <div className="h-10 w-10 flex items-center justify-center">
-                    {skill.icon}
-                  </div>
-                </div>
-                <p className="text-sm font-medium text-foreground/90">{skill.name}</p>
+            <div className="relative z-10 flex flex-col items-center justify-center gap-2 h-full">
+              <div
+                className={cn(
+                  'h-12 w-12 flex items-center justify-center text-foreground',
+                  skill.iconClassName,
+                )}
+              >
+                <div className="h-10 w-10 flex items-center justify-center">{skill.icon}</div>
               </div>
+              <p className="text-sm font-medium text-foreground/90">{skill.name}</p>
+            </div>
           </Card>
         ))}
       </InfiniteScroller>
     </div>
   );
 
-  return (
-    <>
-      {skillsData.map(renderCategory)}
-    </>
-  );
+  return <>{skillsData.map(renderCategory)}</>;
 }

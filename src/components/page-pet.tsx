@@ -37,18 +37,18 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isAnimatingIn, setIsAnimatingIn] = useState(true);
   const [showMeow, setShowMeow] = useState(false);
-  
+
   // --- Ghost-specific state ---
   const [isVisible, setIsVisible] = useState(true);
   const ghostStateTimeout = useRef<NodeJS.Timeout | null>(null);
-  
+
   const mousePos = useRef({ x: 0, y: 0 });
   const petRef = useRef<HTMLDivElement>(null);
   const animationFrameId = useRef<number>();
 
   useEffect(() => {
     setIsMounted(true);
-    
+
     // The initial "fly-in" animation. After it completes, the physics-based
     // or AI-based animations take over.
     const animTimeout = setTimeout(() => {
@@ -57,7 +57,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         setPosition({ x: rect.left, y: rect.top });
       }
       setIsAnimatingIn(false);
-    }, 1000); 
+    }, 1000);
 
     // Cleanup function to clear all timers and animation frames when the pet is despawned.
     return () => {
@@ -65,9 +65,9 @@ const PagePet = ({ type, startX, startY }: PetState) => {
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
       if (ghostStateTimeout.current) clearTimeout(ghostStateTimeout.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   // Track the mouse position globally.
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -84,7 +84,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     // The sequence of states is more deliberate now: Swoosh -> Hide -> Stalk
     const states: GhostState[] = ['swooshing', 'hiding', 'stalking'];
     const nextState = states[Math.floor(Math.random() * states.length)];
-    
+
     // Define durations for each state for more controlled behavior.
     const stateDuration = {
       swooshing: 3000, // A long, graceful, and unsettling dash.
@@ -94,7 +94,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
 
     const executeState = (state: GhostState) => {
       let animId: number;
-      
+
       if (state === 'hiding') {
         setIsVisible(false);
         // After hiding, teleport to a new spot and transition to the next state.
@@ -107,12 +107,12 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         }, 1500); // 1.5s invisible time
         return;
       }
-      
+
       // Common movement logic for 'stalking' and 'swooshing'
       setIsVisible(true);
       const targetX = Math.random() * (window.innerWidth - 60);
       const targetY = Math.random() * (window.innerHeight - 60);
-      
+
       // 'Swooshing' uses high acceleration and low friction for a fast dash.
       // 'Stalking' uses very low acceleration for a slow drift.
       const isSwooshing = state === 'swooshing';
@@ -121,29 +121,29 @@ const PagePet = ({ type, startX, startY }: PetState) => {
       const maxSpeed = isSwooshing ? 10 : 0.5;
 
       let { vx, vy } = { vx: 0, vy: 0 };
-      
+
       let startTime = performance.now();
       const move = (currentTime: number) => {
         // When the state's duration is up, cancel this animation and start the next AI cycle.
         if (currentTime - startTime > stateDuration) {
-            cancelAnimationFrame(animId);
-            runGhostAI();
-            return;
+          cancelAnimationFrame(animId);
+          runGhostAI();
+          return;
         }
 
-        setPosition(prevPos => {
+        setPosition((prevPos) => {
           const dx = targetX - prevPos.x;
           const dy = targetY - prevPos.y;
-          
+
           vx += dx * acceleration;
           vy += dy * acceleration;
-          
+
           vx *= friction;
           vy *= friction;
 
           vx = Math.max(-maxSpeed, Math.min(maxSpeed, vx));
           vy = Math.max(-maxSpeed, Math.min(maxSpeed, vy));
-          
+
           let newX = prevPos.x + vx;
           let newY = prevPos.y + vy;
 
@@ -175,45 +175,45 @@ const PagePet = ({ type, startX, startY }: PetState) => {
 
     const animate = () => {
       let { vx, vy } = velocity;
-      
-      if (petRef.current) {
-          const rect = petRef.current.getBoundingClientRect();
-          const petX = rect.left + rect.width / 2;
-          const petY = rect.top + rect.height / 2;
-          const dx = mousePos.current.x - petX;
-          const dy = mousePos.current.y - petY;
-          const distance = Math.sqrt(dx*dx + dy*dy);
 
-          // Only follow the cursor if it's far away, making it feel more independent.
-          if (distance > 50) {
-            vx += dx * 0.0005; 
-            vy += dy * 0.0005;
-          }
+      if (petRef.current) {
+        const rect = petRef.current.getBoundingClientRect();
+        const petX = rect.left + rect.width / 2;
+        const petY = rect.top + rect.height / 2;
+        const dx = mousePos.current.x - petX;
+        const dy = mousePos.current.y - petY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Only follow the cursor if it's far away, making it feel more independent.
+        if (distance > 50) {
+          vx += dx * 0.0005;
+          vy += dy * 0.0005;
+        }
       }
-      
+
       vx *= 0.98; // Friction
       vy *= 0.98;
 
       const maxSpeed = 1.5;
       vx = Math.max(-maxSpeed, Math.min(maxSpeed, vx));
       vy = Math.max(-maxSpeed, Math.min(maxSpeed, vy));
-      
-      setVelocity({vx, vy});
 
-      setPosition(prevPos => {
+      setVelocity({ vx, vy });
+
+      setPosition((prevPos) => {
         let newX = prevPos.x + vx;
         let newY = prevPos.y + vy;
-        
+
         // Bounce off edges to stay within view
         if (newX <= 0 || newX >= window.innerWidth - 48) {
-            vx *= -1.1; // Add a little extra push on bounce
-            newX = prevPos.x + vx;
+          vx *= -1.1; // Add a little extra push on bounce
+          newX = prevPos.x + vx;
         }
         if (newY <= 0 || newY >= window.innerHeight - 48) {
-            vy *= -1.1;
-            newY = prevPos.y + vy;
+          vy *= -1.1;
+          newY = prevPos.y + vy;
         }
-        
+
         return { x: newX, y: newY };
       });
 
@@ -226,7 +226,7 @@ const PagePet = ({ type, startX, startY }: PetState) => {
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
     };
   }, [type, velocity, isAnimatingIn]);
-  
+
   useEffect(() => {
     if (showMeow) {
       const timer = setTimeout(() => {
@@ -239,16 +239,14 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   if (!isMounted || !type) return null;
 
   const PetIcon = type === 'alive' ? Cat : Ghost;
-  const petClasses = type === 'alive' 
-    ? 'animate-cat-colors' 
-    : 'animate-ghost-colors';
+  const petClasses = type === 'alive' ? 'animate-cat-colors' : 'animate-ghost-colors';
 
   const container = document.getElementById('pet-container');
   if (!container) return null;
 
   const initialRandomX = Math.random() * (window.innerWidth - 100) + 50;
   const initialRandomY = Math.random() * (window.innerHeight - 100) + 50;
-  
+
   const style: React.CSSProperties & Record<`--${string}`, string> = isAnimatingIn
     ? {
         position: 'fixed',
@@ -285,21 +283,18 @@ const PagePet = ({ type, startX, startY }: PetState) => {
   return ReactDOM.createPortal(
     <div
       ref={petRef}
-      className={cn(
-        petClasses,
-        isAnimatingIn && 'animate-fly-in'
-      )}
+      className={cn(petClasses, isAnimatingIn && 'animate-fly-in')}
       style={style}
       onClick={handlePetInteraction}
       onMouseEnter={handlePetInteraction}
-      title={type === 'ghost' ? "A vengeful spirit" : "A friendly cat"}
+      title={type === 'ghost' ? 'A vengeful spirit' : 'A friendly cat'}
     >
       {showMeow && type === 'alive' && <MeowBubble />}
       <div className="relative w-full h-full">
-         <PetIcon className="w-full h-full" />
+        <PetIcon className="w-full h-full" />
       </div>
     </div>,
-    container
+    container,
   );
 };
 

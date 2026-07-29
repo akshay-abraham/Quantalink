@@ -29,7 +29,6 @@ import { ArchlinuxIcon } from '@/components/icons/archlinux';
 import { FedoraIcon } from '@/components/icons/fedora';
 import { VimIcon } from '@/components/icons/vim';
 
-
 /**
  * Defines the structure for an individual skill.
  * @property {string} name - The name of the skill (e.g., "Python").
@@ -63,7 +62,7 @@ export const skillsData: SkillCategory[] = [
   {
     title: 'Core Languages',
     icon: <Languages size={32} />,
-    subtitle: "The foundational languages I use for problem-solving and building projects.",
+    subtitle: 'The foundational languages I use for problem-solving and building projects.',
     skills: [
       { name: 'C', icon: <CIcon /> },
       { name: 'Python', icon: <PythonIcon /> },
@@ -79,7 +78,10 @@ export const skillsData: SkillCategory[] = [
       { name: 'React', icon: <ReactIcon /> },
       { name: 'Tailwind CSS', icon: <TailwindIcon /> },
       { name: 'Firebase', icon: <FirebaseIcon /> },
-      { name: 'Genkit', icon: <Image src="/genkit.webp" alt="Genkit Logo" width={32} height={32} /> },
+      {
+        name: 'Genkit',
+        icon: <Image src="/genkit.webp" alt="Genkit Logo" width={32} height={32} />,
+      },
       { name: 'NumPy', icon: <NumpyIcon /> },
       { name: 'Scikit-learn', icon: <SciktLearnIcon /> },
     ],
@@ -89,17 +91,17 @@ export const skillsData: SkillCategory[] = [
     icon: <Wrench size={32} />,
     subtitle: 'The ecosystem of tools and platforms that support my development workflow.',
     skills: [
-       { name: 'Git', icon: <GitIcon /> },
-       { name: 'GitHub', icon: <GithubIcon /> },
-       { name: 'VS Code', icon: <VscodeIcon /> },
-       { name: 'Bash / Zsh', icon: <BashIcon /> },
-       { name: 'Vim', icon: <VimIcon /> },
-       { name: 'Ubuntu', icon: <UbuntuIcon /> },
-       { name: 'Arch Linux', icon: <ArchlinuxIcon /> },
-       { name: 'Fedora Linux', icon: <FedoraIcon /> },
-       { name: 'Vercel', icon: <VercelIcon /> },
-       { name: 'Arduino', icon: <ArduinoIcon /> },
-       { name: 'ESP32/ESP8266', icon: <EspressifIcon /> },
+      { name: 'Git', icon: <GitIcon /> },
+      { name: 'GitHub', icon: <GithubIcon /> },
+      { name: 'VS Code', icon: <VscodeIcon /> },
+      { name: 'Bash / Zsh', icon: <BashIcon /> },
+      { name: 'Vim', icon: <VimIcon /> },
+      { name: 'Ubuntu', icon: <UbuntuIcon /> },
+      { name: 'Arch Linux', icon: <ArchlinuxIcon /> },
+      { name: 'Fedora Linux', icon: <FedoraIcon /> },
+      { name: 'Vercel', icon: <VercelIcon /> },
+      { name: 'Arduino', icon: <ArduinoIcon /> },
+      { name: 'ESP32/ESP8266', icon: <EspressifIcon /> },
     ],
   },
 ];

@@ -4,7 +4,7 @@
  *              It checks the current date against a list of events and displays a custom message.
  * @note This is a client component to safely get the current date and handle state.
  */
-"use client";
+'use client';
 
 import { useState, useEffect } from 'react';
 import { specialEvents, SpecialEvent } from '@/lib/special-events-data';
@@ -35,7 +35,6 @@ const eventCardMap = {
   science: HolidayCard,
 };
 
-
 /**
  * SpecialPage component displays a personalized greeting if the current date
  * matches an entry in the special events data file.
@@ -55,7 +54,7 @@ export default function SpecialPage() {
     const formattedDate = format(dateToCheck, 'MM-dd');
 
     // Find if there are any events for the checked date.
-    const eventsForDate = specialEvents.filter(e => e.date === formattedDate);
+    const eventsForDate = specialEvents.filter((e) => e.date === formattedDate);
 
     setActiveEvents(eventsForDate);
   }, [testDate]);
@@ -69,46 +68,42 @@ export default function SpecialPage() {
 
   const defaultMessage = testDate
     ? `There are no special events scheduled for ${format(testDate, 'MMMM do')}.`
-    : "There are no special events scheduled for today, but I hope you have a great one anyway!";
+    : 'There are no special events scheduled for today, but I hope you have a great one anyway!';
 
   return (
     <>
-       {isBirthday && (
+      {isBirthday && (
         <div className="fixed inset-0 z-20 pointer-events-none">
           <FunParticles type="popper" count={150} />
         </div>
       )}
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-2xl space-y-6">
-          {isClient && activeEvents.length > 0 ? (
-            activeEvents.map((event: SpecialEvent) => {
-              const CardComponent = eventCardMap[event.eventType] || HolidayCard;
-              return <CardComponent key={event.title} event={event} />;
-            })
-          ) : (
-             isClient && (
-              <Card className="bg-card/50 border-border/40 shadow-2xl animate-fade-in-up text-center font-handwriting">
-                <div className="relative z-10 p-6">
-                  <CardHeader>
-                    <div className="flex justify-center items-center gap-4 text-primary">
+          {isClient && activeEvents.length > 0
+            ? activeEvents.map((event: SpecialEvent) => {
+                const CardComponent = eventCardMap[event.eventType] || HolidayCard;
+                return <CardComponent key={event.title} event={event} />;
+              })
+            : isClient && (
+                <Card className="bg-card/50 border-border/40 shadow-2xl animate-fade-in-up text-center font-handwriting">
+                  <div className="relative z-10 p-6">
+                    <CardHeader>
+                      <div className="flex justify-center items-center gap-4 text-primary">
                         <Smile className="h-10 w-10" />
-                    </div>
-                    <CardTitle className="text-4xl sm:text-5xl font-bold text-primary tracking-tight pt-4">
-                      Have a Wonderful Day!
-                    </CardTitle>
-                    <CardDescription className="text-foreground/80 text-lg pt-2 font-body">
-                      {defaultMessage}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-foreground/60 font-body">
-                        - Akshay Abraham
-                    </p>
-                  </CardContent>
-                </div>
-              </Card>
-            )
-          )}
+                      </div>
+                      <CardTitle className="text-4xl sm:text-5xl font-bold text-primary tracking-tight pt-4">
+                        Have a Wonderful Day!
+                      </CardTitle>
+                      <CardDescription className="text-foreground/80 text-lg pt-2 font-body">
+                        {defaultMessage}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-foreground/60 font-body">- Akshay Abraham</p>
+                    </CardContent>
+                  </div>
+                </Card>
+              )}
         </div>
 
         {isClient && <SpecialEventTester onTestEvent={handleTestEvent} />}

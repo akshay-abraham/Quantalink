@@ -42,7 +42,11 @@ const notify = () => {
  * @param {number | null} startX - The starting X coordinate for the animation.
  * @param {number | null} startY - The starting Y coordinate for the animation.
  */
-export const setPet = (type: PetType | null, startX: number | null = null, startY: number | null = null) => {
+export const setPet = (
+  type: PetType | null,
+  startX: number | null = null,
+  startY: number | null = null,
+) => {
   state = { ...state, type, startX, startY };
   notify();
 };

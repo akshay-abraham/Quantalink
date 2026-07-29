@@ -15,7 +15,7 @@ export default function MainNav() {
   return (
     <div className="fixed top-4 right-4 z-50">
       <div className="hidden md:block">
-         <DesktopNav />
+        <DesktopNav />
       </div>
       <div className="md:hidden">
         <MobileNav />

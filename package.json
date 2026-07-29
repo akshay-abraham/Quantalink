@@ -7,8 +7,10 @@
     "build": "next build",
     "postbuild": "next-sitemap",
     "start": "next start",
-    "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "format:check": "prettier --check .",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@hookform/resolvers": "^5.5.7",
@@ -54,10 +56,14 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "eslint": "^9.36.0",
+    "eslint-config-next": "16.2.12",
     "postcss": "^8",
+    "prettier": "^3.6.2",
     "tailwindcss": "^4.3.3",
     "typescript": "^7"
   }

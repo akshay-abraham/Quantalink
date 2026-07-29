@@ -5,7 +5,7 @@
  *              to handle theme switching (dark/light) or motion preferences.
  * @note This is a client component because it uses `createContext`.
  */
-"use client"
+'use client';
 
 import React, { createContext, useContext, useMemo } from 'react';
 
@@ -27,16 +27,15 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
  */
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // `useMemo` is used to prevent the context value from being recalculated on every render.
-  const value = useMemo(() => ({
-    // Currently hardcoded to true, but could be controlled by state in the future.
-    motionEnabled: true, 
-  }), []);
-  
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
+  const value = useMemo(
+    () => ({
+      // Currently hardcoded to true, but could be controlled by state in the future.
+      motionEnabled: true,
+    }),
+    [],
   );
+
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
 /**

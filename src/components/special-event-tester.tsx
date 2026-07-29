@@ -10,11 +10,7 @@ import { Calendar as CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { specialEvents } from '@/lib/special-events-data';
 
 interface SpecialEventTesterProps {
@@ -43,7 +39,7 @@ export default function SpecialEventTester({ onTestEvent }: SpecialEventTesterPr
             size={'icon'}
             className={cn(
               'h-10 w-10 rounded-full bg-card/70 backdrop-blur-md border-border/60 shadow-lg hover:scale-110 transition-transform p-2',
-              !date && 'text-muted-foreground'
+              !date && 'text-muted-foreground',
             )}
             title="Test a specific date"
           >
@@ -52,12 +48,7 @@ export default function SpecialEventTester({ onTestEvent }: SpecialEventTesterPr
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="end">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={handleDateSelect}
-            initialFocus
-          />
+          <Calendar mode="single" selected={date} onSelect={handleDateSelect} initialFocus />
         </PopoverContent>
       </Popover>
     </div>

@@ -33,9 +33,12 @@ export default function Home() {
           <ProfileSection />
           <LinkCards />
           <Separator className="bg-border/50" />
-           <div className="text-center">
-             <Link href="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                Read more about my journey &rarr;
+          <div className="text-center">
+            <Link
+              href="/about"
+              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              Read more about my journey &rarr;
             </Link>
           </div>
           <Separator className="bg-border/50" />

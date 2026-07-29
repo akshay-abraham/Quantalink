@@ -4,7 +4,7 @@
  *              It uses the Intersection Observer API for efficient detection.
  * @note This is a client-side hook because it uses browser-specific APIs.
  */
-"use client"
+'use client';
 
 import { useState, useEffect, RefObject } from 'react';
 

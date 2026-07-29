@@ -6,16 +6,27 @@
  */
 
 import React from 'react';
-import { Cake, Ghost, Sparkles, Sun, Moon, Atom, Flag, Rocket, Heart, GraduationCap } from 'lucide-react';
+import {
+  Cake,
+  Ghost,
+  Sparkles,
+  Sun,
+  Moon,
+  Atom,
+  Flag,
+  Rocket,
+  Heart,
+  GraduationCap,
+} from 'lucide-react';
 import { ParticleType } from '@/components/easter-egg';
 
-export type EventType = 
-  | 'friendBirthday' 
-  | 'teacherBirthday' 
-  | 'personalBirthday' 
-  | 'homage' 
-  | 'halloween' 
-  | 'christmas' 
+export type EventType =
+  | 'friendBirthday'
+  | 'teacherBirthday'
+  | 'personalBirthday'
+  | 'homage'
+  | 'halloween'
+  | 'christmas'
   | 'newYear'
   | 'holiday'
   | 'science';
@@ -63,7 +74,12 @@ const createFriendBirthday = (name: string, date: string, message: string): Spec
  * @param message - A custom message.
  * @returns {SpecialEvent} A fully formed special event object.
  */
-const createTeacherBirthday = (name: string, date: string, subject: string, message: string): SpecialEvent => ({
+const createTeacherBirthday = (
+  name: string,
+  date: string,
+  subject: string,
+  message: string,
+): SpecialEvent => ({
   title: `Happy Birthday, ${name}!`,
   date,
   message: `${message} Wishing you the happiest of birthdays from your ${subject.toLowerCase()} student!`,
@@ -73,49 +89,79 @@ const createTeacherBirthday = (name: string, date: string, subject: string, mess
   isBirthday: true,
 });
 
-
 /**
  * An array of special event objects.
  * The /special page will check this list to see if today is a special day.
  */
 export const specialEvents: SpecialEvent[] = [
   // --- Birthdays (using helper functions for simplicity) ---
-  createFriendBirthday('Ephrim', '11-07', 'Wishing you a fantastic day filled with joy and laughter!'),
+  createFriendBirthday(
+    'Ephrim',
+    '11-07',
+    'Wishing you a fantastic day filled with joy and laughter!',
+  ),
   createFriendBirthday('William', '10-31', 'Hope you have a spooky and spectacular day!'),
   createFriendBirthday('Steve', '09-05', 'Happy birthday to a great friend! Have a fantastic day.'),
-  createFriendBirthday('Snitha Ann Shinu', '09-11', 'Happy birthday to my dear friend! Wishing you all the best.'),
+  createFriendBirthday(
+    'Snitha Ann Shinu',
+    '09-11',
+    'Happy birthday to my dear friend! Wishing you all the best.',
+  ),
 
   // --- Personal & Family Birthdays ---
   {
     title: 'Happy Birthday, Papa!',
     date: '11-22',
-    message: "To the person who's behind everything I do—from the craziness to everything else. Thank you for your endless support!",
+    message:
+      "To the person who's behind everything I do—from the craziness to everything else. Thank you for your endless support!",
     icon: <Heart className="h-10 w-10" />,
     particleType: 'popper',
     eventType: 'personalBirthday',
     isBirthday: true,
   },
-   {
+  {
     title: 'Happy Birthday, Akshay!',
     date: '05-09',
-    message: 'Happy Birthday to me! Time to celebrate another trip around the sun and all the adventures to come.',
+    message:
+      'Happy Birthday to me! Time to celebrate another trip around the sun and all the adventures to come.',
     icon: <Rocket className="h-10 w-10" />,
     particleType: 'popper',
     eventType: 'personalBirthday',
     isBirthday: true,
   },
-  
+
   // --- Teacher Birthdays ---
-  createTeacherBirthday('Ms. Asha Rose Mathew', '12-10', 'Physics', 'To my class teacher and an extreme supporter of my work.'),
-  createTeacherBirthday('Mrs. Neethu', '01-28', 'Physics', 'Wishing a very happy birthday to a wonderful teacher!'),
-  createTeacherBirthday('Mrs. Bency Jacob', '02-12', 'Physics', 'To my dearest teacher, thank you for everything.'),
-  createTeacherBirthday('Fr. Joseph Noble OIC', '02-11', 'former principal', 'Thank you for your guidance and support.'),
+  createTeacherBirthday(
+    'Ms. Asha Rose Mathew',
+    '12-10',
+    'Physics',
+    'To my class teacher and an extreme supporter of my work.',
+  ),
+  createTeacherBirthday(
+    'Mrs. Neethu',
+    '01-28',
+    'Physics',
+    'Wishing a very happy birthday to a wonderful teacher!',
+  ),
+  createTeacherBirthday(
+    'Mrs. Bency Jacob',
+    '02-12',
+    'Physics',
+    'To my dearest teacher, thank you for everything.',
+  ),
+  createTeacherBirthday(
+    'Fr. Joseph Noble OIC',
+    '02-11',
+    'former principal',
+    'Thank you for your guidance and support.',
+  ),
 
   // --- Special Homage ---
   {
     title: 'In Loving Memory of Shiny Abraham',
     date: '03-01',
-    message: 'Remembering my mother today and always. A tribute to her enduring love, light, and the lessons she taught me.',
+    message:
+      'Remembering my mother today and always. A tribute to her enduring love, light, and the lessons she taught me.',
     icon: <Heart className="h-10 w-10" />,
     particleType: 'revealing',
     eventType: 'homage',
@@ -126,7 +172,8 @@ export const specialEvents: SpecialEvent[] = [
   {
     title: 'Happy New Year!',
     date: '01-01',
-    message: 'Wishing you a bright and prosperous New Year! May it be filled with new adventures and good fortune.',
+    message:
+      'Wishing you a bright and prosperous New Year! May it be filled with new adventures and good fortune.',
     icon: <Sparkles className="h-10 w-10" />,
     particleType: 'popper',
     eventType: 'newYear',
@@ -142,7 +189,8 @@ export const specialEvents: SpecialEvent[] = [
   {
     title: 'Merry Christmas!',
     date: '12-25',
-    message: 'Wishing you and your loved ones a Merry Christmas filled with peace, joy, and happiness.',
+    message:
+      'Wishing you and your loved ones a Merry Christmas filled with peace, joy, and happiness.',
     icon: <Sparkles className="h-10 w-10" />,
     particleType: 'revealing',
     eventType: 'christmas',
@@ -155,7 +203,7 @@ export const specialEvents: SpecialEvent[] = [
     particleType: 'popper',
     eventType: 'holiday',
   },
-   {
+  {
     title: 'Happy Independence Day, India!',
     date: '08-15',
     message: 'Remembering our past and celebrating a future of progress. Jai Hind!',
@@ -205,10 +253,11 @@ export const specialEvents: SpecialEvent[] = [
   },
 
   // --- Notable Figures ---
-   {
+  {
     title: 'Happy Birthday, Albert Einstein!',
     date: '03-14',
-    message: 'Celebrating the mind that reshaped our understanding of the universe. "Imagination is more important than knowledge."',
+    message:
+      'Celebrating the mind that reshaped our understanding of the universe. "Imagination is more important than knowledge."',
     icon: <Atom className="h-10 w-10" />,
     particleType: 'anomaly',
     eventType: 'science',
@@ -216,7 +265,8 @@ export const specialEvents: SpecialEvent[] = [
   {
     title: 'Happy Birthday, Richard Feynman!',
     date: '05-11',
-    message: 'Honoring the curious spirit of a brilliant physicist and teacher. "The first principle is that you must not fool yourself."',
+    message:
+      'Honoring the curious spirit of a brilliant physicist and teacher. "The first principle is that you must not fool yourself."',
     icon: <Rocket className="h-10 w-10" />,
     particleType: 'anomaly',
     eventType: 'science',

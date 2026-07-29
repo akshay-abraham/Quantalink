@@ -1,4 +1,3 @@
-
 /**
  * @file src/components/projects.tsx
  * @description This component displays a list of projects. It can either show all projects
@@ -12,13 +11,7 @@ import { projects } from '@/lib/projects-data';
 import { useInView } from '@/hooks/use-in-view';
 import { useRef } from 'react';
 import { cn } from '@/lib/utils';
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Github } from 'lucide-react';
@@ -42,16 +35,14 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
   const isVisible = useInView(ref);
 
   // Filter projects based on the `featuredOnly` prop.
-  const projectsToShow = featuredOnly
-    ? projects.filter((p) => p.isFeatured)
-    : projects;
+  const projectsToShow = featuredOnly ? projects.filter((p) => p.isFeatured) : projects;
 
   return (
     <section
       ref={ref}
       className={cn(
         'space-y-6 transition-opacity duration-1000 ease-out w-full',
-        isVisible ? 'opacity-100' : 'opacity-0'
+        isVisible ? 'opacity-100' : 'opacity-0',
       )}
       style={{
         transitionDelay: isVisible ? '150ms' : '0ms',
@@ -62,7 +53,7 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
         <h2
           className={cn(
             'text-2xl font-bold text-primary tracking-tight text-center transition-all duration-700',
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
           )}
         >
           Featured Projects
@@ -77,7 +68,7 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
             className={cn(
               'group relative overflow-hidden bg-card/30 border-border/40 shadow-lg transition-all duration-700 ease-out text-left',
               // Animate each card with a staggered delay.
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5',
             )}
             style={{
               transitionDelay: isVisible ? `${200 + index * 100}ms` : '0ms',
@@ -93,7 +84,9 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
                 </CardDescription>
               </CardHeader>
               <CardFooter className="flex justify-between items-center">
-                <Badge variant="secondary" className="bg-background/50">{project.license}</Badge>
+                <Badge variant="secondary" className="bg-background/50">
+                  {project.license}
+                </Badge>
                 <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
                   <Button variant="ghost">
                     <Github className="mr-2 h-4 w-4" />
@@ -108,12 +101,12 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
 
       {/* Only show the "See More" button on the homepage. */}
       {featuredOnly && (
-        <div 
+        <div
           className={cn(
-            "text-center transition-all duration-700",
-             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+            'text-center transition-all duration-700',
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5',
           )}
-          style={{ transitionDelay: '500ms'}}
+          style={{ transitionDelay: '500ms' }}
         >
           <Link href="/projects">
             <Button variant="outline" className="bg-card/30 border-border/40">
@@ -126,5 +119,3 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
     </section>
   );
 }
-
-    

@@ -5,7 +5,7 @@
  * @note This is a client component because it uses `useRef` for direct DOM manipulation
  *       to achieve the interactive hover effects.
  */
-"use client"
+'use client';
 
 import React, { useRef } from 'react';
 import { cn } from '@/lib/utils';
@@ -42,7 +42,7 @@ export default function LinkCard({ href, title, Icon, delay, isVisible }: LinkCa
     const x = clientX - left;
     const y = clientY - top;
     const rotateX = (y / height - 0.5) * -20; // Tilt up/down.
-    const rotateY = (x / width - 0.5) * 20;   // Tilt left/right.
+    const rotateY = (x / width - 0.5) * 20; // Tilt left/right.
 
     // Apply the 3D transform for the tilt effect.
     cardRef.current.style.transform = `perspective(2000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.08, 1.08, 1.08)`;
@@ -69,17 +69,20 @@ export default function LinkCard({ href, title, Icon, delay, isVisible }: LinkCa
       target="_blank" // Open link in a new tab.
       rel="noopener noreferrer"
       className={cn(
-        "group relative flex items-center justify-center w-full p-4 h-16 rounded-xl bg-card/30 border border-border/40 shadow-lg transition-all duration-700 ease-out",
-        "hover:border-primary/70 hover:shadow-[0_0_60px_-15px_hsl(var(--primary)/0.5)]",
-        "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background",
-        "overflow-hidden",
+        'group relative flex items-center justify-center w-full p-4 h-16 rounded-xl bg-card/30 border border-border/40 shadow-lg transition-all duration-700 ease-out',
+        'hover:border-primary/70 hover:shadow-[0_0_60px_-15px_hsl(var(--primary)/0.5)]',
+        'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background',
+        'overflow-hidden',
         // The ::before pseudo-element creates the radial glow effect. Its position is controlled by CSS variables.
-        "before:absolute before:w-56 before:h-56 before:left-[var(--glow-x)] before:top-[var(--glow-y)] before:-translate-x-1/2 before:-translate-y-1/2 before:bg-primary/20 before:blur-3xl before:opacity-0 before:transition-opacity before:duration-500",
-        "is-hovering:before:opacity-100", // The glow becomes visible on hover.
+        'before:absolute before:w-56 before:h-56 before:left-[var(--glow-x)] before:top-[var(--glow-y)] before:-translate-x-1/2 before:-translate-y-1/2 before:bg-primary/20 before:blur-3xl before:opacity-0 before:transition-opacity before:duration-500',
+        'is-hovering:before:opacity-100', // The glow becomes visible on hover.
         // Trigger fade-in animation when the card becomes visible in the viewport.
-        isVisible ? "animate-fade-in-up" : "opacity-0"
+        isVisible ? 'animate-fade-in-up' : 'opacity-0',
       )}
-      style={{ animationDelay: `${delay}ms`, transitionProperty: 'transform, box-shadow, border-color' }}
+      style={{
+        animationDelay: `${delay}ms`,
+        transitionProperty: 'transform, box-shadow, border-color',
+      }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >

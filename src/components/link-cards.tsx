@@ -3,7 +3,7 @@
  * @description A component that renders a list of social and contact link cards.
  * @note This is a client component because it uses the `useInView` hook to trigger animations.
  */
-"use client"
+'use client';
 
 import LinkCard from './link-card';
 import { useInView } from '@/hooks/use-in-view';
@@ -37,9 +37,9 @@ export default function LinkCards() {
     <div ref={ref} className="space-y-4">
       {/* Map over the links array to render a LinkCard for each item. */}
       {links.map((link, index) => (
-        <LinkCard 
-          key={link.href} 
-          {...link} 
+        <LinkCard
+          key={link.href}
+          {...link}
           // Stagger the animation delay for each card.
           delay={300 + index * 100}
           isVisible={isVisible}
