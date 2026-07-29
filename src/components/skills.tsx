@@ -5,7 +5,7 @@
  *              visually engaging overview of the user's capabilities.
  * @note This is a client component because it uses the `useInView` hook for animations.
  */
-"use client"
+'use client';
 
 import { useInView } from '@/hooks/use-in-view';
 import { useRef } from 'react';
@@ -28,64 +28,80 @@ export default function Skills() {
   const isVisible = useInView(ref);
 
   // Flatten all skills from all categories into a single array.
-  const allSkills = skillsData.flatMap(category => category.skills);
+  const allSkills = skillsData.flatMap((category) => category.skills);
   // Split the skills into two halves for the two scrolling rows.
   const midPoint = Math.ceil(allSkills.length / 2);
   const firstRowSkills = allSkills.slice(0, midPoint);
   const secondRowSkills = allSkills.slice(midPoint);
 
   return (
-    <section 
+    <section
       ref={ref}
       className={cn(
-        "space-y-6 text-center transition-opacity duration-1000 ease-out",
-        isVisible ? "opacity-100" : "opacity-0"
+        'space-y-6 text-center transition-opacity duration-1000 ease-out',
+        isVisible ? 'opacity-100' : 'opacity-0'
       )}
       id="skills-section"
       style={{
-        transitionDelay: isVisible ? '150ms' : '0ms'
+        transitionDelay: isVisible ? '150ms' : '0ms',
       }}
     >
-      <h2 className={cn(
-          "text-2xl font-bold text-primary tracking-tight transition-all duration-700",
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-        )}>
-          Skills & Technologies
+      <h2
+        className={cn(
+          'text-2xl font-bold text-primary tracking-tight transition-all duration-700',
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        )}
+      >
+        Skills & Technologies
       </h2>
 
       {/* Container for the two-row infinite scroller. */}
       <div className="space-y-4">
         <InfiniteScroller speed="slow">
           {firstRowSkills.map((skill) => (
-            <Card 
+            <Card
               key={skill.name}
               className="bg-card/40 border-border/40 shadow-md text-center flex flex-col items-center justify-center w-[120px] h-[80px] shrink-0 p-2 transition-shadow,background-color duration-300 hover:shadow-xl hover:bg-card/60"
             >
               <CardHeader className="p-0 grow flex flex-col items-center justify-center gap-2">
-                 <div className={cn("h-10 w-10 flex items-center justify-center text-foreground", skill.iconClassName)}>
-                   <div className="h-8 w-8 flex items-center justify-center">
-                     {skill.icon}
-                   </div>
+                <div
+                  className={cn(
+                    'h-10 w-10 flex items-center justify-center text-foreground',
+                    skill.iconClassName
+                  )}
+                >
+                  <div className="h-8 w-8 flex items-center justify-center">
+                    {skill.icon}
+                  </div>
                 </div>
-                <p className="text-xs font-medium text-foreground/80">{skill.name}</p>
+                <p className="text-xs font-medium text-foreground/80">
+                  {skill.name}
+                </p>
               </CardHeader>
             </Card>
           ))}
         </InfiniteScroller>
-        
+
         <InfiniteScroller speed="slow" direction="right">
           {secondRowSkills.map((skill) => (
-             <Card 
+            <Card
               key={skill.name}
               className="bg-card/40 border-border/40 shadow-md text-center flex flex-col items-center justify-center w-[120px] h-[80px] shrink-0 p-2 transition-shadow,background-color duration-300 hover:shadow-xl hover:bg-card/60"
             >
               <CardHeader className="p-0 grow flex flex-col items-center justify-center gap-2">
-                 <div className={cn("h-10 w-10 flex items-center justify-center text-foreground", skill.iconClassName)}>
-                   <div className="h-8 w-8 flex items-center justify-center">
-                     {skill.icon}
-                   </div>
+                <div
+                  className={cn(
+                    'h-10 w-10 flex items-center justify-center text-foreground',
+                    skill.iconClassName
+                  )}
+                >
+                  <div className="h-8 w-8 flex items-center justify-center">
+                    {skill.icon}
+                  </div>
                 </div>
-                <p className="text-xs font-medium text-foreground/80">{skill.name}</p>
+                <p className="text-xs font-medium text-foreground/80">
+                  {skill.name}
+                </p>
               </CardHeader>
             </Card>
           ))}
@@ -93,12 +109,12 @@ export default function Skills() {
       </div>
 
       {/* Button to navigate to the full skills page. */}
-      <div 
+      <div
         className={cn(
-          "text-center transition-all duration-700 pt-2",
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+          'text-center transition-all duration-700 pt-2',
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
         )}
-        style={{ transitionDelay: '500ms'}}
+        style={{ transitionDelay: '500ms' }}
       >
         <Link href="/skills" id="see-all-skills-button">
           <Button variant="outline" className="bg-card/30 border-border/40">
@@ -108,5 +124,5 @@ export default function Skills() {
         </Link>
       </div>
     </section>
-  )
+  );
 }

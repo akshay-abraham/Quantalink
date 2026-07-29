@@ -30,7 +30,7 @@ export const projects: Project[] = [
       'A smart water bottle system with ESP32, copper tape sensor, and MPU6050, featuring mobile app integration, hydration tracking, and cloud AI analytics.',
     githubUrl: 'https://github.com/akshay-abraham/NEPHRA',
     license: 'MIT License',
-    isFeatured: false, 
+    isFeatured: false,
   },
   {
     title: 'Quantalink',
@@ -42,16 +42,18 @@ export const projects: Project[] = [
   },
   {
     title: 'MSEdge Redirect Logo Redesign',
-    description: 'Contributed a redesigned logo for the open-source MSEdge Redirect tool, improving visual branding and user recognition.',
+    description:
+      'Contributed a redesigned logo for the open-source MSEdge Redirect tool, improving visual branding and user recognition.',
     githubUrl: 'https://github.com/rcmaehl/MSEdgeRedirect/issues/517',
     license: 'LGPL-3.0',
-    isContribution: true
+    isContribution: true,
   },
   {
     title: 'Lyra',
-    description: 'Lyra is an AI-powered educational framework that provides guided, ethical, and customizable learning support — helping students think independently while enabling teachers to personalize AI tutoring for every learner, including those with special needs.',
+    description:
+      'Lyra is an AI-powered educational framework that provides guided, ethical, and customizable learning support — helping students think independently while enabling teachers to personalize AI tutoring for every learner, including those with special needs.',
     githubUrl: 'https://github.com/akshay-abraham/lyra',
-    license:  '',
+    license: '',
     isFeatured: false,
   },
   // To add another project, copy the object structure below:

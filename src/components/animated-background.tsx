@@ -6,7 +6,7 @@
  * @note This is a client component (`"use client"`) because it directly interacts with the DOM (canvas)
  *       and uses browser APIs for animation (`requestAnimationFrame`) and event handling.
  */
-"use client";
+'use client';
 
 import React, { useRef, useEffect } from 'react';
 
@@ -36,8 +36,8 @@ const AnimatedBackground = () => {
     const frameInterval = 1000 / targetFPS;
 
     // Simulation state variables.
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
 
     // **Device Adaptation:** Performance and density settings are adapted based on device screen size.
     const isMobile = width <= 768;
@@ -79,7 +79,8 @@ const AnimatedBackground = () => {
         this.vy = Math.random() * 0.4 - 0.2;
         this.charge = charge ?? (Math.random() > 0.5 ? 1 : -1);
         this.radius = this.isVirtual ? 1.2 : Math.random() * 1.5 + 1;
-        this.color = this.charge > 0 ? 'hsl(210, 100%, 75%)' : 'hsl(340, 100%, 75%)';
+        this.color =
+          this.charge > 0 ? 'hsl(210, 100%, 75%)' : 'hsl(340, 100%, 75%)';
         this.auraMax = this.isVirtual ? 0 : this.radius + 8;
         this.auraPulse = Math.random() * Math.PI * 2;
         this.auraRadius = this.auraMax / 2;
@@ -92,7 +93,7 @@ const AnimatedBackground = () => {
       update(particles: Particle[]) {
         // Real particles interact with each other.
         if (!this.isVirtual) {
-          particles.forEach(other => {
+          particles.forEach((other) => {
             if (this === other || !other.inUse || other.isVirtual) return;
             const dx = other.x - this.x;
             const dy = other.y - this.y;
@@ -111,7 +112,8 @@ const AnimatedBackground = () => {
 
         // Bounce off edges.
         if (this.x < this.radius || this.x > width - this.radius) this.vx *= -1;
-        if (this.y < this.radius || this.y > height - this.radius) this.vy *= -1;
+        if (this.y < this.radius || this.y > height - this.radius)
+          this.vy *= -1;
 
         this.auraPulse += 0.03;
         this.auraRadius = this.auraMax * (0.6 + Math.sin(this.auraPulse) * 0.4);
@@ -128,7 +130,14 @@ const AnimatedBackground = () => {
 
         const auraAlpha = this.isVirtual ? this.life * 0.25 : 0.15;
         ctx.beginPath();
-        const gradient = ctx.createRadialGradient(this.x, this.y, this.radius, this.x, this.y, this.auraRadius);
+        const gradient = ctx.createRadialGradient(
+          this.x,
+          this.y,
+          this.radius,
+          this.x,
+          this.y,
+          this.auraRadius
+        );
         gradient.addColorStop(0, `${this.color.slice(0, -1)}, ${auraAlpha})`);
         gradient.addColorStop(1, `hsla(0, 0%, 100%, 0)`);
         ctx.fillStyle = gradient;
@@ -148,31 +157,39 @@ const AnimatedBackground = () => {
 
     // --- Object Pooling Functions ---
     const getParticle = (isVirtual = false) => {
-        const available = particlePool.filter(p => !p.inUse && p.isVirtual === isVirtual);
-        return available.length > 0 ? available[0].reset() : new Particle(isVirtual);
-    }
+      const available = particlePool.filter(
+        (p) => !p.inUse && p.isVirtual === isVirtual
+      );
+      return available.length > 0
+        ? available[0].reset()
+        : new Particle(isVirtual);
+    };
 
     // --- Initialization ---
     const init = () => {
       activeParticles.length = 0;
       particlePool.length = 0;
       for (let i = 0; i < maxParticles * 3; i++) {
-         particlePool.push(new Particle(i >= maxParticles));
+        particlePool.push(new Particle(i >= maxParticles));
       }
       for (let i = 0; i < maxParticles; i++) {
         activeParticles.push(getParticle(false));
       }
-    }
+    };
 
     // --- Vacuum Fluctuations ---
     const spawnVirtualPair = () => {
-        if (activeParticles.filter(p => p.isVirtual).length > 40) return;
-        const x = Math.random() * width;
-        const y = Math.random() * height;
-        const p1 = getParticle(true).reset(x, y, 1);
-        const p2 = getParticle(true).reset(x + Math.random()*10-5, y + Math.random()*10-5, -1);
-        activeParticles.push(p1, p2);
-    }
+      if (activeParticles.filter((p) => p.isVirtual).length > 40) return;
+      const x = Math.random() * width;
+      const y = Math.random() * height;
+      const p1 = getParticle(true).reset(x, y, 1);
+      const p2 = getParticle(true).reset(
+        x + Math.random() * 10 - 5,
+        y + Math.random() * 10 - 5,
+        -1
+      );
+      activeParticles.push(p1, p2);
+    };
 
     // --- The Main Animation Loop ---
     const animate = (timestamp: number) => {
@@ -186,7 +203,7 @@ const AnimatedBackground = () => {
       ctx.fillRect(0, 0, width, height);
 
       if (Math.random() < virtualPairSpawnRate) {
-          spawnVirtualPair();
+        spawnVirtualPair();
       }
 
       // Draw "Photon Exchange" Lines.
@@ -220,10 +237,10 @@ const AnimatedBackground = () => {
       for (let i = activeParticles.length - 1; i >= 0; i--) {
         const p = activeParticles[i];
         if (p.inUse) {
-            p.update(activeParticles);
-            p.draw();
+          p.update(activeParticles);
+          p.draw();
         } else {
-            activeParticles.splice(i, 1);
+          activeParticles.splice(i, 1);
         }
       }
     };
@@ -236,7 +253,7 @@ const AnimatedBackground = () => {
       maxParticles = newIsMobile ? 20 : 30;
       virtualPairSpawnRate = newIsMobile ? 0.15 : 0.25;
       init();
-    }
+    };
 
     window.addEventListener('resize', handleResize);
 
@@ -253,7 +270,12 @@ const AnimatedBackground = () => {
     return cleanup;
   }, []);
 
-  return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full -z-10" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed top-0 left-0 w-full h-full -z-10"
+    />
+  );
 };
 
 export default AnimatedBackground;

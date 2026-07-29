@@ -42,7 +42,11 @@ const notify = () => {
  * @param {number | null} startX - The starting X coordinate for the animation.
  * @param {number | null} startY - The starting Y coordinate for the animation.
  */
-export const setPet = (type: PetType | null, startX: number | null = null, startY: number | null = null) => {
+export const setPet = (
+  type: PetType | null,
+  startX: number | null = null,
+  startY: number | null = null
+) => {
   state = { ...state, type, startX, startY };
   notify();
 };
@@ -52,7 +56,9 @@ export const setPet = (type: PetType | null, startX: number | null = null, start
  * @param {(state: PetState) => void} listener - The callback function to run on state change.
  * @returns {() => void} An `unsubscribe` function to be called on component unmount.
  */
-export const subscribe = (listener: (state: PetState) => void): (() => void) => {
+export const subscribe = (
+  listener: (state: PetState) => void
+): (() => void) => {
   listeners.add(listener);
   listener(state); // Immediately invoke with current state to sync up.
   // Return the cleanup function.

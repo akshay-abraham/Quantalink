@@ -1,4 +1,3 @@
-
 /**
  * @file src/components/projects.tsx
  * @description This component displays a list of projects. It can either show all projects
@@ -77,7 +76,9 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
             className={cn(
               'group relative overflow-hidden bg-card/30 border-border/40 shadow-lg transition-all duration-700 ease-out text-left',
               // Animate each card with a staggered delay.
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+              isVisible
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-5'
             )}
             style={{
               transitionDelay: isVisible ? `${200 + index * 100}ms` : '0ms',
@@ -87,14 +88,22 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
             <div className="animate-border-glow"></div>
             <div className="relative z-10 p-2">
               <CardHeader>
-                <CardTitle className="text-xl text-primary">{project.title}</CardTitle>
+                <CardTitle className="text-xl text-primary">
+                  {project.title}
+                </CardTitle>
                 <CardDescription className="text-foreground/80 pt-1">
                   {project.description}
                 </CardDescription>
               </CardHeader>
               <CardFooter className="flex justify-between items-center">
-                <Badge variant="secondary" className="bg-background/50">{project.license}</Badge>
-                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                <Badge variant="secondary" className="bg-background/50">
+                  {project.license}
+                </Badge>
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Button variant="ghost">
                     <Github className="mr-2 h-4 w-4" />
                     View on GitHub
@@ -108,12 +117,12 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
 
       {/* Only show the "See More" button on the homepage. */}
       {featuredOnly && (
-        <div 
+        <div
           className={cn(
-            "text-center transition-all duration-700",
-             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+            'text-center transition-all duration-700',
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
           )}
-          style={{ transitionDelay: '500ms'}}
+          style={{ transitionDelay: '500ms' }}
         >
           <Link href="/projects">
             <Button variant="outline" className="bg-card/30 border-border/40">
@@ -126,5 +135,3 @@ export default function Projects({ featuredOnly = false }: ProjectsProps) {
     </section>
   );
 }
-
-    

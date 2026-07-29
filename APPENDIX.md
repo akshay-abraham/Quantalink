@@ -72,6 +72,7 @@ The **Quantalink Portfolio** reimagines a resume as a **physics-inspired interfa
 - Optimized **page titles** for Google ranking (e.g., "About Akshay K Rooben Abraham").
 - Rewrote **Ghost AI** with smooth stalking + swoosh mechanics.
 - Persistent **Alive Cat** — removed dismiss-on-click for long-term presence.
+
 </details>
 
 <details>
@@ -81,6 +82,7 @@ The **Quantalink Portfolio** reimagines a resume as a **physics-inspired interfa
 - Created **Global Pet State Manager** for spawning page pets across routes.
 - Engineered **Fly-Out Animation** to transition result icon → roaming pet seamlessly.
 - Progressive difficulty scaling with linear → exponential growth.
+
 </details>
 
 <details>
@@ -90,6 +92,7 @@ The **Quantalink Portfolio** reimagines a resume as a **physics-inspired interfa
 - InfiniteScroller for **skill logos** using SimpleIcons.
 - Particle cap to prevent animation overload.
 - SEO: **sitemap.xml** + **robots.txt** auto-generation via `next-sitemap`.
+
 </details>
 
 ---

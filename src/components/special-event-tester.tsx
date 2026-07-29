@@ -5,7 +5,6 @@
 'use client';
 
 import { useState } from 'react';
-import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -15,7 +14,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { specialEvents } from '@/lib/special-events-data';
 
 interface SpecialEventTesterProps {
   onTestEvent: (date: Date | undefined) => void;
@@ -26,7 +24,9 @@ interface SpecialEventTesterProps {
  * @param {SpecialEventTesterProps} props - The component props.
  * @returns {JSX.Element} A small button that opens a calendar for testing.
  */
-export default function SpecialEventTester({ onTestEvent }: SpecialEventTesterProps) {
+export default function SpecialEventTester({
+  onTestEvent,
+}: SpecialEventTesterProps) {
   const [date, setDate] = useState<Date | undefined>();
 
   const handleDateSelect = (selectedDate: Date | undefined) => {
@@ -56,7 +56,7 @@ export default function SpecialEventTester({ onTestEvent }: SpecialEventTesterPr
             mode="single"
             selected={date}
             onSelect={handleDateSelect}
-            initialFocus
+            autoFocus
           />
         </PopoverContent>
       </Popover>

@@ -4,7 +4,7 @@
  *              It uses the Intersection Observer API for efficient detection.
  * @note This is a client-side hook because it uses browser-specific APIs.
  */
-"use client"
+'use client';
 
 import { useState, useEffect, RefObject } from 'react';
 
@@ -14,7 +14,10 @@ import { useState, useEffect, RefObject } from 'react';
  * @param {IntersectionObserverInit} [options] - Optional configuration for the Intersection Observer.
  * @returns {boolean} `true` if the element is in view, otherwise `false`.
  */
-export function useInView(ref: RefObject<Element | null>, options?: IntersectionObserverInit): boolean {
+export function useInView(
+  ref: RefObject<Element | null>,
+  options?: IntersectionObserverInit
+): boolean {
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {

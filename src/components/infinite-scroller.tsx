@@ -25,7 +25,7 @@ export const InfiniteScroller = ({
   children,
   speed = 'normal',
   direction = 'left',
-  pauseOnHover = false, // Changed default to false, though the class is removed
+  pauseOnHover = false,
 }: InfiniteScrollerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLUListElement>(null);
@@ -38,19 +38,19 @@ export const InfiniteScroller = ({
     const addAnimation = () => {
       if (containerRef.current && scrollerRef.current) {
         const scrollerContent = Array.from(scrollerRef.current.children);
-        
+
         // Clear any previously cloned items before re-cloning.
-        scrollerContent.forEach(item => {
+        scrollerContent.forEach((item) => {
           if (item.getAttribute('aria-hidden')) {
             item.remove();
           }
         });
-        
+
         // Clone each item and mark it as decorative for accessibility.
         scrollerContent.forEach((item) => {
-            const duplicatedItem = item.cloneNode(true) as HTMLElement;
-            duplicatedItem.setAttribute('aria-hidden', 'true');
-            scrollerRef.current?.appendChild(duplicatedItem);
+          const duplicatedItem = item.cloneNode(true) as HTMLElement;
+          duplicatedItem.setAttribute('aria-hidden', 'true');
+          scrollerRef.current?.appendChild(duplicatedItem);
         });
 
         // Map speed prop to CSS animation duration.
@@ -59,13 +59,16 @@ export const InfiniteScroller = ({
           normal: '40s',
           fast: '20s',
         };
-        
-        containerRef.current.style.setProperty('--animation-duration', speedMap[speed]);
+
+        containerRef.current.style.setProperty(
+          '--animation-duration',
+          speedMap[speed]
+        );
         containerRef.current.style.setProperty(
           '--animation-direction',
           direction === 'left' ? 'normal' : 'reverse'
         );
-        
+
         scrollerRef.current.classList.add('animate-scrolling-logos');
       }
     };
@@ -85,11 +88,14 @@ export const InfiniteScroller = ({
       <ul
         ref={scrollerRef}
         className={cn(
-          'flex min-w-full shrink-0 gap-6 py-4 w-max flex-nowrap'
+          'flex min-w-full shrink-0 gap-6 py-4 w-max flex-nowrap',
+          pauseOnHover && 'group-hover:[animation-play-state:paused]'
         )}
       >
         {React.Children.map(children, (child, idx) => (
-            <li key={idx} className="shrink-0">{child}</li>
+          <li key={idx} className="shrink-0">
+            {child}
+          </li>
         ))}
       </ul>
     </div>

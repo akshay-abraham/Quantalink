@@ -6,20 +6,33 @@
  */
 import React from 'react';
 import type { Metadata } from 'next';
+import { Lobster, Space_Grotesk } from 'next/font/google';
 import './globals.css';
-import { Toaster } from "@/components/ui/toaster"
-import AnimatedBackground from "@/components/animated-background"
+import { Toaster } from '@/components/ui/toaster';
+import AnimatedBackground from '@/components/animated-background';
 import MainNav from '@/components/main-nav';
 import GlobalPetRenderer from '@/components/global-pet-renderer';
 import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import GuidedTour from '@/components/guided-tour';
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+});
+
+const lobster = Lobster({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-lobster',
+});
 
 // Define metadata for the website, used for SEO and browser tab information.
 export const metadata: Metadata = {
   metadataBase: new URL('https://akshayabraham.vercel.app'),
   title: 'Akshay K Rooben Abraham | Portfolio',
-  description: 'The personal portfolio of Akshay K Rooben Abraham, a student and open-source enthusiast exploring the intersection of science and technology.',
+  description:
+    'The personal portfolio of Akshay K Rooben Abraham, a student and open-source enthusiast exploring the intersection of science and technology.',
   keywords: [
     'Akshay Abraham',
     'Akshay K Rooben Abraham',
@@ -30,7 +43,7 @@ export const metadata: Metadata = {
     'TypeScript',
     'PCMB Student',
     'Open Source',
-    'Physics'
+    'Physics',
   ],
   openGraph: {
     title: 'Akshay K Rooben Abraham | Portfolio',
@@ -106,33 +119,33 @@ export default function RootLayout({
     // minor mismatches on initial load, which is acceptable for this decorative element.
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Preconnect to Google Fonts for performance optimization. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Import the "Space Grotesk" font for the main site and "Lobster" for the special cards. */}
-        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Lobster&display=swap" rel="stylesheet" />
-        <meta name="google-site-verification" content="-ggF-eMSfmD9YH-4yLzcQDEjUmv9WBmZuwxjsFAHifA" />
-         {/* Add JSON-LD to the head to provide structured data to search engines. */}
+        <meta
+          name="google-site-verification"
+          content="-ggF-eMSfmD9YH-4yLzcQDEjUmv9WBmZuwxjsFAHifA"
+        />
+        {/* Add JSON-LD to the head to provide structured data to search engines. */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="font-body antialiased">
-          {/* The AnimatedBackground component is rendered here to appear on all pages. */}
-          <AnimatedBackground />
-          {/* This component renders the roaming pet if one is active in the global state. */}
-          <GlobalPetRenderer />
-          {/* This div is the portal target for the roaming pet. */}
-          <div id="pet-container"></div>
-          <MainNav />
-          {/* Renders the active page content. */}
-          <main>{children}</main>
-          {/* The Toaster component handles pop-up notifications. */}
-          <Toaster />
-          <Analytics />
-          <SpeedInsights />
-          <GuidedTour />
+      <body
+        className={`${spaceGrotesk.variable} ${lobster.variable} font-body antialiased`}
+      >
+        {/* The AnimatedBackground component is rendered here to appear on all pages. */}
+        <AnimatedBackground />
+        {/* This component renders the roaming pet if one is active in the global state. */}
+        <GlobalPetRenderer />
+        {/* This div is the portal target for the roaming pet. */}
+        <div id="pet-container"></div>
+        <MainNav />
+        {/* Renders the active page content. */}
+        <main>{children}</main>
+        {/* The Toaster component handles pop-up notifications. */}
+        <Toaster />
+        <Analytics />
+        <SpeedInsights />
+        <GuidedTour />
       </body>
     </html>
   );

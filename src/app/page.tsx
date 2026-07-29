@@ -12,8 +12,6 @@ import { Separator } from '@/components/ui/separator';
 import EasterEgg from '@/components/easter-egg';
 import Projects from '@/components/projects';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
 
 /**
  * The Home component serves as the main entry point and landing page for the website.
@@ -33,9 +31,12 @@ export default function Home() {
           <ProfileSection />
           <LinkCards />
           <Separator className="bg-border/50" />
-           <div className="text-center">
-             <Link href="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                Read more about my journey &rarr;
+          <div className="text-center">
+            <Link
+              href="/about"
+              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              Read more about my journey &rarr;
             </Link>
           </div>
           <Separator className="bg-border/50" />

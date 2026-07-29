@@ -4,7 +4,7 @@
  * @note This is a client component because it uses the `useEffect` and `useState` hooks
  *       to get the current year on the client-side, avoiding hydration mismatches.
  */
-"use client"
+'use client';
 
 import { useState, useEffect } from 'react';
 
@@ -21,9 +21,12 @@ export default function PageFooter() {
   useEffect(() => {
     setYear(new Date().getFullYear());
   }, []); // The empty dependency array ensures this runs only once.
-  
+
   return (
-    <footer className="w-full text-center p-4 mt-8 animate-fade-in" style={{ animationDelay: '1000ms' }}>
+    <footer
+      className="w-full text-center p-4 mt-8 animate-fade-in"
+      style={{ animationDelay: '1000ms' }}
+    >
       <p className="text-xs text-foreground/50">
         Akshay Abraham &copy; {year || ''}
       </p>

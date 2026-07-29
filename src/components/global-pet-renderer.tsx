@@ -37,5 +37,11 @@ export default function GlobalPetRenderer() {
   }
 
   // If a pet is active, render the PagePet component with the correct type and start coordinates.
-  return <PagePet type={petState.type} startX={petState.startX} startY={petState.startY} />;
+  return (
+    <PagePet
+      type={petState.type}
+      startX={petState.startX}
+      startY={petState.startY}
+    />
+  );
 }

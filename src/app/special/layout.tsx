@@ -5,8 +5,6 @@
  *              omits the <GuidedTour /> component to provide a focused experience.
  *              It also imports a custom font for the special event cards.
  */
-import type { Metadata } from 'next';
-
 // Metadata is now handled in the page.tsx file for more dynamic control.
 
 /**

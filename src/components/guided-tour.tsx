@@ -5,7 +5,7 @@
  *              and can highlight specific elements to guide user interaction.
  * @note This is a client component due to its heavy use of state, effects, and localStorage.
  */
-"use client";
+'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Cat, X } from 'lucide-react';
@@ -29,7 +29,7 @@ export default function GuidedTour() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [isGameActive, setIsGameActive] = useState(false);
-  
+
   const pathname = usePathname();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -44,41 +44,50 @@ export default function GuidedTour() {
   }, []);
 
   /** Advances the tour to the next step or completes it. */
-  const advanceTour = useCallback((forceNextStep?: number) => {
-    cleanup();
-    const nextStepIndex = typeof forceNextStep === 'number' ? forceNextStep : stepIndex + 1;
-    
-    if (nextStepIndex >= tourSteps.length) {
-      setStatus('completed');
-      setStepIndex(tourSteps.length - 1); // Stay on the last step content
-      try {
-        localStorage.setItem(TOUR_STORAGE_KEY, 'true');
-      } catch (error) { console.error("Could not write to localStorage:", error); }
-    } else {
-      setStepIndex(nextStepIndex);
-    }
-  }, [stepIndex, cleanup]);
-  
+  const advanceTour = useCallback(
+    (forceNextStep?: number) => {
+      cleanup();
+      const nextStepIndex =
+        typeof forceNextStep === 'number' ? forceNextStep : stepIndex + 1;
+
+      if (nextStepIndex >= tourSteps.length) {
+        setStatus('completed');
+        setStepIndex(tourSteps.length - 1); // Stay on the last step content
+        try {
+          localStorage.setItem(TOUR_STORAGE_KEY, 'true');
+        } catch (error) {
+          console.error('Could not write to localStorage:', error);
+        }
+      } else {
+        setStepIndex(nextStepIndex);
+      }
+    },
+    [stepIndex, cleanup]
+  );
+
   /** Handles actions defined in a tour step, like scrolling and highlighting. */
-  const handleAction = useCallback((action?: TourStep['action']) => {
-    if (!action) {
-      advanceTour();
-      return;
-    }
+  const handleAction = useCallback(
+    (action?: TourStep['action']) => {
+      if (!action) {
+        advanceTour();
+        return;
+      }
 
-    if (action.type === 'scroll_to') {
-      const element = document.getElementById(action.elementId);
-      element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      
-      const targetButton = document.getElementById(action.pointTo);
-      // Use the prominent glow animation to guide the user's attention.
-      targetButton?.classList.add('animate-tour-glow');
+      if (action.type === 'scroll_to') {
+        const element = document.getElementById(action.elementId);
+        element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-      // Minimize the tour window to not obscure the view of the highlighted element.
-      setDisplayState('closed'); 
-    }
-  }, [advanceTour]);
-  
+        const targetButton = document.getElementById(action.pointTo);
+        // Use the prominent glow animation to guide the user's attention.
+        targetButton?.classList.add('animate-tour-glow');
+
+        // Minimize the tour window to not obscure the view of the highlighted element.
+        setDisplayState('closed');
+      }
+    },
+    [advanceTour]
+  );
+
   /** Restarts the tour from the beginning. */
   const restartTour = () => {
     cleanup();
@@ -92,8 +101,8 @@ export default function GuidedTour() {
     setIsTransitioning(true);
     setDisplayState('open');
     setTimeout(() => setIsTransitioning(false), 1000); // Duration matches border animation.
-  }
-  
+  };
+
   // Main effect to manage tour logic based on the current step.
   useEffect(() => {
     if (status !== 'running' || !currentStep) return;
@@ -113,13 +122,13 @@ export default function GuidedTour() {
     if (currentStep.awaits === 'click') {
       const targetId = currentStep.action?.pointTo;
       if (!targetId) return;
-      
+
       const target = document.getElementById(targetId);
       const listener = () => {
         cleanup();
-        
+
         // Special case for the game: close tour window and wait for game completion.
-        if(targetId === 'begin-experiment-button') {
+        if (targetId === 'begin-experiment-button') {
           setDisplayState('closed');
           // Set a long timeout, which will be cancelled by the 'gameCompleted' event.
           timerRef.current = setTimeout(() => {
@@ -127,7 +136,7 @@ export default function GuidedTour() {
           }, 25000);
         }
       };
-      
+
       target?.addEventListener('click', listener, { once: true });
       return () => target?.removeEventListener('click', listener);
     }
@@ -135,12 +144,12 @@ export default function GuidedTour() {
     // Listener for a page navigation change.
     if (currentStep.awaits === 'path_change') {
       const targetId = currentStep.action?.pointTo;
-      if(targetId) {
+      if (targetId) {
         const targetButton = document.getElementById(targetId);
         targetButton?.classList.add('animate-tour-glow');
       }
 
-      if(pathname === currentStep.action?.path) {
+      if (pathname === currentStep.action?.path) {
         cleanup();
         timerRef.current = setTimeout(() => {
           advanceTour();
@@ -151,17 +160,23 @@ export default function GuidedTour() {
     // On the final step, automatically minimize the tour after a few seconds.
     if (isFinalStep) {
       timerRef.current = setTimeout(() => {
-         setDisplayState('closed');
-      }, 5000); 
+        setDisplayState('closed');
+      }, 5000);
     }
 
     return () => {
       cleanup();
       clearTimeout(transitionTimeout);
     };
-
-  }, [status, currentStep, advanceTour, pathname, handleAction, cleanup, isFinalStep]);
-
+  }, [
+    status,
+    currentStep,
+    advanceTour,
+    pathname,
+    handleAction,
+    cleanup,
+    isFinalStep,
+  ]);
 
   // Effect to check on mount if the tour has been completed before.
   useEffect(() => {
@@ -176,19 +191,18 @@ export default function GuidedTour() {
         return () => clearTimeout(startTimeout);
       }
     } catch (error) {
-      console.error("Could not access localStorage:", error);
+      console.error('Could not access localStorage:', error);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Effect to listen for game activity to hide the tour widget.
   useEffect(() => {
     const gameContainer = document.getElementById('quantum-conundrum-section');
     if (!gameContainer) return;
-    
+
     // Use a MutationObserver to detect when the game modal becomes active.
-    const observer = new MutationObserver(mutations => {
-      for (let mutation of mutations) {
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
         if (mutation.attributeName === 'class') {
           const target = mutation.target as HTMLElement;
           setIsGameActive(target.classList.contains('fixed'));
@@ -215,7 +229,7 @@ export default function GuidedTour() {
       try {
         localStorage.setItem(TOUR_STORAGE_KEY, 'true');
       } catch (error) {
-        console.error("Could not write to localStorage:", error);
+        console.error('Could not write to localStorage:', error);
       }
       setStatus('completed');
     }
@@ -224,32 +238,32 @@ export default function GuidedTour() {
   if (status === 'inactive' || isGameActive) {
     return null;
   }
-  
+
   // Render minimized/completed button if tour is not open.
   if (displayState !== 'open') {
-     return (
-        <div className="fixed bottom-4 left-4 z-100">
-             <Button
-                variant="outline"
-                size="icon"
-                className="rounded-full h-14 w-14 bg-card/70 backdrop-blur-md border-border/60 shadow-lg hover:scale-110 transition-transform p-3 sm:p-0"
-                onClick={handleOpen}
-              >
-                <Cat className="h-7 w-7 text-primary" />
-                <span className="sr-only">Open Tour Guide</span>
-            </Button>
-        </div>
+    return (
+      <div className="fixed bottom-4 left-4 z-100">
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-full h-14 w-14 bg-card/70 backdrop-blur-md border-border/60 shadow-lg hover:scale-110 transition-transform p-3 sm:p-0"
+          onClick={handleOpen}
+        >
+          <Cat className="h-7 w-7 text-primary" />
+          <span className="sr-only">Open Tour Guide</span>
+        </Button>
+      </div>
     );
   }
 
   // Render the main tour window when it is open.
   if (displayState === 'open' && currentStep) {
-     return (
-      <div 
+    return (
+      <div
         className={cn(
-          "fixed bottom-4 left-4 z-100 w-[calc(100%-2rem)] sm:max-w-sm rounded-xl border p-4 shadow-2xl backdrop-blur-lg bg-card/80",
-          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom-and-left data-[state=closed]:slide-out-to-bottom-and-left",
-           isTransitioning && "animate-border-glow-fade"
+          'fixed bottom-4 left-4 z-100 w-[calc(100%-2rem)] sm:max-w-sm rounded-xl border p-4 shadow-2xl backdrop-blur-lg bg-card/80',
+          'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom-and-left data-[state=closed]:slide-out-to-bottom-and-left',
+          isTransitioning && 'animate-border-glow-fade'
         )}
         data-state={displayState === 'open' ? 'open' : 'closed'}
       >
@@ -266,10 +280,15 @@ export default function GuidedTour() {
             </div>
             <div className="flex items-center justify-between pt-2">
               <span className="text-xs text-foreground/60">
-                {isFinalStep ? `Final Step` : `${stepIndex + 1} / ${tourSteps.length}`}
+                {isFinalStep
+                  ? `Final Step`
+                  : `${stepIndex + 1} / ${tourSteps.length}`}
               </span>
-               {currentStep.action && !isFinalStep ? (
-                <Button onClick={() => handleAction(currentStep.action)} size="sm">
+              {currentStep.action && !isFinalStep ? (
+                <Button
+                  onClick={() => handleAction(currentStep.action)}
+                  size="sm"
+                >
                   {currentStep.action.label}
                 </Button>
               ) : !currentStep.autoAdvanceAfter && !isFinalStep ? (
@@ -278,15 +297,20 @@ export default function GuidedTour() {
                 </Button>
               ) : null}
             </div>
-             {isFinalStep && (
-                <Button onClick={restartTour} size="sm" variant="outline" className="w-full mt-2">
-                  Restart Tour
-                </Button>
-             )}
+            {isFinalStep && (
+              <Button
+                onClick={restartTour}
+                size="sm"
+                variant="outline"
+                className="w-full mt-2"
+              >
+                Restart Tour
+              </Button>
+            )}
           </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             className="absolute top-2 right-2 h-8 w-8 rounded-full bg-background/80 hover:bg-muted sm:h-7 sm:w-7 sm:-top-2 sm:-right-2"
             onClick={handleClose}
           >

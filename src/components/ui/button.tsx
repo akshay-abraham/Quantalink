@@ -5,48 +5,49 @@
  *              and a ripple click effect.
  * @note This is a client component due to the event handlers for interactive effects.
  */
-"use client"
+'use client';
 
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
+import * as React from 'react';
+import { Slot } from '@radix-ui/react-slot';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils';
 
 // Define the base styles and variants for the button using `class-variance-authority`.
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:
-          "border border-input bg-background/30 hover:bg-accent hover:text-accent-foreground",
+          'border border-input bg-background/30 hover:bg-accent hover:text-accent-foreground',
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
+        default: 'h-10 px-4 py-2',
+        sm: 'h-9 rounded-md px-3',
+        lg: 'h-11 rounded-md px-8',
+        icon: 'h-10 w-10',
       },
     },
     defaultVariants: {
-      variant: "default",
-      size: "default",
+      variant: 'default',
+      size: 'default',
     },
   }
-)
+);
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+  asChild?: boolean;
 }
 
 /**
@@ -56,8 +57,8 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     // If `asChild` is true, it will render the child component with the button's props.
-    const Comp = asChild ? Slot : "button"
-    
+    const Comp = asChild ? Slot : 'button';
+
     /**
      * Handles the mouse move event to position the background glow effect.
      * @param {React.MouseEvent<HTMLButtonElement>} e - The mouse event.
@@ -75,32 +76,32 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
      * @param {React.MouseEvent<HTMLButtonElement>} e - The mouse event.
      */
     const handleRipple = (e: React.MouseEvent<HTMLButtonElement>) => {
-        const button = e.currentTarget;
-        const circle = document.createElement("span");
-        const diameter = Math.max(button.clientWidth, button.clientHeight);
-        const radius = diameter / 2;
+      const button = e.currentTarget;
+      const circle = document.createElement('span');
+      const diameter = Math.max(button.clientWidth, button.clientHeight);
+      const radius = diameter / 2;
 
-        circle.style.width = circle.style.height = `${diameter}px`;
-        circle.style.left = `${e.clientX - button.offsetLeft - radius}px`;
-        circle.style.top = `${e.clientY - button.offsetTop - radius}px`;
-        circle.classList.add("ripple");
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${e.clientX - button.offsetLeft - radius}px`;
+      circle.style.top = `${e.clientY - button.offsetTop - radius}px`;
+      circle.classList.add('ripple');
 
-        const ripple = button.getElementsByClassName("ripple")[0];
-        if (ripple) {
-            ripple.remove();
-        }
+      const ripple = button.getElementsByClassName('ripple')[0];
+      if (ripple) {
+        ripple.remove();
+      }
 
-        button.appendChild(circle);
-    }
-    
+      button.appendChild(circle);
+    };
+
     /**
      * A combined click handler to run both the ripple effect and any passed `onClick` prop.
      * @param {React.MouseEvent<HTMLButtonElement>} e - The mouse event.
      */
     const combinedClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-        handleRipple(e);
-        props.onClick?.(e);
-    }
+      handleRipple(e);
+      props.onClick?.(e);
+    };
 
     return (
       <Comp
@@ -111,9 +112,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         onClick={combinedClickHandler}
         {...props}
       />
-    )
+    );
   }
-)
-Button.displayName = "Button"
+);
+Button.displayName = 'Button';
 
-export { Button, buttonVariants }
+export { Button, buttonVariants };

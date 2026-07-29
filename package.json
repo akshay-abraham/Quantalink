@@ -7,6 +7,10 @@
     "build": "next build",
     "postbuild": "next-sitemap",
     "start": "next start",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -57,7 +61,11 @@
     "@types/node": "^24.13.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.2.12",
+    "eslint-config-prettier": "^10.1.8",
     "postcss": "^8.5.24",
+    "prettier": "^3.9.6",
     "tailwindcss": "^4.3.3",
     "typescript": "^6"
   }
