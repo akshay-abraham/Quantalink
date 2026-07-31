@@ -34,7 +34,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 import { Progress } from '@/components/ui/progress';
-import { setPet, PetType } from '@/lib/pet-state';
+import { choosePetType, setPet, PetType } from '@/lib/pet-state';
 import { TOUR_STORAGE_KEY } from './guided-tour';
 
 // Defines the possible states of the game.
@@ -313,8 +313,8 @@ export default function EasterEgg() {
     cleanupTimers();
     setGameState('revealing');
     setTimeout(() => {
-      // The probability of the cat being alive is 1/3.
-      const result: PetType = Math.random() < 1 / 3 ? 'alive' : 'ghost';
+      // The first visit is 75% ghost; later results remain random with a ghost preference.
+      const result: PetType = choosePetType();
 
       setCatState(result);
       setIsResultIconVisible(true); // Ensure icon is visible before animation.

@@ -9,6 +9,58 @@
 // Defines the possible states for the pet.
 export type PetType = 'alive' | 'ghost';
 
+const PET_VISIT_KEY = 'quantalink-pet-visit';
+const PET_LAST_TYPE_KEY = 'quantalink-pet-last-type';
+
+let hasVisitedInMemory = false;
+let lastPetTypeInMemory: PetType | null = null;
+
+/**
+ * Chooses the next pet. The first result favors ghosts; after that, results
+ * alternate 95% of the time while retaining a small chance of repetition.
+ */
+export const choosePetType = (): PetType => {
+  let isFirstVisit = !hasVisitedInMemory;
+  let lastPetType = lastPetTypeInMemory;
+
+  try {
+    if (typeof window !== 'undefined') {
+      isFirstVisit = window.localStorage.getItem(PET_VISIT_KEY) !== 'true';
+      const storedLastType = window.localStorage.getItem(PET_LAST_TYPE_KEY);
+      lastPetType =
+        storedLastType === 'alive' || storedLastType === 'ghost'
+          ? storedLastType
+          : null;
+    }
+  } catch {
+    // Continue with the in-memory fallback when storage is unavailable.
+  }
+
+  const nextType = isFirstVisit
+    ? Math.random() < 0.75
+      ? 'ghost'
+      : 'alive'
+    : lastPetType && Math.random() < 0.95
+      ? lastPetType === 'ghost'
+        ? 'alive'
+        : 'ghost'
+      : lastPetType ?? (Math.random() < 0.67 ? 'ghost' : 'alive');
+
+  hasVisitedInMemory = true;
+  lastPetTypeInMemory = nextType;
+
+  try {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(PET_VISIT_KEY, 'true');
+      window.localStorage.setItem(PET_LAST_TYPE_KEY, nextType);
+    }
+  } catch {
+    // Storage is optional; the in-memory state still preserves alternation.
+  }
+
+  return nextType;
+};
+
 // Defines the full state, including the type and its starting position for animation.
 export interface PetState {
   type: PetType | null;
