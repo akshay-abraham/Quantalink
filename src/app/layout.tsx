@@ -6,7 +6,7 @@
  */
 import React from 'react';
 import type { Metadata } from 'next';
-import { Lobster, Space_Grotesk } from 'next/font/google';
+import { Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import AnimatedBackground from '@/components/animated-background';
@@ -19,12 +19,6 @@ import GuidedTour from '@/components/guided-tour';
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   variable: '--font-space-grotesk',
-});
-
-const lobster = Lobster({
-  subsets: ['latin'],
-  weight: '400',
-  variable: '--font-lobster',
 });
 
 // Define metadata for the website, used for SEO and browser tab information.
@@ -129,9 +123,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body
-        className={`${spaceGrotesk.variable} ${lobster.variable} font-body antialiased`}
-      >
+      <body className={`${spaceGrotesk.variable} font-body antialiased`}>
         {/* The AnimatedBackground component is rendered here to appear on all pages. */}
         <AnimatedBackground />
         {/* This component renders the roaming pet if one is active in the global state. */}

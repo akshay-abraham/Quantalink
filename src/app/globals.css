@@ -18,8 +18,6 @@
 @theme {
   --font-body: var(--font-space-grotesk), sans-serif;
   --font-headline: var(--font-space-grotesk), sans-serif;
-  --font-handwriting: var(--font-lobster), cursive;
-
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
