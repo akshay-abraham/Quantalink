@@ -1,185 +1,400 @@
 /**
  * @file src/components/animated-background.tsx
- * @description A client component that renders a canvas-based animation inspired by Quantum Electrodynamics (QED).
- *              It features charged particles, photon exchanges, and vacuum fluctuations to create a dynamic,
- *              ambient background for the entire application.
- * @note This is a client component (`"use client"`) because it directly interacts with the DOM (canvas)
- *       and uses browser APIs for animation (`requestAnimationFrame`) and event handling.
+ * @description A client component that renders a canvas-based animation inspired by Quantum
+ *              Electrodynamics (QED): charged particles exchanging "photons," vacuum
+ *              fluctuations, and a soft observer-effect response to the pointer.
+ *
+ * @note This is a from-scratch rewrite of the previous implementation. The visual concept
+ *       (charged particles, photon-exchange lines, vacuum fluctuations, light theme, blue/rose/
+ *       gold palette) is unchanged. What changed is *how* it's computed and drawn:
+ *
+ *       Physics
+ *       - The force law is now a *softened* Coulomb force (force = k·q1·q2 / (r² + softening)).
+ *         The softening term is standard in n-body simulation and keeps force finite as two
+ *         particles approach each other, instead of spiking toward infinity.
+ *       - Velocity is damped every frame and a tiny random "thermal" impulse is added back in
+ *         (a simplified Langevin thermostat). Damping alone would let the system grind to a
+ *         halt; noise alone would let it heat up forever. Together they settle to a stable,
+ *         bounded "temperature" — always gently moving, never accelerating without bound.
+ *       - A hard speed clamp is kept as a last-resort safety net.
+ *       - Motion is integrated on a fixed baseline (60fps-equivalent) timestep, so the
+ *         simulation looks the same speed whether the device is rendering at 30fps or 60fps.
+ *
+ *       Rendering
+ *       - No `ctx.shadowBlur` anywhere. Every particle's soft aura is a small pre-rendered
+ *         radial-gradient sprite (built once, off-screen) that gets cheaply scaled with
+ *         `drawImage` each frame, instead of a brand new gradient + a blur pass per particle
+ *         per frame.
+ *       - The page background is a plain CSS gradient behind a *transparent* canvas that is
+ *         cleared with `clearRect` each frame — cheaper than filling/re-drawing a background
+ *         every frame, and it means the desktop view is never "just a flat void" between
+ *         particles.
+ *       - The canvas backing store is sized to `devicePixelRatio` (capped at 2) so the scene
+ *         is crisp on high-DPI phones instead of soft/blurry.
+ *
+ *       Device adaptation
+ *       - Particle count, connection distance, and max connections-per-particle scale
+ *         *continuously* with viewport area (and available CPU cores), instead of a single
+ *         hard isMobile/!isMobile split. A 350px phone and a 767px phone no longer get
+ *         identical settings.
+ *       - Resize is debounced, and a pure height-only change (mobile browser chrome showing/
+ *         hiding while scrolling) no longer re-initializes the simulation — it just re-clamps
+ *         existing particles into the new bounds. A genuine resize (rotation, window resize)
+ *         smoothly grows/shrinks the particle count instead of throwing everything away.
+ *       - The animation pauses completely when the tab is hidden, and respects
+ *         `prefers-reduced-motion` by rendering a single static frame instead of animating.
  */
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-/**
- * AnimatedBackground component creates a dynamic, physics-based visual effect.
- * It adapts particle density and spawn rates based on the device to prioritize
- * either performance (desktop) or smoothness (mobile).
- * @returns {JSX.Element} A canvas element that fills the viewport.
- */
 const AnimatedBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameId = useRef<number | undefined>(undefined);
 
-  /**
-   * The `useEffect` hook runs the setup function once when the component mounts.
-   * It returns the cleanup function to be executed when the component unmounts.
-   */
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Animation constants for framerate capping.
-    let lastFrameTime = 0;
-    const targetFPS = 27; // Capped at 27 FPS for performance on all devices.
-    const frameInterval = 1000 / targetFPS;
+    /* ============================================================
+       Palette (light theme only, matching the original design)
+       ============================================================ */
+    const POSITIVE_HUE = 210; // soft blue — positive charge
+    const NEGATIVE_HUE = 340; // soft rose — negative charge
+    const PHOTON_HUE = 46; // warm gold — photon-exchange lines
 
-    // Simulation state variables.
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
+    /* ============================================================
+       Physics tuning
+       ============================================================ */
+    const COULOMB_K = 2400; // interaction strength
+    const SOFTENING = 22 * 22; // px² — keeps force finite at close range
+    const DAMPING = 0.985; // velocity retained per baseline frame (energy loss)
+    const THERMAL_JITTER = 0.05; // px/frame² random impulse (keeps the field "alive")
+    const MAX_SPEED = 1.7; // px/frame safety clamp
+    const POINTER_RADIUS = 170; // px, "observer effect" influence radius
+    const POINTER_STRENGTH = 55; // px/frame² max push near the pointer
 
-    // **Device Adaptation:** Performance and density settings are adapted based on device screen size.
-    const isMobile = width <= 768;
-    // **Mobile Priority:** Fewer particles for smoother animation.
-    // **Desktop Priority:** More particles for a richer visual experience.
-    let maxParticles = isMobile ? 20 : 30;
-    let virtualPairSpawnRate = isMobile ? 0.15 : 0.25;
+    /* ============================================================
+       Device / frame pacing
+       ============================================================ */
+    const DESKTOP_TARGET_FPS = 60;
+    const MOBILE_TARGET_FPS = 32;
+    const MOBILE_BREAKPOINT = 768;
+    const MAX_DPR = 2;
 
-    const particlePool: Particle[] = [];
-    const activeParticles: Particle[] = [];
+    /* ============================================================
+       Density model — continuous function of viewport area, not a
+       binary isMobile ? a : b split.
+       ============================================================ */
+    const MIN_AREA = 320 * 560; // small-phone reference
+    const MAX_AREA = 1920 * 1080; // desktop reference
+    const MIN_PARTICLES = 16;
+    const MAX_PARTICLES = 80;
+    const MIN_LINKS = 3; // max connections drawn per particle, small screens
+    const MAX_LINKS = 7; // max connections drawn per particle, large screens
+    const MAX_VIRTUAL_MIN = 14;
+    const MAX_VIRTUAL_MAX = 44;
 
-    // --- Particle Class Definition ---
-    // Represents a single point in the quantum field, either "real" or "virtual".
+    const RESIZE_DEBOUNCE_MS = 150;
+    const DIMENSION_STABLE_PX = 4; // ignore jitter smaller than this
+
+    const clamp = (v: number, min: number, max: number) =>
+      Math.min(max, Math.max(min, v));
+
+    /* ============================================================
+       Mutable simulation state (closed over by Particle/animate/etc,
+       exactly like the previous implementation — just corrected).
+       ============================================================ */
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+
+    // Lower-powered devices get a density discount on top of the area-based curve.
+    const cores =
+      typeof navigator !== 'undefined' && navigator.hardwareConcurrency
+        ? navigator.hardwareConcurrency
+        : 4;
+    const coreFactor = cores <= 4 ? 0.75 : 1;
+
+    let maxLinksPerParticle = MIN_LINKS;
+    let maxVirtualParticles = MAX_VIRTUAL_MIN;
+    let connectionDistance = 90;
+    let forceRadius = 130;
+    let virtualPairSpawnRate = 0.12;
+    let isMobile = width <= MOBILE_BREAKPOINT;
+    let targetFPS = isMobile ? MOBILE_TARGET_FPS : DESKTOP_TARGET_FPS;
+    let frameInterval = 1000 / targetFPS;
+    // Physics step size normalized to a 60fps baseline, so a 32fps mobile cap
+    // doesn't make the simulation itself look like it's running in slow motion.
+    let dt = frameInterval / (1000 / 60);
+
+    const computeDensity = (w: number, h: number) => {
+      const area = w * h;
+      const t = clamp((area - MIN_AREA) / (MAX_AREA - MIN_AREA), 0, 1);
+      const particleCount = Math.round(
+        (MIN_PARTICLES + t * (MAX_PARTICLES - MIN_PARTICLES)) * coreFactor
+      );
+      return {
+        t,
+        particleCount: Math.max(10, particleCount),
+        maxLinks: Math.round(MIN_LINKS + t * (MAX_LINKS - MIN_LINKS)),
+        maxVirtual: Math.round(
+          MAX_VIRTUAL_MIN + t * (MAX_VIRTUAL_MAX - MAX_VIRTUAL_MIN)
+        ),
+        connectionDistance: clamp(Math.min(w, h) * 0.16, 58, 170),
+        forceRadius: clamp(Math.min(w, h) * 0.22, 90, 220),
+        spawnRate: 0.1 + t * 0.15,
+      };
+    };
+
+    /* ============================================================
+       Pointer tracking ("observer effect") — read on window so it
+       works regardless of the canvas's negative z-index, and never
+       calls preventDefault so scrolling/touch stay untouched.
+       ============================================================ */
+    let pointerX: number | null = null;
+    let pointerY: number | null = null;
+    let pointerActive = false;
+
+    const handlePointerMove = (e: PointerEvent) => {
+      pointerX = e.clientX;
+      pointerY = e.clientY;
+      pointerActive = true;
+    };
+    const clearPointer = () => {
+      pointerActive = false;
+    };
+
+    /* ============================================================
+       Reduced motion / tab visibility
+       ============================================================ */
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    /* ============================================================
+       Cached glow sprites — built once, reused every frame instead
+       of constructing a new radial gradient per particle per frame.
+       ============================================================ */
+    const createGlowSprite = (hue: number) => {
+      const size = 128;
+      const sprite = document.createElement('canvas');
+      sprite.width = size;
+      sprite.height = size;
+      const sctx = sprite.getContext('2d');
+      if (!sctx) return sprite;
+      const gradient = sctx.createRadialGradient(
+        size / 2,
+        size / 2,
+        0,
+        size / 2,
+        size / 2,
+        size / 2
+      );
+      gradient.addColorStop(0, `hsla(${hue}, 100%, 82%, 0.55)`);
+      gradient.addColorStop(0.5, `hsla(${hue}, 100%, 72%, 0.18)`);
+      gradient.addColorStop(1, `hsla(${hue}, 100%, 70%, 0)`);
+      sctx.fillStyle = gradient;
+      sctx.fillRect(0, 0, size, size);
+      return sprite;
+    };
+    const spritePositive = createGlowSprite(POSITIVE_HUE);
+    const spriteNegative = createGlowSprite(NEGATIVE_HUE);
+
+    /* ============================================================
+       Particle
+       ============================================================ */
     class Particle {
-      x: number = 0;
-      y: number = 0;
-      vx: number = 0;
-      vy: number = 0;
-      radius: number = 0;
+      x = 0;
+      y = 0;
+      vx = 0;
+      vy = 0;
+      ax = 0;
+      ay = 0;
+      radius = 0;
       charge: 1 | -1 = 1;
-      color: string = '';
-      auraRadius: number = 0;
-      auraPulse: number = 0;
-      auraMax: number = 0;
-      inUse: boolean = false;
+      hue = POSITIVE_HUE;
+      auraMax = 0;
+      auraPulse = 0;
+      auraRadius = 0;
+      life = 1;
+      inUse = false;
       isVirtual: boolean;
-      life: number = 1;
 
       constructor(isVirtual = false) {
         this.isVirtual = isVirtual;
         this.reset();
       }
 
-      /** Resets a particle's properties to new random values for object pooling. */
       reset(x?: number, y?: number, charge?: 1 | -1) {
         this.x = x ?? Math.random() * width;
         this.y = y ?? Math.random() * height;
-        this.vx = Math.random() * 0.4 - 0.2;
-        this.vy = Math.random() * 0.4 - 0.2;
+        this.vx = (Math.random() - 0.5) * 0.2;
+        this.vy = (Math.random() - 0.5) * 0.2;
+        this.ax = 0;
+        this.ay = 0;
         this.charge = charge ?? (Math.random() > 0.5 ? 1 : -1);
-        this.radius = this.isVirtual ? 1.2 : Math.random() * 1.5 + 1;
-        this.color =
-          this.charge > 0 ? 'hsl(210, 100%, 75%)' : 'hsl(340, 100%, 75%)';
-        this.auraMax = this.isVirtual ? 0 : this.radius + 8;
+        this.hue = this.charge > 0 ? POSITIVE_HUE : NEGATIVE_HUE;
+        this.radius = this.isVirtual ? 1.1 : 1.1 + Math.random() * 1.6;
+        this.auraMax = this.isVirtual ? 0 : this.radius + 9;
         this.auraPulse = Math.random() * Math.PI * 2;
-        this.auraRadius = this.auraMax / 2;
-        this.life = this.isVirtual ? Math.random() * 0.6 + 0.3 : 1;
+        this.auraRadius = this.auraMax * 0.75;
+        this.life = this.isVirtual ? 0.4 + Math.random() * 0.5 : 1;
         this.inUse = true;
         return this;
       }
 
-      /** Updates the particle's state for the current frame. */
-      update(particles: Particle[]) {
-        // Real particles interact with each other.
-        if (!this.isVirtual) {
-          particles.forEach((other) => {
-            if (this === other || !other.inUse || other.isVirtual) return;
-            const dx = other.x - this.x;
-            const dy = other.y - this.y;
-            const distSq = dx * dx + dy * dy;
-            if (distSq < 200 * 200) {
-              const force = (this.charge * other.charge) / distSq;
-              const angle = Math.atan2(dy, dx);
-              this.vx -= Math.cos(angle) * force * 2.5;
-              this.vy -= Math.sin(angle) * force * 2.5;
-            }
-          });
+      /** Accumulates acceleration from nearby real particles and the pointer. */
+      applyForces() {
+        if (this.isVirtual) return;
+        let ax = 0;
+        let ay = 0;
+        const forceRadiusSq = forceRadius * forceRadius;
+
+        for (let k = 0; k < activeParticles.length; k++) {
+          const other = activeParticles[k];
+          if (other === this || !other.inUse || other.isVirtual) continue;
+          const dx = other.x - this.x;
+          const dy = other.y - this.y;
+          const distSq = dx * dx + dy * dy;
+          if (distSq > forceRadiusSq || distSq < 1) continue;
+          const r = Math.sqrt(distSq);
+          // Softened Coulomb force: finite even as r -> 0.
+          const forceMag =
+            (this.charge * other.charge * COULOMB_K) / (distSq + SOFTENING);
+          ax -= (dx / r) * forceMag;
+          ay -= (dy / r) * forceMag;
         }
 
-        this.x += this.vx;
-        this.y += this.vy;
+        if (pointerActive && pointerX !== null && pointerY !== null) {
+          const dx = this.x - pointerX;
+          const dy = this.y - pointerY;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < POINTER_RADIUS * POINTER_RADIUS) {
+            const r = Math.sqrt(distSq) || 1;
+            const t = 1 - r / POINTER_RADIUS;
+            const push = POINTER_STRENGTH * t * t; // smooth, bounded falloff
+            ax += (dx / r) * push;
+            ay += (dy / r) * push;
+          }
+        }
 
-        // Bounce off edges.
-        if (this.x < this.radius || this.x > width - this.radius) this.vx *= -1;
-        if (this.y < this.radius || this.y > height - this.radius)
-          this.vy *= -1;
+        this.ax = ax;
+        this.ay = ay;
+      }
 
-        this.auraPulse += 0.03;
-        this.auraRadius = this.auraMax * (0.6 + Math.sin(this.auraPulse) * 0.4);
+      /** Integrates velocity/position for one (dt-scaled) step. */
+      integrate() {
+        this.vx += this.ax * dt;
+        this.vy += this.ay * dt;
+
+        // Frame-rate-independent exponential damping (energy dissipation).
+        const dampFactor = Math.pow(DAMPING, dt);
+        this.vx *= dampFactor;
+        this.vy *= dampFactor;
+
+        // Small thermal noise so the field never fully settles (random-walk
+        // variance scales with sqrt(dt), the physically correct scaling).
+        const jitter = THERMAL_JITTER * Math.sqrt(dt);
+        this.vx += (Math.random() - 0.5) * jitter;
+        this.vy += (Math.random() - 0.5) * jitter;
+
+        // Safety-net clamp — belt and suspenders on top of damping.
+        const speed = Math.hypot(this.vx, this.vy);
+        if (speed > MAX_SPEED) {
+          const s = MAX_SPEED / speed;
+          this.vx *= s;
+          this.vy *= s;
+        }
+
+        this.x += this.vx * dt;
+        this.y += this.vy * dt;
+
+        // Bounce off the edges with a touch of inelasticity so the walls
+        // can't pump energy into the system.
+        if (this.x < this.radius) {
+          this.x = this.radius;
+          this.vx = Math.abs(this.vx) * 0.9;
+        } else if (this.x > width - this.radius) {
+          this.x = width - this.radius;
+          this.vx = -Math.abs(this.vx) * 0.9;
+        }
+        if (this.y < this.radius) {
+          this.y = this.radius;
+          this.vy = Math.abs(this.vy) * 0.9;
+        } else if (this.y > height - this.radius) {
+          this.y = height - this.radius;
+          this.vy = -Math.abs(this.vy) * 0.9;
+        }
+
+        this.auraPulse += 0.025 * dt;
+        this.auraRadius =
+          this.auraMax * (0.65 + Math.sin(this.auraPulse) * 0.35);
 
         if (this.isVirtual) {
-          this.life -= 0.01;
+          this.life -= 0.012 * dt;
           if (this.life <= 0) this.inUse = false;
         }
       }
 
-      /** Draws the particle and its aura onto the canvas. */
       draw() {
+        // Re-checked locally: TypeScript's narrowing of the outer `ctx`
+        // doesn't persist into class method bodies.
         if (!ctx) return;
-
-        const auraAlpha = this.isVirtual ? this.life * 0.25 : 0.15;
-        ctx.beginPath();
-        const gradient = ctx.createRadialGradient(
-          this.x,
-          this.y,
-          this.radius,
-          this.x,
-          this.y,
-          this.auraRadius
-        );
-        gradient.addColorStop(0, `${this.color.slice(0, -1)}, ${auraAlpha})`);
-        gradient.addColorStop(1, `hsla(0, 0%, 100%, 0)`);
-        ctx.fillStyle = gradient;
-        ctx.arc(this.x, this.y, this.auraRadius, 0, Math.PI * 2);
-        ctx.fill();
-
+        if (!this.isVirtual && this.auraRadius > 0.5) {
+          const sprite = this.charge > 0 ? spritePositive : spriteNegative;
+          const size = this.auraRadius * 2;
+          ctx.drawImage(
+            sprite,
+            this.x - this.auraRadius,
+            this.y - this.auraRadius,
+            size,
+            size
+          );
+        }
+        const coreAlpha = this.isVirtual ? this.life * 0.9 : 1;
+        const coreLightness = this.isVirtual ? 72 : 80;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        const coreAlpha = this.isVirtual ? this.life * 0.9 : 1;
-        ctx.fillStyle = `hsla(${this.charge > 0 ? 210 : 340}, 100%, 80%, ${coreAlpha})`;
-        ctx.shadowColor = this.color;
-        ctx.shadowBlur = 5;
+        ctx.fillStyle = `hsla(${this.hue}, 100%, ${coreLightness}%, ${coreAlpha})`;
         ctx.fill();
-        ctx.shadowBlur = 0;
       }
     }
 
-    // --- Object Pooling Functions ---
-    const getParticle = (isVirtual = false) => {
-      const available = particlePool.filter(
-        (p) => !p.inUse && p.isVirtual === isVirtual
-      );
-      return available.length > 0
-        ? available[0].reset()
-        : new Particle(isVirtual);
+    /* ============================================================
+       Object pool + active list
+       ============================================================ */
+    const particlePool: Particle[] = [];
+    const activeParticles: Particle[] = [];
+
+    const getParticle = (isVirtual = false): Particle => {
+      for (let i = 0; i < particlePool.length; i++) {
+        const p = particlePool[i];
+        if (!p.inUse && p.isVirtual === isVirtual) return p.reset();
+      }
+      const p = new Particle(isVirtual);
+      particlePool.push(p);
+      return p;
     };
 
-    // --- Initialization ---
-    const init = () => {
+    const init = (particleCount: number) => {
       activeParticles.length = 0;
       particlePool.length = 0;
-      for (let i = 0; i < maxParticles * 3; i++) {
-        particlePool.push(new Particle(i >= maxParticles));
-      }
-      for (let i = 0; i < maxParticles; i++) {
+      for (let i = 0; i < particleCount; i++) {
         activeParticles.push(getParticle(false));
       }
     };
 
-    // --- Vacuum Fluctuations ---
+    const countVirtual = () => {
+      let c = 0;
+      for (let i = 0; i < activeParticles.length; i++) {
+        if (activeParticles[i].isVirtual) c++;
+      }
+      return c;
+    };
+
     const spawnVirtualPair = () => {
-      if (activeParticles.filter((p) => p.isVirtual).length > 40) return;
+      if (countVirtual() >= maxVirtualParticles) return;
       const x = Math.random() * width;
       const y = Math.random() * height;
       const p1 = getParticle(true).reset(x, y, 1);
@@ -191,7 +406,103 @@ const AnimatedBackground = () => {
       activeParticles.push(p1, p2);
     };
 
-    // --- The Main Animation Loop ---
+    /** Grows or shrinks the *real* particle count without touching existing particles. */
+    const adjustParticleCount = (target: number) => {
+      let realCount = 0;
+      for (let i = 0; i < activeParticles.length; i++) {
+        if (!activeParticles[i].isVirtual) realCount++;
+      }
+      const diff = target - realCount;
+      if (diff > 0) {
+        for (let i = 0; i < diff; i++) activeParticles.push(getParticle(false));
+      } else if (diff < 0) {
+        let toRemove = -diff;
+        for (let i = activeParticles.length - 1; i >= 0 && toRemove > 0; i--) {
+          if (!activeParticles[i].isVirtual) {
+            activeParticles[i].inUse = false;
+            activeParticles.splice(i, 1);
+            toRemove--;
+          }
+        }
+      }
+    };
+
+    /* ============================================================
+       Photon-exchange lines — a bounded-degree nearest-neighbor
+       graph instead of an unbounded "every pair within range" mesh,
+       so density can't turn into a hairball on small screens.
+       ============================================================ */
+    type LinkCandidate = { a: Particle; b: Particle; dist: number };
+    const linkCandidates: LinkCandidate[] = [];
+    const linkDegree = new Map<Particle, number>();
+
+    const drawPhotonLine = (a: Particle, b: Particle, dist: number) => {
+      const midX = (a.x + b.x) / 2 + (Math.random() - 0.5) * 30;
+      const midY = (a.y + b.y) / 2 + (Math.random() - 0.5) * 30;
+      const t = 1 - dist / connectionDistance;
+      const alpha = t * t * 0.85;
+
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.quadraticCurveTo(midX, midY, b.x, b.y);
+
+      // Two cheap passes (wide + faint, then thin + bright) fake a glow
+      // without touching ctx.shadowBlur.
+      ctx.lineWidth = 2.4;
+      ctx.strokeStyle = `hsla(${PHOTON_HUE}, 95%, 70%, ${alpha * 0.22})`;
+      ctx.stroke();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = `hsla(${PHOTON_HUE}, 100%, 62%, ${alpha})`;
+      ctx.stroke();
+    };
+
+    const drawPhotonLines = () => {
+      linkCandidates.length = 0;
+      const connDistSq = connectionDistance * connectionDistance;
+
+      for (let i = 0; i < activeParticles.length; i++) {
+        const p1 = activeParticles[i];
+        if (!p1.inUse || p1.isVirtual) continue;
+        for (let j = i + 1; j < activeParticles.length; j++) {
+          const p2 = activeParticles[j];
+          if (!p2.inUse || p2.isVirtual) continue;
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < connDistSq) {
+            linkCandidates.push({ a: p1, b: p2, dist: Math.sqrt(distSq) });
+          }
+        }
+      }
+
+      linkCandidates.sort((x, y) => x.dist - y.dist);
+      linkDegree.clear();
+      for (let i = 0; i < linkCandidates.length; i++) {
+        const c = linkCandidates[i];
+        const da = linkDegree.get(c.a) ?? 0;
+        const db = linkDegree.get(c.b) ?? 0;
+        if (da >= maxLinksPerParticle || db >= maxLinksPerParticle) continue;
+        drawPhotonLine(c.a, c.b, c.dist);
+        linkDegree.set(c.a, da + 1);
+        linkDegree.set(c.b, db + 1);
+      }
+    };
+
+    /* ============================================================
+       Canvas sizing — DPR-aware backing store, CSS px drawing space.
+       ============================================================ */
+    const applyCanvasSize = () => {
+      dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    /* ============================================================
+       Main loop
+       ============================================================ */
+    let lastFrameTime = 0;
+
     const animate = (timestamp: number) => {
       animationFrameId.current = requestAnimationFrame(animate);
 
@@ -199,81 +510,180 @@ const AnimatedBackground = () => {
       if (elapsed < frameInterval) return;
       lastFrameTime = timestamp - (elapsed % frameInterval);
 
-      ctx.fillStyle = 'hsl(180, 50%, 98%)';
-      ctx.fillRect(0, 0, width, height);
+      ctx.clearRect(0, 0, width, height);
 
-      if (Math.random() < virtualPairSpawnRate) {
-        spawnVirtualPair();
-      }
+      if (Math.random() < virtualPairSpawnRate) spawnVirtualPair();
 
-      // Draw "Photon Exchange" Lines.
-      for (let i = 0; i < activeParticles.length; i++) {
-        for (let j = i + 1; j < activeParticles.length; j++) {
-          const p1 = activeParticles[i];
-          const p2 = activeParticles[j];
-          if (!p1.inUse || !p2.inUse || p1.isVirtual || p2.isVirtual) continue;
+      drawPhotonLines();
 
-          const dx = p1.x - p2.x;
-          const dy = p1.y - p2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 150) {
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            const midX = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * 30;
-            const midY = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * 30;
-            ctx.quadraticCurveTo(midX, midY, p2.x, p2.y);
-            ctx.strokeStyle = `hsla(50, 100%, 70%, ${0.9 - dist / 150})`;
-            ctx.lineWidth = 2;
-            ctx.shadowColor = 'hsl(50, 100%, 80%)';
-            ctx.shadowBlur = 10;
-            ctx.stroke();
-            ctx.shadowBlur = 0;
-          }
-        }
-      }
-
-      // Update and Draw all active particles.
       for (let i = activeParticles.length - 1; i >= 0; i--) {
         const p = activeParticles[i];
-        if (p.inUse) {
-          p.update(activeParticles);
-          p.draw();
-        } else {
+        if (!p.inUse) {
           activeParticles.splice(i, 1);
+          continue;
         }
+        p.applyForces();
+        p.integrate();
+        p.draw();
       }
     };
 
-    // --- Event Listeners and Cleanup ---
-    const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      const newIsMobile = width <= 768;
-      maxParticles = newIsMobile ? 20 : 30;
-      virtualPairSpawnRate = newIsMobile ? 0.15 : 0.25;
-      init();
+    const renderStaticFrame = () => {
+      ctx.clearRect(0, 0, width, height);
+      drawPhotonLines();
+      for (let i = 0; i < activeParticles.length; i++) {
+        const p = activeParticles[i];
+        if (p.inUse && !p.isVirtual) p.draw();
+      }
     };
+
+    const startLoop = () => {
+      if (animationFrameId.current !== undefined) return;
+      lastFrameTime = 0;
+      animationFrameId.current = requestAnimationFrame(animate);
+    };
+    const stopLoop = () => {
+      if (animationFrameId.current !== undefined) {
+        cancelAnimationFrame(animationFrameId.current);
+        animationFrameId.current = undefined;
+      }
+    };
+
+    /* ============================================================
+       Resize handling — debounced, ignores pure-height jitter
+       (mobile URL bar), re-tunes density continuously, and adjusts
+       the particle count incrementally instead of reinitializing.
+       ============================================================ */
+    let lastWidth = width;
+    let lastHeight = height;
+    let resizeTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    const applyResize = () => {
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+      const widthChanged =
+        Math.abs(newWidth - lastWidth) > DIMENSION_STABLE_PX;
+      const heightChanged =
+        Math.abs(newHeight - lastHeight) > DIMENSION_STABLE_PX;
+      if (!widthChanged && !heightChanged) return;
+
+      width = newWidth;
+      height = newHeight;
+      applyCanvasSize();
+
+      if (!widthChanged) {
+        // Almost certainly the mobile browser chrome showing/hiding while
+        // scrolling. Keep the simulation exactly as it is, just clamp
+        // anything that would now sit outside the visible area.
+        for (let i = 0; i < activeParticles.length; i++) {
+          const p = activeParticles[i];
+          p.x = clamp(p.x, p.radius, width - p.radius);
+          p.y = clamp(p.y, p.radius, height - p.radius);
+        }
+        lastWidth = newWidth;
+        lastHeight = newHeight;
+        return;
+      }
+
+      // A genuine resize / orientation change: re-tune continuously and
+      // grow or shrink the particle count without discarding it.
+      const density = computeDensity(width, height);
+      maxLinksPerParticle = density.maxLinks;
+      maxVirtualParticles = density.maxVirtual;
+      connectionDistance = density.connectionDistance;
+      forceRadius = density.forceRadius;
+      virtualPairSpawnRate = density.spawnRate;
+      adjustParticleCount(density.particleCount);
+
+      isMobile = width <= MOBILE_BREAKPOINT;
+      targetFPS = isMobile ? MOBILE_TARGET_FPS : DESKTOP_TARGET_FPS;
+      frameInterval = 1000 / targetFPS;
+      dt = frameInterval / (1000 / 60);
+
+      for (let i = 0; i < activeParticles.length; i++) {
+        const p = activeParticles[i];
+        p.x = clamp(p.x, p.radius, width - p.radius);
+        p.y = clamp(p.y, p.radius, height - p.radius);
+      }
+
+      lastWidth = newWidth;
+      lastHeight = newHeight;
+    };
+
+    const handleResize = () => {
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(applyResize, RESIZE_DEBOUNCE_MS);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopLoop();
+      } else if (!motionQuery.matches) {
+        startLoop();
+      }
+    };
+
+    const handleMotionPreferenceChange = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        stopLoop();
+        renderStaticFrame();
+      } else if (!document.hidden) {
+        startLoop();
+      }
+    };
+
+    /* ============================================================
+       Setup
+       ============================================================ */
+    applyCanvasSize();
+    const initialDensity = computeDensity(width, height);
+    maxLinksPerParticle = initialDensity.maxLinks;
+    maxVirtualParticles = initialDensity.maxVirtual;
+    connectionDistance = initialDensity.connectionDistance;
+    forceRadius = initialDensity.forceRadius;
+    virtualPairSpawnRate = initialDensity.spawnRate;
+    init(initialDensity.particleCount);
 
     window.addEventListener('resize', handleResize);
+    window.addEventListener('pointermove', handlePointerMove, {
+      passive: true,
+    });
+    window.addEventListener('pointerdown', handlePointerMove, {
+      passive: true,
+    });
+    window.addEventListener('pointerleave', clearPointer, { passive: true });
+    window.addEventListener('blur', clearPointer);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    motionQuery.addEventListener('change', handleMotionPreferenceChange);
 
-    init();
-    animate(0);
+    if (motionQuery.matches) {
+      renderStaticFrame();
+    } else if (!document.hidden) {
+      startLoop();
+    }
 
-    const cleanup = () => {
+    return () => {
       window.removeEventListener('resize', handleResize);
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerdown', handlePointerMove);
+      window.removeEventListener('pointerleave', clearPointer);
+      window.removeEventListener('blur', clearPointer);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      motionQuery.removeEventListener('change', handleMotionPreferenceChange);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      stopLoop();
     };
-
-    return cleanup;
   }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full -z-10"
+      aria-hidden="true"
+      className="fixed top-0 left-0 -z-10 h-full w-full"
+      style={{
+        background:
+          'radial-gradient(circle at 50% 28%, hsl(205 75% 96%) 0%, hsl(192 50% 97.5%) 45%, hsl(180 35% 97%) 100%)',
+      }}
     />
   );
 };
