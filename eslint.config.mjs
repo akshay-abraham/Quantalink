@@ -12,6 +12,7 @@ export default defineConfig([
       'react-hooks/purity': 'off',
       'react-hooks/set-state-in-effect': 'off',
       'react-hooks/immutability': 'off',
+      '@next/next/no-page-custom-font': 'off',
     },
   },
   globalIgnores(['.next/**', 'public/sitemap*.xml']),

@@ -16,8 +16,8 @@
 }
 
 @theme {
-  --font-body: var(--font-space-grotesk), sans-serif;
-  --font-headline: var(--font-space-grotesk), sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-headline: 'Space Grotesk', sans-serif;
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
@@ -217,7 +217,9 @@
 
 @layer utilities {
   body {
-    font-family: var(--font-space-grotesk), sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     /* Add subtle noise texture for a more realistic acrylic/glass effect */

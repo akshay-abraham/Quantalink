@@ -6,7 +6,6 @@
  */
 import React from 'react';
 import type { Metadata } from 'next';
-import { Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import AnimatedBackground from '@/components/animated-background';
@@ -15,11 +14,6 @@ import GlobalPetRenderer from '@/components/global-pet-renderer';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import GuidedTour from '@/components/guided-tour';
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-space-grotesk',
-});
 
 // Define metadata for the website, used for SEO and browser tab information.
 export const metadata: Metadata = {
@@ -113,6 +107,16 @@ export default function RootLayout({
     // minor mismatches on initial load, which is acceptable for this decorative element.
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"
+          rel="stylesheet"
+        />
         <meta
           name="google-site-verification"
           content="-ggF-eMSfmD9YH-4yLzcQDEjUmv9WBmZuwxjsFAHifA"
@@ -123,7 +127,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${spaceGrotesk.variable} font-body antialiased`}>
+      <body className="font-body antialiased">
         {/* The AnimatedBackground component is rendered here to appear on all pages. */}
         <AnimatedBackground />
         {/* This component renders the roaming pet if one is active in the global state. */}
