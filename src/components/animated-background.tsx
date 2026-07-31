@@ -32,6 +32,26 @@
  *       - The canvas backing store is sized to `devicePixelRatio` (capped at 2) so the scene
  *         is crisp on high-DPI phones instead of soft/blurry.
  *
+ *       Liveliness (mobile-weighted)
+ *       - Damping/jitter/speed were retuned so the field keeps more visible
+ *         motion at a stable equilibrium than the very first pass.
+ *       - A cheap two-term sine/cosine "flow field" (`FLOW_SPEED`/`FLOW_BLEND`
+ *         in integrate()) steers each particle's velocity toward a slowly-
+ *         shifting target, giving the whole scene a coherent drift on top of
+ *         individual jitter — the difference between "handful of dots
+ *         vibrating in place" and "a field that's moving." It's implemented
+ *         as steering (nudge toward a target velocity) rather than an added
+ *         force, specifically because it's *coherent* over many frames; an
+ *         added force that doesn't change direction quickly fights the
+ *         gentle damping above and piles up almost undamped, whereas
+ *         steering can only ever approach its target.
+ *       - Small screens intentionally run *fewer* particles to avoid clutter,
+ *         so they get a `liveliness` multiplier (~1.4x tapering to 1.0x on
+ *         desktop) on the jitter and flow terms — each particle carries more
+ *         visible motion instead of the scene just looking sparse and still.
+ *       - Particle cores now have a subtle brightness shimmer synced to their
+ *         aura pulse, instead of being flat, static dots.
+ *
  *       Device adaptation
  *       - Particle count, connection distance, and max connections-per-particle scale
  *         *continuously* with viewport area (and available CPU cores), instead of a single
@@ -71,16 +91,18 @@ const AnimatedBackground = () => {
     const COULOMB_K = 2400; // interaction strength
     const SOFTENING = 22 * 22; // px² — keeps force finite at close range
     const DAMPING = 0.985; // velocity retained per baseline frame (energy loss)
-    const THERMAL_JITTER = 0.05; // px/frame² random impulse (keeps the field "alive")
-    const MAX_SPEED = 1.7; // px/frame safety clamp
-    const POINTER_RADIUS = 170; // px, "observer effect" influence radius
-    const POINTER_STRENGTH = 55; // px/frame² max push near the pointer
+    const THERMAL_JITTER = 0.06; // px/frame² random impulse (keeps the field "alive")
+    const MAX_SPEED = 1.8; // px/frame safety clamp — a rare ceiling, not a cruise speed
+    const POINTER_RADIUS = 190; // px, "observer effect" influence radius
+    const POINTER_STRENGTH = 70; // px/frame² max push near the pointer
+    const FLOW_SPEED = 0.5; // px/frame — target speed of the ambient "field current"
+    const FLOW_BLEND = 0.025; // fraction of the gap to the flow's target velocity closed per baseline frame
 
     /* ============================================================
        Device / frame pacing
        ============================================================ */
     const DESKTOP_TARGET_FPS = 60;
-    const MOBILE_TARGET_FPS = 32;
+    const MOBILE_TARGET_FPS = 40;
     const MOBILE_BREAKPOINT = 768;
     const MAX_DPR = 2;
 
@@ -92,9 +114,9 @@ const AnimatedBackground = () => {
     const MAX_AREA = 1920 * 1080; // desktop reference
     const MIN_PARTICLES = 16;
     const MAX_PARTICLES = 80;
-    const MIN_LINKS = 3; // max connections drawn per particle, small screens
+    const MIN_LINKS = 5;// max connections drawn per particle, small screens
     const MAX_LINKS = 7; // max connections drawn per particle, large screens
-    const MAX_VIRTUAL_MIN = 14;
+    const MAX_VIRTUAL_MIN = 18;
     const MAX_VIRTUAL_MAX = 44;
 
     const RESIZE_DEBOUNCE_MS = 150;
@@ -122,7 +144,12 @@ const AnimatedBackground = () => {
     let maxVirtualParticles = MAX_VIRTUAL_MIN;
     let connectionDistance = 90;
     let forceRadius = 130;
-    let virtualPairSpawnRate = 0.12;
+    let virtualPairSpawnRate = 0.16;
+    // Small screens get *fewer* particles (see MIN_PARTICLES/MAX_PARTICLES below)
+    // but each one moves with more relative energy, so the scene still reads as
+    // lively rather than sparse-and-still. Desktop, already dense, needs less of
+    // a boost per particle.
+    let liveliness = 1.4;
     let isMobile = width <= MOBILE_BREAKPOINT;
     let targetFPS = isMobile ? MOBILE_TARGET_FPS : DESKTOP_TARGET_FPS;
     let frameInterval = 1000 / targetFPS;
@@ -145,7 +172,9 @@ const AnimatedBackground = () => {
         ),
         connectionDistance: clamp(Math.min(w, h) * 0.16, 58, 170),
         forceRadius: clamp(Math.min(w, h) * 0.22, 90, 220),
-        spawnRate: 0.1 + t * 0.15,
+        spawnRate: 0.16 + t * 0.14,
+        // 1.4x on small phones, tapering to 1.0x on large desktops.
+        liveliness: 1.4 - 0.4 * t,
       };
     };
 
@@ -295,9 +324,36 @@ const AnimatedBackground = () => {
 
         // Small thermal noise so the field never fully settles (random-walk
         // variance scales with sqrt(dt), the physically correct scaling).
-        const jitter = THERMAL_JITTER * Math.sqrt(dt);
+        // Scaled by `liveliness` so phones — which deliberately run fewer
+        // particles to avoid clutter — get more visible motion per particle
+        // instead of just looking sparse and still.
+        const jitter = THERMAL_JITTER * liveliness * Math.sqrt(dt);
         this.vx += (Math.random() - 0.5) * jitter;
         this.vy += (Math.random() - 0.5) * jitter;
+
+        // Ambient "field current" — a slow, smoothly-shifting flow (two
+        // offset sine waves standing in for a cheap curl-noise field) that
+        // gently steers particles along, giving the scene a coherent drift
+        // on top of individual jitter. Deliberately implemented as a nudge
+        // *toward a target velocity* (steering) rather than a continuously
+        // added force: a slowly-varying force is coherent enough to fight
+        // the gentle damping above and pile up almost undamped, while a
+        // steering term is self-limiting by construction — it can approach
+        // its target but never run away, however it's tuned. Opposite
+        // charges get a phase-shifted copy, echoing how a real field
+        // pushes positive and negative charges differently.
+        const flowPhase = this.charge > 0 ? 0 : Math.PI;
+        const targetFlowVX =
+          Math.sin(this.y * 0.006 + simTime * 0.015 + flowPhase) *
+          FLOW_SPEED *
+          liveliness;
+        const targetFlowVY =
+          Math.cos(this.x * 0.006 + simTime * 0.012 + flowPhase) *
+          FLOW_SPEED *
+          liveliness;
+        const flowBlend = 1 - Math.pow(1 - FLOW_BLEND, dt);
+        this.vx += (targetFlowVX - this.vx) * flowBlend;
+        this.vy += (targetFlowVY - this.vy) * flowBlend;
 
         // Safety-net clamp — belt and suspenders on top of damping.
         const speed = Math.hypot(this.vx, this.vy);
@@ -327,9 +383,9 @@ const AnimatedBackground = () => {
           this.vy = -Math.abs(this.vy) * 0.9;
         }
 
-        this.auraPulse += 0.025 * dt;
+        this.auraPulse += 0.035 * dt;
         this.auraRadius =
-          this.auraMax * (0.65 + Math.sin(this.auraPulse) * 0.35);
+          this.auraMax * (0.62 + Math.sin(this.auraPulse) * 0.38);
 
         if (this.isVirtual) {
           this.life -= 0.012 * dt;
@@ -352,7 +408,9 @@ const AnimatedBackground = () => {
             size
           );
         }
-        const coreAlpha = this.isVirtual ? this.life * 0.9 : 1;
+        const coreAlpha = this.isVirtual
+          ? this.life * 0.9
+          : 0.82 + Math.sin(this.auraPulse * 1.3) * 0.18;
         const coreLightness = this.isVirtual ? 72 : 80;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -502,6 +560,11 @@ const AnimatedBackground = () => {
        Main loop
        ============================================================ */
     let lastFrameTime = 0;
+    // Baseline-frame clock (not wall-clock ms) driving the ambient flow field
+    // below — advances once per *executed* simulation step, so it speeds up
+    // or slows down consistently with everything else if the frame rate ever
+    // changes, instead of drifting independently.
+    let simTime = 0;
 
     const animate = (timestamp: number) => {
       animationFrameId.current = requestAnimationFrame(animate);
@@ -511,6 +574,7 @@ const AnimatedBackground = () => {
       lastFrameTime = timestamp - (elapsed % frameInterval);
 
       ctx.clearRect(0, 0, width, height);
+      simTime += dt;
 
       if (Math.random() < virtualPairSpawnRate) spawnVirtualPair();
 
@@ -593,6 +657,7 @@ const AnimatedBackground = () => {
       connectionDistance = density.connectionDistance;
       forceRadius = density.forceRadius;
       virtualPairSpawnRate = density.spawnRate;
+      liveliness = density.liveliness;
       adjustParticleCount(density.particleCount);
 
       isMobile = width <= MOBILE_BREAKPOINT;
@@ -642,6 +707,7 @@ const AnimatedBackground = () => {
     connectionDistance = initialDensity.connectionDistance;
     forceRadius = initialDensity.forceRadius;
     virtualPairSpawnRate = initialDensity.spawnRate;
+    liveliness = initialDensity.liveliness;
     init(initialDensity.particleCount);
 
     window.addEventListener('resize', handleResize);
