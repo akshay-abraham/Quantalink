@@ -2,21 +2,20 @@
  * @file src/components/desktop-nav.tsx
  * @description The navigation bar component for desktop screens.
  *              It provides a clear, always-visible navigation experience for users on larger devices.
+ *
+ * @note This no longer has its own `hidden md:flex` breakpoint classes.
+ *       `MainNav` already owns the desktop/mobile switch (via `hidden
+ *       md:block` / `md:hidden` wrapper divs), so this component doesn't
+ *       need to duplicate that logic -- it previously did, which worked
+ *       fine but meant the breakpoint lived in two places that had to be
+ *       kept in agreement.
  */
 'use client';
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { Home, User, Code, Star } from 'lucide-react';
-
-// Defines the links that will be displayed in the navigation bar.
-const navLinks = [
-  { href: '/', label: 'Home', icon: Home },
-  { href: '/about', label: 'About', icon: User },
-  { href: '/skills', label: 'Skills & Technologies', icon: Code },
-  { href: '/projects', label: 'Projects', icon: Star },
-];
+import { navLinks } from './nav-links';
 
 /**
  * DesktopNav component renders a horizontal navigation menu for larger screens.
@@ -27,13 +26,14 @@ export default function DesktopNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="hidden md:flex items-center gap-2 bg-card/50 border border-border/60 p-1 rounded-full backdrop-blur-md">
+    <nav className="flex items-center gap-2 bg-card/50 border border-border/60 p-1 rounded-full backdrop-blur-md">
       {navLinks.map((link) => {
         const isActive = pathname === link.href;
         return (
           <Link
             key={link.href}
             href={link.href}
+            aria-current={isActive ? 'page' : undefined}
             className={cn(
               'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors',
               'hover:bg-primary/10',
