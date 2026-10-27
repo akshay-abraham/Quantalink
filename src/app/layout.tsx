@@ -12,6 +12,7 @@ import MainNav from '@/components/main-nav';
 import GlobalPetRenderer from '@/components/global-pet-renderer';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { pageSocialMetadata, siteUrl } from '@/lib/seo';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -21,10 +22,12 @@ export const viewport: Viewport = {
 
 // Define metadata for the website, used for SEO and browser tab information.
 export const metadata: Metadata = {
-  metadataBase: new URL('https://akshayabraham.vercel.app'),
-  title: 'Akshay K Rooben Abraham | Portfolio',
+  metadataBase: new URL(siteUrl),
+  title: 'Akshay Abraham | Student & Builder | Quantalink',
   description:
-    'Akshay K Rooben Abraham is a student and builder working on Lyra, MNEMO, and Mitra.',
+    'Meet Akshay Abraham (Akshay K Rooben Abraham), a student and builder from Kottayam creating Lyra, MNEMO, and Mitra. Explore his projects, skills, and journey.',
+  authors: [{ name: 'Akshay Abraham', url: siteUrl }],
+  creator: 'Akshay Abraham',
   keywords: [
     'Akshay Abraham',
     'Akshay K Rooben Abraham',
@@ -38,28 +41,11 @@ export const metadata: Metadata = {
     'Lyra',
     'AI Builder',
   ],
-  openGraph: {
-    title: 'Akshay K Rooben Abraham | Portfolio',
-    description: 'Creating systems · Built around people · User empathy',
-    url: 'https://akshayabraham.vercel.app',
-    siteName: 'Akshay Abraham Portfolio',
-    images: [
-      {
-        url: 'https://akshayabraham.vercel.app/og-image.png', // Must be an absolute URL
-        width: 1200,
-        height: 630,
-        alt: 'Akshay Abraham Personal Portfolio',
-      },
-    ],
-    locale: 'en_US',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Akshay K Rooben Abraham | Portfolio',
-    description: 'Creating systems · Built around people · User empathy',
-    images: ['https://akshayabraham.vercel.app/og-image.png'],
-  },
+  ...pageSocialMetadata(
+    'Akshay Abraham | Student & Builder | Quantalink',
+    'Explore the projects, skills, and journey of Akshay Abraham, a student and builder from Kottayam.',
+    '/'
+  ),
   robots: {
     index: true,
     follow: true,
@@ -73,7 +59,7 @@ export const metadata: Metadata = {
   },
   // Sets the canonical URL for the root of the site.
   alternates: {
-    canonical: 'https://akshayabraham.vercel.app',
+    canonical: '/',
   },
 };
 
@@ -81,11 +67,13 @@ export const metadata: Metadata = {
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  name: 'Akshay K Rooben Abraham',
-  alternateName: ['Akshay Abraham', 'Akshay K Ruben Abraham'],
-  url: 'https://akshayabraham.vercel.app',
-  image: 'https://akshayabraham.vercel.app/profile.webp',
-  jobTitle: 'Student & CS / AI Builder',
+  '@id': `${siteUrl}/#person`,
+  name: 'Akshay Abraham',
+  alternateName: ['Akshay K Rooben Abraham', 'Akshay K Ruben Abraham'],
+  url: siteUrl,
+  image: `${siteUrl}/akshay-abraham-aiboomi-portrait.webp`,
+  description:
+    'Student and builder from Kottayam creating Lyra, MNEMO, and Mitra.',
   alumniOf: {
     '@type': 'Organization',
     name: 'Girideepam Bethany Central School',

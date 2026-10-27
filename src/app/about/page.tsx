@@ -4,12 +4,18 @@ import { journey } from '@/lib/journey-data';
 import { ArrowUpRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { pageSocialMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'My Journey | Akshay K Rooben Abraham',
+  title: 'About Akshay Abraham | Journey & Projects',
   description:
-    'From my first school AI workshop to hackathons and YC Startup School India: creating systems through user empathy.',
+    'Learn about Akshay Abraham, a student and builder from Kottayam. Follow his journey from a school AI workshop to hackathons, Lyra, and YC Startup School India.',
   alternates: { canonical: '/about' },
+  ...pageSocialMetadata(
+    'About Akshay Abraham | Journey & Projects',
+    'Follow Akshay Abraham’s journey through Lyra, hackathons, and YC Startup School India.',
+    '/about'
+  ),
 };
 
 export default function AboutPage() {
@@ -19,9 +25,9 @@ export default function AboutPage() {
         <p className="eyebrow">The person behind the projects</p>
         <h1>My journey.</h1>
         <p className="page-intro">
-          I’m Akshay, a student and builder from Kottayam. User empathy shapes
-          how I work: understanding someone’s needs and thinking through the
-          whole experience.
+          I’m Akshay Abraham, a student and builder from Kottayam. User empathy
+          shapes how I work: understanding someone’s needs and thinking through
+          the whole experience.
         </p>
       </header>
       <section

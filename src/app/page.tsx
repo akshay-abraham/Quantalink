@@ -29,24 +29,24 @@ export default function Home() {
             Explore my journey <ArrowUpRight size={17} aria-hidden="true" />
           </Link>
         </div>
-        <div className="journey-preview-photos" aria-hidden="true">
+        <div className="journey-preview-photos">
           <Image
-            src="/events/first-presentation.webp"
-            alt=""
+            src="/events/akshay-abraham-first-presentation.webp"
+            alt="Akshay Abraham presenting Lyra at a school AI workshop"
             width={798}
             height={950}
             sizes="(max-width: 767px) 24vw, 120px"
           />
           <Image
-            src="/events/hack4future-2025.webp"
-            alt=""
+            src="/events/akshay-abraham-hack4future-2025.webp"
+            alt="Akshay Abraham at Hack4Future 2025 in Kochi"
             width={1600}
             height={1067}
             sizes="(max-width: 767px) 24vw, 120px"
           />
           <Image
-            src="/events/yc-startup-school.webp"
-            alt=""
+            src="/events/akshay-abraham-yc-startup-school-india.webp"
+            alt="Akshay Abraham at Y Combinator Startup School India"
             width={1600}
             height={900}
             sizes="(max-width: 767px) 24vw, 120px"

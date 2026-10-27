@@ -1,12 +1,18 @@
 import PageFooter from '@/components/page-footer';
 import Projects from '@/components/projects';
 import type { Metadata } from 'next';
+import { pageSocialMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Projects | Akshay K Rooben Abraham',
+  title: 'Projects by Akshay Abraham | Quantalink',
   description:
-    'Lyra, Mitra, MNEMO, Driver Guard, M57, NEPHRA, and Quantalink  ·  projects by Akshay K Rooben Abraham.',
+    'Explore projects by Akshay Abraham, including Lyra, Mitra, MNEMO, Driver Guard, M57, NEPHRA, and Quantalink.',
   alternates: { canonical: '/projects' },
+  ...pageSocialMetadata(
+    'Projects by Akshay Abraham | Quantalink',
+    'Explore Lyra, Mitra, MNEMO, and other projects built by Akshay Abraham.',
+    '/projects'
+  ),
 };
 
 export default function ProjectsPage() {

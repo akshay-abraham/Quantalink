@@ -66,8 +66,8 @@ export default function ProfileSection() {
             <span>01 / AK</span>
           </div>
           <Image
-            src="/profile.webp"
-            alt="Akshay speaking about his work at a startup event"
+            src="/akshay-abraham-aiboomi-portrait.webp"
+            alt="Akshay Abraham speaking about Lyra at AIBoomi Startup Weekend Kochi"
             width={640}
             height={640}
             sizes="(min-width: 1024px) 420px, (min-width: 640px) 380px, 85vw"

@@ -1,12 +1,18 @@
 import PageFooter from '@/components/page-footer';
 import SkillsClientPage from '@/components/skills-client-page';
 import type { Metadata } from 'next';
+import { pageSocialMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Skills & Technologies | Akshay K Rooben Abraham',
+  title: 'Skills & Technologies | Akshay Abraham',
   description:
-    'The languages, frameworks, and tools I use across web, Android, AI, and embedded projects.',
+    'Explore the languages, frameworks, and tools Akshay Abraham uses across web, Android, AI, and embedded projects.',
   alternates: { canonical: '/skills' },
+  ...pageSocialMetadata(
+    'Skills & Technologies | Akshay Abraham',
+    'The tools Akshay Abraham uses across web, Android, AI, and embedded projects.',
+    '/skills'
+  ),
 };
 
 export default function SkillsPage() {

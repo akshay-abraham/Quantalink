@@ -5,8 +5,8 @@ export const journey = [
     detail:
       'My first-ever presentation was at the AI workshop and community outreach programme organised by our school. Lyra had come to life just 24 hours earlier. Teachers from the visiting community school told me, “Call us when it’s ready. We need it for our children.” I still hear that kind of response when I present Lyra. More recently, AIBoomi judge Vineeth Rajagopal wrote, “I’ll wait for Lyra to come out and ask my kids to use it.” Moments like these keep me working on Lyra.',
     photo: {
-      src: '/events/first-presentation.webp',
-      alt: 'Akshay presenting at his school’s AI workshop and community outreach programme',
+      src: '/events/akshay-abraham-first-presentation.webp',
+      alt: 'Akshay Abraham presenting Lyra at his school’s AI workshop and community outreach programme',
       width: 798,
       height: 950,
     },
@@ -17,8 +17,8 @@ export const journey = [
     detail:
       'Took Lyra to my first hackathon, organised by Saraswathi Vidyanikethan, Elamakkara, Kochi. Won second place, met other builders, and brought back new questions to work on.',
     photo: {
-      src: '/events/hack4future-2025.webp',
-      alt: 'Award presentation at Hack4Future 2025 in Kochi',
+      src: '/events/akshay-abraham-hack4future-2025.webp',
+      alt: 'Akshay Abraham at the Hack4Future 2025 award presentation in Kochi',
       width: 1600,
       height: 1067,
     },
@@ -29,8 +29,8 @@ export const journey = [
     detail:
       'Won first place at Hackfinity, organised by HowNWhy Education at St. John’s Central School, Anchal. Another opportunity to share Lyra and listen to how people wanted to use it.',
     photo: {
-      src: '/events/hackfinity-2025.webp',
-      alt: 'Hackfinity 2025 award presentation in Anchal',
+      src: '/events/akshay-abraham-hackfinity-2025.webp',
+      alt: 'Akshay Abraham at the Hackfinity 2025 award presentation in Anchal',
       width: 1600,
       height: 1066,
     },
@@ -41,8 +41,8 @@ export const journey = [
     detail:
       'Presented Lyra at SAMEEKSHA, part of SRISHTI at Saintgits College of Engineering, and won first place. Each conversation helped sharpen the system and the problem it was trying to solve.',
     photo: {
-      src: '/events/sameeksha-2026.webp',
-      alt: 'Akshay receiving an award at SAMEEKSHA 2026',
+      src: '/events/akshay-abraham-sameeksha-2026.webp',
+      alt: 'Akshay Abraham receiving an award at SAMEEKSHA 2026',
       width: 1600,
       height: 1066,
     },
@@ -53,8 +53,8 @@ export const journey = [
     detail:
       'Selected as Arts Captain of Girideepam Bethany Central School, Kottayam.',
     photo: {
-      src: '/events/arts-captain.webp',
-      alt: 'School ceremony with the student leadership team',
+      src: '/events/akshay-abraham-arts-captain.webp',
+      alt: 'Akshay Abraham with the student leadership team at a school ceremony',
       width: 720,
       height: 960,
     },
@@ -65,8 +65,8 @@ export const journey = [
     detail:
       'Selected for and attended YC Startup School India 2026. Learned from founders and other builders, with a few ideas that stayed with me: build with intention, launch, and listen closely to users.',
     photo: {
-      src: '/events/yc-startup-school.webp',
-      alt: 'Akshay at Y Combinator Startup School India',
+      src: '/events/akshay-abraham-yc-startup-school-india.webp',
+      alt: 'Akshay Abraham at Y Combinator Startup School India',
       width: 1600,
       height: 900,
     },
@@ -77,8 +77,8 @@ export const journey = [
     detail:
       'Competed with Lyra as the youngest solo team in a 20-hour buildathon with 76 teams and around 140 participants. Won first place and received $10,000 in OpenAI API credits. The most meaningful part was seeing people connect with what I was building.',
     photo: {
-      src: '/events/aiboomi-kochi.webp',
-      alt: 'Akshay receiving first prize at AIBoomi Startup Weekend Kochi',
+      src: '/events/akshay-abraham-aiboomi-kochi.webp',
+      alt: 'Akshay Abraham receiving first prize at AIBoomi Startup Weekend Kochi',
       width: 1600,
       height: 1067,
     },
