@@ -1,75 +1,46 @@
-/**
- * @file src/components/easter-egg.tsx
- * @description A fun, interactive "game" component based on the Schrödinger's Cat thought experiment.
- *              It allows the user to "collapse the wave function" after completing a mini-game.
- *              The game features adaptive difficulty and cinematic results.
- * @note This is a client component due to its use of state (`useState`) and effects (`useEffect`).
- */
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
+  Atom,
   Box,
   Cat,
   Ghost,
-  Timer,
-  X,
-  Atom,
   Dna,
   Biohazard,
   FlaskConical,
   PartyPopper,
   Skull,
   Star,
+  Timer,
   CheckCircle2,
 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { choosePetType, setPet, type PetType } from '@/lib/pet-state';
 import { cn } from '@/lib/utils';
-import { useInView } from '@/hooks/use-in-view';
-import { Progress } from '@/components/ui/progress';
-import { choosePetType, setPet, PetType } from '@/lib/pet-state';
-import { TOUR_STORAGE_KEY } from './guided-tour';
 
-// Defines the possible states of the game.
 type GameState =
   'idle' | 'instructions' | 'playing' | 'revealing' | 'result' | 'failed';
-
-// Icons used for the clickable "anomalies" in the game.
 const ANOMALY_ICONS = [Atom, Dna, Biohazard, FlaskConical];
-// Colors used for the anomalies, ensuring a vibrant and varied game board.
-const ANOMALY_COLORS = [
-  '#ff00ff',
-  '#00ffff',
-  '#ffb700',
-  '#00ff00',
-  '#ff5252',
-  '#ad52ff',
-  '#f472b6',
-  '#3b82f6',
-];
-
+const ANOMALY_COLORS = ['#008b8b', '#447dd9', '#b367be', '#d58b2c'];
 interface Anomaly {
   id: string;
   x: number;
   y: number;
-  Icon: React.ElementType;
+  Icon: typeof Atom;
   color: string;
 }
-
 interface ParticleEffect {
   id: number;
   x: number;
   y: number;
   type: ParticleType;
 }
-
 // Defines the icons used for different particle effects.
 export const PARTICLE_ICONS = {
   popper: PartyPopper,
@@ -157,170 +128,102 @@ export const FunParticles = ({
   </div>
 );
 
-/** The clickable "anomaly" component. */
-const QuantumAnomaly = ({
-  anomaly,
-  onClick,
-}: {
-  anomaly: Anomaly;
-  onClick: (id: string, x: number, y: number) => void;
-}) => (
-  <button
-    onClick={() => onClick(anomaly.id, anomaly.x, anomaly.y)}
-    className="absolute w-12 h-12 rounded-full flex items-center justify-center animate-orb-pop-in transition-transform duration-200 hover:scale-110"
-    style={{
-      left: `${anomaly.x}%`,
-      top: `${anomaly.y}%`,
-      color: anomaly.color,
-      backgroundColor: `${anomaly.color}20`,
-    }}
-  >
-    <anomaly.Icon className="w-8 h-8" />
-  </button>
+const GAME_SECONDS = 15;
+const GAME_TARGETS = 5;
+const POSITIONS = [18, 50, 82].flatMap((x) =>
+  [18, 50, 82].map((y) => ({ x, y }))
 );
 
-// Simplified game settings. No more levels or difficulty scaling.
-const GAME_SETTINGS = {
-  time: 15, // 15 seconds
-  anomalies: 5, // 5 anomalies to click
-  spawnRate: 800, // Spawn a new anomaly every 800ms
-};
-
-/**
- * Main component for the "Quantum Conundrum" game.
- * Manages game state, logic, and UI rendering for the interactive easter egg.
- */
 export default function EasterEgg() {
   const [gameState, setGameState] = useState<GameState>('idle');
   const [catState, setCatState] = useState<PetType | null>(null);
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
   const [particleEffects, setParticleEffects] = useState<ParticleEffect[]>([]);
+  const [remaining, setRemaining] = useState(GAME_TARGETS);
+  const [timeLeft, setTimeLeft] = useState(GAME_SECONDS);
   const [isResultIconVisible, setIsResultIconVisible] = useState(true);
-
-  const [anomaliesToClick, setAnomaliesToClick] = useState(
-    GAME_SETTINGS.anomalies
-  );
-  const [timeLeft, setTimeLeft] = useState(GAME_SETTINGS.time);
-
-  const ref = useRef<HTMLDivElement>(null);
   const resultIconRef = useRef<HTMLDivElement>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const anomalySpawnerRef = useRef<NodeJS.Timeout | null>(null);
-  const isVisible = useInView(ref);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const phase = useRef<GameState>('idle');
+  const active = useRef<Anomaly[]>([]);
+  const remainingRef = useRef(GAME_TARGETS);
+  const timers = useRef<ReturnType<typeof setInterval>[]>([]);
+  const pending = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
 
-  const isGameActive = gameState !== 'idle';
-
-  /** Clears all active game timers. */
-  const cleanupTimers = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    if (anomalySpawnerRef.current) clearInterval(anomalySpawnerRef.current);
-  };
-
-  /** Central function to end the game and update its state. */
-  const endGame = useCallback((finalState: 'failed' | 'result') => {
-    cleanupTimers();
-    setGameState(finalState);
-    const gameCompletedEvent = new CustomEvent('gameCompleted', {
-      detail: { state: finalState },
-    });
-    window.dispatchEvent(gameCompletedEvent);
+  const cleanup = useCallback(() => {
+    timers.current.forEach(clearInterval);
+    timers.current = [];
+    pending.current.forEach(clearTimeout);
+    pending.current.clear();
   }, []);
+  useEffect(() => cleanup, [cleanup]);
 
-  /** Function to spawn a new anomaly at a random position. */
-  const spawnAnomaly = useCallback(() => {
-    setAnomalies((prevAnomalies) => {
-      // Limit on-screen anomalies to prevent clutter.
-      if (prevAnomalies.length >= 7) {
-        return prevAnomalies;
-      }
-      const newAnomaly: Anomaly = {
-        id: `${Date.now()}-${Math.random()}`, // Unique ID for React key
-        x: 5 + Math.random() * 85,
-        y: 5 + Math.random() * 85,
-        Icon: ANOMALY_ICONS[Math.floor(Math.random() * ANOMALY_ICONS.length)],
-        color:
-          ANOMALY_COLORS[Math.floor(Math.random() * ANOMALY_COLORS.length)],
-      };
-      return [...prevAnomalies, newAnomaly];
-    });
-  }, []);
-
-  /** Starts the main game loop: timer and anomaly spawning. */
-  const beginGame = () => {
-    // Reset all game state variables
-    setAnomaliesToClick(GAME_SETTINGS.anomalies);
-    setTimeLeft(GAME_SETTINGS.time);
+  function later(callback: () => void, delay: number) {
+    const id = setTimeout(() => {
+      pending.current.delete(id);
+      callback();
+    }, delay);
+    pending.current.add(id);
+  }
+  function changePhase(next: GameState) {
+    phase.current = next;
+    setGameState(next);
+  }
+  function reset() {
+    cleanup();
+    changePhase('idle');
+    active.current = [];
     setAnomalies([]);
     setParticleEffects([]);
-
-    // Start the game logic
-    setGameState('playing');
-
-    // Start the countdown timer.
-    timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          endGame('failed');
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    // Start the anomaly spawner.
-    anomalySpawnerRef.current = setInterval(
-      spawnAnomaly,
-      GAME_SETTINGS.spawnRate
+  }
+  function spawn() {
+    if (phase.current !== 'playing' || active.current.length >= 3) return;
+    const free = POSITIONS.filter(
+      (p) => !active.current.some((a) => a.x === p.x && a.y === p.y)
     );
-    spawnAnomaly(); // Spawn the first one immediately.
-  };
-
-  /** Shows instructions, then starts the game after a short delay. */
-  const showInstructionsAndStart = () => {
-    setPet(null); // Clear any existing global pet
-    setGameState('instructions');
-
-    setTimeout(() => {
-      beginGame();
-    }, 2500); // Show instructions for 2.5 seconds.
-  };
-
-  /** Handles the click event on a quantum anomaly. */
-  const handleAnomalyClick = (id: string, x: number, y: number) => {
-    setAnomalies((prev) => prev.filter((a) => a.id !== id));
-
-    // Create a particle burst at the anomaly's location for visual feedback.
-    const newEffect: ParticleEffect = { id: Date.now(), x, y, type: 'anomaly' };
-    setParticleEffects((prev) => [...prev, newEffect]);
-    setTimeout(() => {
-      setParticleEffects((prev) => prev.filter((p) => p.id !== newEffect.id));
-    }, 2000);
-
-    setAnomaliesToClick((prev) => {
-      const newCount = prev - 1;
-      if (newCount <= 0) {
-        observe(); // All anomalies collected, trigger the win sequence.
-        return 0;
-      }
-      // Spawn a new one immediately after a click to keep the pace up.
-      spawnAnomaly();
-      return newCount;
-    });
-  };
-
-  /** Triggers the "wave function collapse" animation and determines the game's outcome. */
-  const observe = () => {
-    cleanupTimers();
-    setGameState('revealing');
-    setTimeout(() => {
-      // The first visit is 75% ghost; later results remain random with a ghost preference.
-      const result: PetType = choosePetType();
-
+    const position = free[Math.floor(Math.random() * free.length)];
+    if (!position) return;
+    const item = {
+      ...position,
+      id: crypto.randomUUID(),
+      Icon: ANOMALY_ICONS[Math.floor(Math.random() * ANOMALY_ICONS.length)],
+      color: ANOMALY_COLORS[Math.floor(Math.random() * ANOMALY_COLORS.length)],
+    };
+    active.current = [...active.current, item];
+    setAnomalies(active.current);
+  }
+  function begin() {
+    cleanup();
+    active.current = [];
+    remainingRef.current = GAME_TARGETS;
+    setAnomalies([]);
+    setParticleEffects([]);
+    setRemaining(GAME_TARGETS);
+    setTimeLeft(GAME_SECONDS);
+    changePhase('playing');
+    const deadline = Date.now() + GAME_SECONDS * 1000;
+    timers.current.push(
+      setInterval(() => {
+        const seconds = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+        setTimeLeft(seconds);
+        if (seconds === 0 && phase.current === 'playing') {
+          cleanup();
+          changePhase('failed');
+        }
+      }, 200)
+    );
+    timers.current.push(setInterval(spawn, 850));
+    spawn();
+  }
+  function observe() {
+    cleanup();
+    changePhase('revealing');
+    later(() => {
+      const result = choosePetType();
       setCatState(result);
-      setIsResultIconVisible(true); // Ensure icon is visible before animation.
-      endGame('result');
-      // Delay setting the pet to create the illusion of it "coming from" the card.
-      setTimeout(() => {
+      setIsResultIconVisible(true);
+      changePhase('result');
+      later(() => {
         if (resultIconRef.current) {
           const rect = resultIconRef.current.getBoundingClientRect();
           setPet(
@@ -328,317 +231,217 @@ export default function EasterEgg() {
             rect.left + rect.width / 2,
             rect.top + rect.height / 2
           );
-          setIsResultIconVisible(false); // Hide the icon as the pet spawns.
+          setIsResultIconVisible(false);
         }
       }, 250);
-    }, 2500); // 2.5 second reveal animation.
-  };
-
-  /** Resets the game to its initial state. */
-  const reset = () => {
-    cleanupTimers();
-    setGameState('idle');
-    setCatState(null);
-    setAnomalies([]);
-    setParticleEffects([]);
-    setAnomaliesToClick(GAME_SETTINGS.anomalies);
-  };
-
-  /** A developer utility to reset all progress, including the guided tour. */
-  const factoryReset = () => {
-    try {
-      localStorage.removeItem(TOUR_STORAGE_KEY);
-      window.location.reload();
-    } catch (error) {
-      console.error('Failed to reset state in localStorage', error);
-    }
-  };
-
-  // Cleanup timers on component unmount.
-  useEffect(() => {
-    return cleanupTimers;
-  }, []);
-
+    }, 1500);
+  }
+  function collect(item: Anomaly) {
+    if (
+      phase.current !== 'playing' ||
+      !active.current.some((a) => a.id === item.id)
+    )
+      return;
+    active.current = active.current.filter((a) => a.id !== item.id);
+    setAnomalies(active.current);
+    remainingRef.current -= 1;
+    setRemaining(remainingRef.current);
+    const id = performance.now();
+    setParticleEffects((prev) => [
+      ...prev,
+      { id, x: item.x, y: item.y, type: 'anomaly' },
+    ]);
+    later(
+      () => setParticleEffects((prev) => prev.filter((p) => p.id !== id)),
+      700
+    );
+    if (remainingRef.current === 0) observe();
+    else spawn();
+  }
+  const progress = GAME_TARGETS - remaining;
   return (
-    <>
-      {isGameActive && (
-        <div className="fixed inset-0 z-40" onClick={reset}></div>
-      )}
-      <section
-        id="quantum-conundrum-section"
-        ref={ref}
-        className={cn(
-          'space-y-4 text-center transition-opacity duration-1000 ease-out',
-          isVisible ? 'opacity-100' : 'opacity-0',
-          // When game is active, it becomes a fixed overlay for modal behavior.
-          isGameActive &&
-            'fixed inset-0 w-full h-full flex items-center justify-center z-50 p-4'
-        )}
-        style={{ transitionDelay: isVisible ? '150ms' : '0ms' }}
+    <section id="quantum-conundrum-section" className="quantum-lobby">
+      <div className="quantum-lobby-icon">
+        <Box size={30} aria-hidden="true" />
+      </div>
+      <div>
+        <p className="eyebrow">A small experiment</p>
+        <h2>A Quantum Conundrum</h2>
+        <p>
+          Collect five signals before time runs out. A familiar visitor might
+          join you afterwards.
+        </p>
+      </div>
+      <button
+        ref={triggerRef}
+        id="begin-experiment-button"
+        className="action-primary"
+        onClick={() => {
+          setPet(null);
+          changePhase('instructions');
+        }}
       >
-        <Card
-          className={cn(
-            'group relative border-border/40 shadow-lg transition-all duration-700 ease-out text-center overflow-hidden w-full',
-            isVisible && !isGameActive
-              ? 'opacity-100 translate-y-0 bg-card/30'
-              : !isGameActive
-                ? 'opacity-0 translate-y-5'
-                : '',
-            // Use a solid background when the game is active for better visibility.
-            isGameActive
-              ? 'max-w-3xl h-auto md:h-[550px] flex flex-col bg-background'
-              : 'max-w-full'
-          )}
-          style={{ transitionDelay: isVisible ? `200ms` : '0ms' }}
+        Play the experiment
+      </button>
+      <Dialog
+        open={gameState !== 'idle'}
+        onOpenChange={(open) => {
+          if (!open) reset();
+        }}
+      >
+        <DialogContent
+          className="quantum-dialog"
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            triggerRef.current?.focus();
+          }}
         >
-          {gameState === 'idle' && <div className="animate-border-glow"></div>}
-
-          {isGameActive && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-2 right-2 z-20"
-              onClick={reset}
-            >
-              <X className="h-5 w-5" />
-              <span className="sr-only">Close Game</span>
-            </Button>
+          <div className="quantum-dialog-header">
+            <div className="quantum-mark">
+              <Atom size={20} aria-hidden="true" />
+            </div>
+            <div>
+              <DialogTitle>A Quantum Conundrum</DialogTitle>
+              <DialogDescription>
+                Find the signals. Meet your page companion.
+              </DialogDescription>
+            </div>
+          </div>
+          {gameState === 'instructions' && (
+            <div className="quantum-instructions">
+              <div className="quantum-instruction-orb">
+                <Atom size={48} aria-hidden="true" />
+              </div>
+              <h3>Ready when you are.</h3>
+              <p>
+                Tap or click <strong>5 glowing symbols</strong> in{' '}
+                <strong>15 seconds</strong>. You can also use Tab and Enter. The
+                clock starts when you do.
+              </p>
+              <div className="quantum-rules">
+                <span>01 · Find a symbol</span>
+                <span>02 · Collect five</span>
+                <span>03 · See who appears</span>
+              </div>
+              <button className="action-primary" onClick={begin}>
+                Start collecting
+              </button>
+            </div>
           )}
-          <CardHeader>
-            <CardTitle className="flex items-center justify-center gap-2 text-primary">
-              <Box className="h-8 w-8" />A Quantum Conundrum
-            </CardTitle>
-            <CardDescription className="max-w-prose mx-auto italic">
-              An interactive thought experiment. Your observation collapses the
-              wave function.
-            </CardDescription>
-          </CardHeader>
-          <CardContent
-            className={cn(
-              'min-h-[300px] flex flex-col items-center justify-center space-y-6 p-6',
-              isGameActive && 'grow'
-            )}
-          >
-            {gameState === 'idle' && (
-              <div className="space-y-6 animate-fade-in w-full max-w-sm px-4">
-                <blockquote className="space-y-2">
-                  <p className="font-medium text-foreground/90">
-                    My fate is in superposition. Click the button to observe the
-                    outcome.
-                  </p>
-                </blockquote>
-                <div className="text-sm text-foreground/80">
-                  <p>This is a simple game of chance and speed.</p>
-                  <p>A roaming pet awaits the result!</p>
-                </div>
-                <div className="w-full pt-4">
-                  <Button
-                    id="begin-experiment-button"
-                    onClick={showInstructionsAndStart}
-                    size="lg"
-                    className="w-full sm:w-auto animate-tour-glow"
-                  >
-                    Begin Game
-                  </Button>
-                </div>
+          {(gameState === 'playing' || gameState === 'failed') && (
+            <div className="quantum-play">
+              <div className="quantum-stats">
+                <span aria-live="polite">
+                  <CheckCircle2 size={16} aria-hidden="true" /> {progress} /{' '}
+                  {GAME_TARGETS} collected
+                </span>
+                <span className={timeLeft <= 5 ? 'time-low' : ''}>
+                  <Timer size={16} aria-hidden="true" />
+                  {timeLeft}s
+                </span>
               </div>
-            )}
-
-            {gameState === 'instructions' && (
-              <div className="space-y-4 animate-fade-in text-center relative w-full h-full flex flex-col items-center justify-center">
-                <h3 className="text-2xl font-bold text-primary">Get Ready!</h3>
-                <div className="flex items-center gap-4 p-4 rounded-lg bg-primary/10 border border-primary/20">
-                  <div
-                    className="relative w-12 h-12 rounded-full flex items-center justify-center"
-                    style={{
-                      color: ANOMALY_COLORS[0],
-                      backgroundColor: `${ANOMALY_COLORS[0]}20`,
-                    }}
-                  >
-                    <Atom className="w-8 h-8" />
-                  </div>
-                  <p className="text-foreground/80 text-lg">
-                    Tap anomalies like this before time runs out!
-                  </p>
-                </div>
-                <Progress value={100} className="w-1/2" />
-              </div>
-            )}
-
-            {(gameState === 'playing' || gameState === 'failed') && (
-              <div className="space-y-4 animate-fade-in w-full h-full flex flex-col">
-                <h3 className="font-bold text-lg text-primary">
-                  {gameState === 'failed'
-                    ? 'Experiment Failed!'
-                    : 'Tap the Anomalies!'}
-                </h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center text-sm font-medium">
-                    {/* The anomaly counter */}
-                    <span
-                      className={cn(
-                        'flex items-center gap-2',
-                        anomaliesToClick > 0
-                          ? 'text-amber-500'
-                          : 'text-green-500'
-                      )}
-                    >
-                      {anomaliesToClick > 0 ? (
-                        <>
-                          <Atom
-                            className="h-4 w-4 animate-spin"
-                            style={{ animationDuration: '3s' }}
-                          />
-                          {anomaliesToClick} Anomalies Remaining
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle2 className="h-4 w-4" />
-                          Objective Complete!
-                        </>
-                      )}
-                    </span>
-                    <span className="flex items-center gap-1 text-red-500">
-                      <Timer className="h-4 w-4" />
-                      {Math.round(timeLeft)}s
-                    </span>
-                  </div>
-                </div>
-                <div className="relative w-full grow bg-primary/5 border border-primary/20 rounded-lg mt-2 min-h-[250px] md:min-h-[350px] touch-none">
-                  {/* The "Failed" state UI */}
-                  {gameState === 'failed' && (
-                    <div className="absolute inset-0 flex flex-col gap-4 items-center justify-center">
-                      <div className="grid grid-cols-3 gap-8">
-                        <Skull className="h-16 w-16 text-destructive/50" />
-                        <Skull className="h-16 w-16 text-destructive/50" />
-                        <Skull className="h-16 w-16 text-destructive/50" />
-                      </div>
-                      <Button onClick={reset} size="lg" variant="destructive">
-                        Reset Experiment
-                      </Button>
-                    </div>
-                  )}
-                  {/* The main game board where anomalies appear */}
-                  {gameState === 'playing' &&
-                    anomalies.map((item) => (
-                      <QuantumAnomaly
-                        key={item.id}
-                        anomaly={item}
-                        onClick={handleAnomalyClick}
-                      />
-                    ))}
-                  {/* Container for particle effects on anomaly click */}
-                  {particleEffects.map((effect) => (
-                    <div
-                      key={effect.id}
-                      className="absolute"
+              <progress
+                max={GAME_TARGETS}
+                value={progress}
+                className="quantum-progress"
+                aria-label="Signals collected"
+              />
+              <div
+                className="quantum-board"
+                aria-label="Signal collection area"
+              >
+                {gameState === 'playing' &&
+                  anomalies.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      aria-label={`Collect ${item.Icon.displayName || 'signal'}`}
+                      onClick={() => collect(item)}
+                      className="quantum-signal"
                       style={{
-                        left: `${effect.x}%`,
-                        top: `${effect.y}%`,
-                        width: '50px',
-                        height: '50px',
-                        transform: 'translate(-50%, -50%)',
+                        left: `${item.x}%`,
+                        top: `${item.y}%`,
+                        color: item.color,
+                        backgroundColor: `${item.color}18`,
                       }}
                     >
-                      <FunParticles type={effect.type} count={15} />
-                    </div>
+                      <item.Icon size={28} aria-hidden="true" />
+                    </button>
                   ))}
-                </div>
-                <p className="text-xs text-foreground/80 pt-2 flex items-center justify-center gap-2">
-                  {gameState === 'failed'
-                    ? 'The quantum state destabilized. The timeline has been purged.'
-                    : `Collect ${GAME_SETTINGS.anomalies} anomalies in ${Math.round(GAME_SETTINGS.time)} seconds!`}
-                </p>
+                {particleEffects.map((effect) => (
+                  <div
+                    key={effect.id}
+                    className="quantum-hit"
+                    style={{ left: `${effect.x}%`, top: `${effect.y}%` }}
+                  >
+                    <FunParticles type="anomaly" count={10} />
+                  </div>
+                ))}
+                {gameState === 'failed' && (
+                  <div className="quantum-failed">
+                    <Atom size={36} aria-hidden="true" />
+                    <h3>Just missed it.</h3>
+                    <p>
+                      You found {progress} of {GAME_TARGETS} signals. Give it
+                      another go?
+                    </p>
+                    <button className="action-primary" onClick={begin}>
+                      Try again
+                    </button>
+                  </div>
+                )}
               </div>
-            )}
-
-            {gameState === 'revealing' && (
-              <div className="space-y-4 animate-fade-in text-center relative w-full h-full flex flex-col items-center justify-center">
-                <FunParticles type="revealing" count={200} />
-                <h3 className="text-xl font-bold text-primary">
-                  Wave Function Collapsing...
+              <p className="quantum-hint">
+                {gameState === 'playing'
+                  ? 'Follow the glow. Each symbol counts once.'
+                  : 'No rush. You can try as often as you like.'}
+              </p>
+            </div>
+          )}
+          {gameState === 'revealing' && (
+            <div className="quantum-reveal" role="status">
+              <div className="quantum-reveal-orbit">
+                <Atom size={55} aria-hidden="true" />
+              </div>
+              <h3>Something is taking shape...</h3>
+              <p>Let’s see who’s joining you.</p>
+            </div>
+          )}
+          {gameState === 'result' && (
+            <div className="quantum-result">
+              <div className="relative">
+                <FunParticles
+                  type={catState === 'alive' ? 'popper' : 'ghost'}
+                  count={catState === 'alive' ? 100 : 50}
+                />
+                <p className="eyebrow">Observation complete</p>
+                <div
+                  ref={resultIconRef}
+                  className={cn(
+                    'quantum-result-icon',
+                    !isResultIconVisible && 'opacity-0'
+                  )}
+                >
+                  {catState === 'alive' ? (
+                    <Cat className="h-20 w-20 animate-popper text-green-500" />
+                  ) : (
+                    <Ghost className="h-20 w-20 animate-ghost text-sky-400" />
+                  )}
+                </div>
+                <h3>
+                  {catState === 'alive'
+                    ? 'A cat for company.'
+                    : 'A little ghost has arrived.'}
                 </h3>
-                <p className="text-foreground/80">Determining final state...</p>
-                <Progress value={100} className="w-1/2" />
+                <p>Your companion can explore the site with you.</p>
               </div>
-            )}
-
-            {gameState === 'result' && (
-              <div className="w-full animate-fade-in space-y-6">
-                <div className="relative flex flex-col items-center justify-center gap-4">
-                  {catState === 'alive' && (
-                    <div className="relative flex-1 p-4 border border-green-500/30 bg-green-500/10 rounded-lg space-y-3 text-center w-full max-w-sm">
-                      <FunParticles type="popper" count={100} />
-                      <h3 className="font-bold text-green-500">
-                        Observation Complete!
-                      </h3>
-                      <div
-                        ref={resultIconRef}
-                        className={cn(
-                          'transition-opacity duration-300',
-                          !isResultIconVisible && 'opacity-0'
-                        )}
-                      >
-                        <Cat className="h-16 w-16 mx-auto text-green-500 animate-popper" />
-                      </div>
-                      <p className="text-xl font-bold text-green-500">
-                        The cat is ALIVE!
-                      </p>
-                      <p className="text-sm text-foreground/80">
-                        The superposition collapsed into a definite state of
-                        life. A pet now follows you!
-                      </p>
-                    </div>
-                  )}
-                  {catState === 'ghost' && (
-                    <div className="relative flex-1 p-4 border border-sky-400/30 bg-sky-400/10 rounded-lg space-y-3 text-center w-full max-w-sm">
-                      <FunParticles type="ghost" count={50} />
-                      <h3 className="font-bold text-destructive">
-                        You Monster.
-                      </h3>
-                      <div
-                        ref={resultIconRef}
-                        className={cn(
-                          'transition-opacity duration-300',
-                          !isResultIconVisible && 'opacity-0'
-                        )}
-                      >
-                        <Ghost className="h-16 w-16 mx-auto text-sky-400 animate-ghost" />
-                      </div>
-                      <p className="text-xl font-bold text-sky-400">
-                        The cat has decohered.
-                      </p>
-                      <p className="text-sm text-foreground/80">
-                        A vengeful spirit now haunts this page. Are you happy
-                        now?
-                      </p>
-                    </div>
-                  )}
-                </div>
-                <p className="text-xs text-foreground/60 max-w-prose mx-auto pt-4">
-                  By participating, you didn&apos;t just see a result—you
-                  created it. This is the essence of the observer effect in
-                  quantum mechanics.
-                </p>
-                <Button onClick={reset} variant="outline">
-                  Run New Experiment
-                </Button>
-              </div>
-            )}
-          </CardContent>
-          {/* Developer/Testing tools */}
-          <div className="absolute bottom-1 right-1">
-            <Button
-              onClick={factoryReset}
-              className="text-muted-foreground/50 hover:text-muted-foreground/90 transition-colors text-xs p-2 h-auto rounded-md hover:bg-muted/50"
-              variant="ghost"
-              title="Reset all game statistics and restart the guided tour."
-            >
-              Dev Reset
-            </Button>
-          </div>
-        </Card>
-      </section>
-    </>
+              <button className="action-primary" onClick={reset}>
+                Back to exploring
+              </button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </section>
   );
 }

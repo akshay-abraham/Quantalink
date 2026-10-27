@@ -1,71 +1,84 @@
-/**
- * @file src/components/profile-section.tsx
- * @description The main profile section for the homepage, including the avatar,
- *              name, and tagline.
- * @note This is a client component due to the use of hooks (`useRef`, `useInView`) for animations.
- */
-'use client';
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useInView } from '@/hooks/use-in-view';
-import { useRef } from 'react';
-import { cn } from '@/lib/utils';
-
-/**
- * ProfileSection displays the main hero content of the portfolio.
- * @returns {JSX.Element} A section element containing the profile information.
- */
 export default function ProfileSection() {
-  const ref = useRef<HTMLElement>(null);
-  const isVisible = useInView(ref);
-
   return (
-    <section
-      ref={ref}
-      className="flex flex-col items-center space-y-4 text-center pt-12 md:pt-20"
-    >
-      {/* The container for the avatar with its animation. */}
-      <div
-        className={cn(
-          'relative group transition-all duration-1000 ease-out',
-          // The avatar scales and fades in when it becomes visible.
-          isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
-        )}
-      >
-        {/* Adds a pulsing glow effect behind the avatar on hover. */}
-        <div className="absolute -inset-1.5 bg-linear-to-r from-primary to-accent-foreground rounded-full opacity-0 group-hover:opacity-75 transition duration-500 group-hover:blur-xl group-hover:animate-none"></div>
-        <Avatar className="relative h-28 w-28 md:h-32 md:w-32 border-4 border-card/80 shadow-lg group-hover:border-primary/50 transition-all duration-500 ease-out transform group-hover:scale-110">
-          {/* 
-            The profile picture. The `src` points to `/profile.webp`.
-            Next.js automatically serves files from the `/public` directory at the root level.
-            To change the image, replace the `profile.webp` file in the `/public` folder.
-          */}
-          <AvatarImage
-            src="/profile.webp"
-            alt="Akshay Abraham Profile Picture"
-          />
-          <AvatarFallback>AA</AvatarFallback>
-        </Avatar>
-      </div>
-
-      {/* The container for the text content with its animation. */}
-      <div
-        className={cn(
-          'transition-all duration-1000 ease-out',
-          // The text fades and slides up when it becomes visible.
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        )}
-        style={{ transitionDelay: '200ms' }}
-      >
-        <div className="flex items-center justify-center gap-2">
-          {/* The main heading with the full name for SEO. */}
-          <h1 className="font-headline text-3xl md:text-4xl font-bold tracking-tight text-shadow cursor-default">
-            Akshay K Rooben Abraham
-          </h1>
-        </div>
-        <p className="text-sm md:text-base text-foreground/70 mt-1 text-shadow">
-          Physics Enthusiast · Student · Open-Source Contributor
+    <section className="hero-grid" aria-labelledby="intro-heading">
+      <div className="hero-copy">
+        <p className="eyebrow hero-enter">
+          Akshay K Rooben Abraham · Student &amp; builder
         </p>
+        <h1
+          id="intro-heading"
+          className="hero-title hero-enter"
+          style={{ animationDelay: '90ms' }}
+        >
+          Akshay
+          <br />
+          <span>Abraham.</span>
+        </h1>
+        <p
+          className="hero-tagline hero-enter"
+          style={{ animationDelay: '140ms' }}
+        >
+          Creating systems · Building Lyra
+        </p>
+        <p className="hero-lead hero-enter" style={{ animationDelay: '180ms' }}>
+          I’m a student who likes building useful things. User empathy guides
+          how I work: understanding what people need, then building the pieces
+          that work together for them.
+        </p>
+        <div
+          className="hero-actions hero-enter"
+          style={{ animationDelay: '270ms' }}
+        >
+          <Link href="#work" className="action-primary">
+            Explore my work <ArrowDownRight size={17} aria-hidden="true" />
+          </Link>
+          <Link href="/about" className="action-text">
+            The story so far <ArrowUpRight size={17} aria-hidden="true" />
+          </Link>
+        </div>
+        <div
+          className="hero-current hero-enter"
+          style={{ animationDelay: '360ms' }}
+        >
+          <span className="status-dot" aria-hidden="true" />
+          <p>
+            <span>
+              Primary focus: <strong>Lyra</strong>
+            </span>
+            <span className="block text-foreground/55">
+              Also building MNEMO &amp; Mitra
+            </span>
+          </p>
+        </div>
+      </div>
+      <div
+        className="hero-portrait hero-enter"
+        style={{ animationDelay: '180ms' }}
+      >
+        <div className="portrait-orbit" aria-hidden="true" />
+        <div className="portrait-frame">
+          <div className="portrait-topline">
+            <span>A little about me</span>
+            <span>01 / AK</span>
+          </div>
+          <Image
+            src="/profile.webp"
+            alt="Akshay speaking about his work at a startup event"
+            width={640}
+            height={640}
+            sizes="(min-width: 1024px) 420px, (min-width: 640px) 380px, 85vw"
+            preload
+            className="portrait-image"
+          />
+          <div className="portrait-caption">
+            <span className="eyebrow">Student &amp; builder</span>
+            <p>Learning by building.</p>
+          </div>
+        </div>
       </div>
     </section>
   );

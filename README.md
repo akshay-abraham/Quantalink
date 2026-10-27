@@ -32,6 +32,7 @@ Quantalink fuses **Quantum Physics** + **Next.js Web Engineering** into a
 | `/about`    | Personal & professional journey                    |
 | `/skills`   | **InfiniteScroller** ribbons + official tech logos |
 | `/projects` | Dynamic portfolio grid + hover-glow interactions   |
+| `/team`     | Team PDF                                       |
 
 ---
 
@@ -84,6 +85,7 @@ This project is licensed under the **GNU GPL v3** License.
 | Resource              | Link                                                         |
 | --------------------- | ------------------------------------------------------------ |
 | **Live Demo**         | [akshayabraham.vercel.app](https://akshayabraham.vercel.app) |
+| **Team PDF**          | [akshayabraham.vercel.app/team](https://akshayabraham.vercel.app/team) |
 | **Game Pseudocode**   | [Pseudocode.md](./pseudocode.md)                             |
 | **Appendix & Devlog** | [APPENDIX.md](./APPENDIX.md)                                 |
 

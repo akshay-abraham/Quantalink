@@ -5,22 +5,26 @@
  *              loading global stylesheets and fonts, and setting up metadata for SEO.
  */
 import React from 'react';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
 import AnimatedBackground from '@/components/animated-background';
 import MainNav from '@/components/main-nav';
 import GlobalPetRenderer from '@/components/global-pet-renderer';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import GuidedTour from '@/components/guided-tour';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
 
 // Define metadata for the website, used for SEO and browser tab information.
 export const metadata: Metadata = {
   metadataBase: new URL('https://akshayabraham.vercel.app'),
   title: 'Akshay K Rooben Abraham | Portfolio',
   description:
-    'The personal portfolio of Akshay K Rooben Abraham, a student and open-source enthusiast exploring the intersection of science and technology.',
+    'Akshay K Rooben Abraham is a student and builder working on Lyra, MNEMO, and Mitra.',
   keywords: [
     'Akshay Abraham',
     'Akshay K Rooben Abraham',
@@ -31,11 +35,12 @@ export const metadata: Metadata = {
     'TypeScript',
     'PCMB Student',
     'Open Source',
-    'Physics',
+    'Lyra',
+    'AI Builder',
   ],
   openGraph: {
     title: 'Akshay K Rooben Abraham | Portfolio',
-    description: 'Student · Physics Enthusiast · Open-Source Contributor',
+    description: 'Creating systems · Built around people · User empathy',
     url: 'https://akshayabraham.vercel.app',
     siteName: 'Akshay Abraham Portfolio',
     images: [
@@ -52,7 +57,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Akshay K Rooben Abraham | Portfolio',
-    description: 'Student · Physics Enthusiast · Open-Source Contributor',
+    description: 'Creating systems · Built around people · User empathy',
     images: ['https://akshayabraham.vercel.app/og-image.png'],
   },
   robots: {
@@ -79,7 +84,8 @@ const jsonLd = {
   name: 'Akshay K Rooben Abraham',
   alternateName: ['Akshay Abraham', 'Akshay K Ruben Abraham'],
   url: 'https://akshayabraham.vercel.app',
-  jobTitle: 'Student & Open-Source Contributor',
+  image: 'https://akshayabraham.vercel.app/profile.webp',
+  jobTitle: 'Student & CS / AI Builder',
   alumniOf: {
     '@type': 'Organization',
     name: 'Girideepam Bethany Central School',
@@ -136,12 +142,10 @@ export default function RootLayout({
         <div id="pet-container"></div>
         <MainNav />
         {/* Renders the active page content. */}
-        <main>{children}</main>
+        <main id="main-content">{children}</main>
         {/* The Toaster component handles pop-up notifications. */}
-        <Toaster />
         <Analytics />
         <SpeedInsights />
-        <GuidedTour />
       </body>
     </html>
   );

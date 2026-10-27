@@ -1,25 +1,31 @@
-/**
- * @file src/components/main-nav.tsx
- * @description A responsive navigation component that renders the appropriate
- *              navigation bar based on the screen size (desktop or mobile).
- */
+import Link from 'next/link';
 import DesktopNav from './desktop-nav';
 import MobileNav from './mobile-nav';
 
-/**
- * MainNav is the primary navigation container for the application.
- * It centrally manages and displays the correct navigation component.
- * @returns {JSX.Element} A div containing the responsive navigation.
- */
 export default function MainNav() {
   return (
-    <div className="fixed top-4 right-4 z-50">
-      <div className="hidden md:block">
-        <DesktopNav />
-      </div>
-      <div className="md:hidden">
+    <>
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
+      <header className="site-header">
+        <Link
+          href="/"
+          className="site-brand"
+          aria-label="Akshay Abraham  ·  home"
+        >
+          <span className="brand-monogram">
+            ak<span>.</span>
+          </span>
+          <span className="brand-label">Akshay Abraham</span>
+        </Link>
+        <div className="hidden md:block">
+          <DesktopNav />
+        </div>
+      </header>
+      <div className="mobile-nav-anchor fixed right-4 top-4 z-50 h-12 w-12 md:hidden">
         <MobileNav />
       </div>
-    </div>
+    </>
   );
 }

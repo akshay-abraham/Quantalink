@@ -1,111 +1,131 @@
-/**
- * @file /src/lib/skills-data.tsx
- * @description This file contains the data for all technical skills, organized into categories.
- *              To add a new skill or category, modify the `skillsData` array.
- *              This structure makes it easy to render the skills page dynamically.
- * @note This file must have a `.tsx` extension because it imports and uses React components (icons).
- */
-
-import { Code, Wrench, Languages } from 'lucide-react';
+import { Code2, Cpu, Database, Languages } from 'lucide-react';
 import Image from 'next/image';
-import { PythonIcon } from '@/components/icons/python';
-import { TypescriptIcon } from '@/components/icons/typescript';
-import { ReactIcon } from '@/components/icons/react';
-import { VscodeIcon } from '@/components/icons/vscode';
-import { GithubIcon } from '@/components/icons/github';
-import { GitIcon } from '@/components/icons/git';
-import { BashIcon } from '@/components/icons/bash';
-import { VercelIcon } from '@/components/icons/vercel';
-import { UbuntuIcon } from '@/components/icons/ubuntu';
-import { CIcon } from '@/components/icons/c';
-import { NumpyIcon } from '@/components/icons/numpy';
-import { SciktLearnIcon } from '@/components/icons/scikt-learn';
-import { ArduinoIcon } from '@/components/icons/arduino';
-import { EspressifIcon } from '@/components/icons/espressif';
-import { NextjsIcon } from '@/components/icons/nextdotjs';
-import { TailwindIcon } from '@/components/icons/tailwind';
-import { FirebaseIcon } from '@/components/icons/firebase';
-import { ArchlinuxIcon } from '@/components/icons/archlinux';
-import { FedoraIcon } from '@/components/icons/fedora';
-import { VimIcon } from '@/components/icons/vim';
+import type { ReactNode } from 'react';
 
-/**
- * Defines the structure for an individual skill.
- * @property {string} name - The name of the skill (e.g., "Python").
- * @property {React.ReactNode} icon - The React component for the skill's logo.
- * @property {string} [iconClassName] - Optional CSS classes to apply to the icon container.
- */
 export interface Skill {
   name: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   iconClassName?: string;
+  projects: string[];
 }
 
-/**
- * Defines the structure for a category of skills.
- * @property {string} title - The title of the category (e.g., "Frontend Development").
- * @property {React.ReactNode} icon - The icon representing the category.
- * @property {string} [subtitle] - An optional subtitle to display under the category title.
- * @property {Skill[]} skills - An array of `Skill` objects belonging to this category.
- */
 export interface SkillCategory {
   title: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   subtitle?: string;
   skills: Skill[];
 }
 
-/**
- * Data for all technical skills, organized by category.
- */
+const skillProjects: Record<string, string[]> = {
+  C: ['NEPHRA', 'Mitra'],
+  'C++': ['NEPHRA', 'Mitra'],
+  Python: ['Driver Guard'],
+  JavaScript: ['Quantalink', 'MNEMO'],
+  TypeScript: ['Lyra', 'Mitra', 'MNEMO', 'Quantalink'],
+  Kotlin: ['M57', 'Mitra'],
+  HTML: ['Quantalink', 'MNEMO'],
+  CSS: ['Quantalink', 'Mitra', 'MNEMO'],
+  'Next.js': ['Lyra', 'Quantalink'],
+  React: ['Lyra', 'Mitra', 'Quantalink'],
+  'Tailwind CSS': ['Lyra', 'Quantalink'],
+  'Node.js': ['Lyra', 'Mitra', 'MNEMO'],
+  Vite: ['Mitra'],
+  FastAPI: ['Driver Guard'],
+  Android: ['M57', 'Mitra'],
+  LangChain: ['Lyra'],
+  OpenCV: ['Driver Guard'],
+  MediaPipe: ['Driver Guard'],
+  Supabase: ['Lyra'],
+  PostgreSQL: ['Lyra'],
+  SQLite: ['Mitra', 'MNEMO'],
+  Arduino: ['NEPHRA', 'Mitra'],
+  'ESP32 / ESP8266': ['NEPHRA', 'Mitra', 'Driver Guard'],
+  Git: ['All projects'],
+  Docker: ['MNEMO'],
+  Vercel: ['Lyra', 'Quantalink'],
+  'Arch Linux': ['Personal Linux experiments'],
+  'Fedora Linux': ['Tachyon dots', 'Daily development'],
+  'KDE Plasma': ['Tachyon dots', 'Daily desktop'],
+};
+
+/** Official Simple Icons artwork, fetched directly from its CDN by the browser. */
+function skill(name: string, slug: string): Skill {
+  return {
+    name,
+    projects: skillProjects[name] ?? [],
+    icon: (
+      <Image
+        src={`https://cdn.simpleicons.org/${slug}/0F172A`}
+        alt=""
+        width={40}
+        height={40}
+        unoptimized
+        className="h-full w-full object-contain"
+      />
+    ),
+  };
+}
+
+// Technologies used across Lyra, Mitra, MNEMO, Driver Guard, M57, and Quantalink.
 export const skillsData: SkillCategory[] = [
   {
     title: 'Core Languages',
     icon: <Languages size={32} />,
-    subtitle:
-      'The foundational languages I use for problem-solving and building projects.',
+    subtitle: 'From web interfaces and server logic to Android and firmware.',
     skills: [
-      { name: 'C', icon: <CIcon /> },
-      { name: 'Python', icon: <PythonIcon /> },
-      { name: 'JS / TS', icon: <TypescriptIcon />, iconClassName: 'p-1' },
+      skill('C', 'c'),
+      skill('C++', 'cplusplus'),
+      skill('Python', 'python'),
+      skill('JavaScript', 'javascript'),
+      skill('TypeScript', 'typescript'),
+      skill('Kotlin', 'kotlin'),
+      skill('HTML', 'html5'),
+      skill('CSS', 'css'),
     ],
   },
   {
-    title: 'Web & AI Technologies',
-    icon: <Code size={32} />,
-    subtitle: 'Technologies I use for web projects, data analysis, and AI.',
+    title: 'Web & App Development',
+    icon: <Code2 size={32} />,
+    subtitle:
+      'The stack behind my portfolio, learning tools, and caretaker apps.',
     skills: [
-      { name: 'Next.js', icon: <NextjsIcon /> },
-      { name: 'React', icon: <ReactIcon /> },
-      { name: 'Tailwind CSS', icon: <TailwindIcon /> },
-      { name: 'Firebase', icon: <FirebaseIcon /> },
-      {
-        name: 'Genkit',
-        icon: (
-          <Image src="/genkit.webp" alt="Genkit Logo" width={32} height={32} />
-        ),
-      },
-      { name: 'NumPy', icon: <NumpyIcon /> },
-      { name: 'Scikit-learn', icon: <SciktLearnIcon /> },
+      skill('Next.js', 'nextdotjs'),
+      skill('React', 'react'),
+      skill('Tailwind CSS', 'tailwindcss'),
+      skill('Node.js', 'nodedotjs'),
+      skill('Vite', 'vite'),
+      skill('FastAPI', 'fastapi'),
+      skill('Android', 'android'),
     ],
   },
   {
-    title: 'Tools & Platforms',
-    icon: <Wrench size={32} />,
+    title: 'AI & Data',
+    icon: <Database size={32} />,
     subtitle:
-      'The ecosystem of tools and platforms that support my development workflow.',
+      'AI orchestration, computer vision, and storage used in my projects.',
     skills: [
-      { name: 'Git', icon: <GitIcon /> },
-      { name: 'GitHub', icon: <GithubIcon /> },
-      { name: 'VS Code', icon: <VscodeIcon /> },
-      { name: 'Bash / Zsh', icon: <BashIcon /> },
-      { name: 'Vim', icon: <VimIcon /> },
-      { name: 'Ubuntu', icon: <UbuntuIcon /> },
-      { name: 'Arch Linux', icon: <ArchlinuxIcon /> },
-      { name: 'Fedora Linux', icon: <FedoraIcon /> },
-      { name: 'Vercel', icon: <VercelIcon /> },
-      { name: 'Arduino', icon: <ArduinoIcon /> },
-      { name: 'ESP32/ESP8266', icon: <EspressifIcon /> },
+      skill('LangChain', 'langchain'),
+      skill('OpenCV', 'opencv'),
+      skill('MediaPipe', 'mediapipe'),
+      skill('Supabase', 'supabase'),
+      skill('PostgreSQL', 'postgresql'),
+      skill('SQLite', 'sqlite'),
+    ],
+  },
+  {
+    title: 'Hardware & Platforms',
+    icon: <Cpu size={32} />,
+    subtitle:
+      'Embedded devices, development platforms, and tools for shipping.',
+    skills: [
+      skill('Arduino', 'arduino'),
+      skill('ESP32 / ESP8266', 'espressif'),
+      skill('Git', 'git'),
+      skill('Docker', 'docker'),
+      skill('Vercel', 'vercel'),
+      skill('Arch Linux', 'archlinux'),
+      skill('Fedora Linux', 'fedora'),
+      skill('KDE Plasma', 'kde'),
     ],
   },
 ];

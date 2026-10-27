@@ -231,7 +231,7 @@ export default function MobileNav() {
           id="mobile-nav-links"
           className={cn(
             'flex items-center gap-1 px-1 mr-12 h-full transition-opacity duration-300 motion-reduce:transition-none',
-            showIcons ? 'opacity-100' : 'opacity-0'
+            showIcons ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           )}
           aria-hidden={!showIcons}
         >
