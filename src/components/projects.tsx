@@ -1,5 +1,6 @@
 import { projects } from '@/lib/projects-data';
-import { ArrowRight, ArrowUpRight, Github } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Projects({
@@ -54,7 +55,14 @@ export default function Projects({
                     rel="noopener noreferrer"
                     aria-label={`View ${project.title} on GitHub`}
                   >
-                    <Github size={16} aria-hidden="true" />
+                    <Image
+                      src="https://cdn.simpleicons.org/github/0F172A"
+                      alt=""
+                      width={16}
+                      height={16}
+                      unoptimized
+                      aria-hidden="true"
+                    />
                     Source
                     <ArrowUpRight size={14} aria-hidden="true" />
                   </a>
