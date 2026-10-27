@@ -12,7 +12,7 @@ import MainNav from '@/components/main-nav';
 import GlobalPetRenderer from '@/components/global-pet-renderer';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { pageSocialMetadata, siteUrl } from '@/lib/seo';
+import { pageSocialMetadata, personJsonLd, siteUrl } from '@/lib/seo';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -31,7 +31,6 @@ export const metadata: Metadata = {
   keywords: [
     'Akshay Abraham',
     'Akshay K Rooben Abraham',
-    'Akshay K Ruben Abraham',
     'Portfolio',
     'Next.js',
     'React',
@@ -64,26 +63,7 @@ export const metadata: Metadata = {
 };
 
 // JSON-LD structured data for rich search results (Google).
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  '@id': `${siteUrl}/#person`,
-  name: 'Akshay Abraham',
-  alternateName: ['Akshay K Rooben Abraham', 'Akshay K Ruben Abraham'],
-  url: siteUrl,
-  image: `${siteUrl}/akshay-abraham-aiboomi-portrait.webp`,
-  description:
-    'Student and builder from Kottayam creating Lyra, MNEMO, and Mitra.',
-  alumniOf: {
-    '@type': 'Organization',
-    name: 'Girideepam Bethany Central School',
-  },
-  sameAs: [
-    'https://www.linkedin.com/in/akshayabraham37/',
-    'https://github.com/akshay-abraham/',
-    'https://www.instagram.com/akshay.abraham/',
-  ],
-};
+const jsonLd = personJsonLd;
 
 /**
  * RootLayout component that serves as the main template for all pages.

@@ -1,6 +1,27 @@
 export const siteUrl = 'https://akshayabraham.vercel.app';
 export const socialImage = '/akshay-abraham-portfolio.png';
 
+export const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': `${siteUrl}/#person`,
+  name: 'Akshay Abraham',
+  alternateName: 'Akshay K Rooben Abraham',
+  url: siteUrl,
+  image: `${siteUrl}/akshay-abraham-aiboomi-portrait.webp`,
+  description:
+    'Student and builder from Kottayam creating Lyra, MNEMO, and Mitra.',
+  homeLocation: {
+    '@type': 'Place',
+    name: 'Kottayam, Kerala, India',
+  },
+  sameAs: [
+    'https://www.linkedin.com/in/akshayabraham37/',
+    'https://github.com/akshay-abraham/',
+    'https://www.instagram.com/akshay.abraham/',
+  ],
+};
+
 export function pageSocialMetadata(
   title: string,
   description: string,

@@ -4,7 +4,7 @@ import { journey } from '@/lib/journey-data';
 import { ArrowUpRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { pageSocialMetadata } from '@/lib/seo';
+import { pageSocialMetadata, personJsonLd } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'About Akshay Abraham | Journey & Projects',
@@ -19,17 +19,57 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  const profileJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    '@id': 'https://akshayabraham.vercel.app/about#profile',
+    url: 'https://akshayabraham.vercel.app/about',
+    mainEntity: personJsonLd,
+  };
+
   return (
     <div className="site-shell inner-page relative z-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(profileJsonLd) }}
+      />
       <header className="journey-header hero-enter">
         <p className="eyebrow">The person behind the projects</p>
-        <h1>My journey.</h1>
+        <h1>About Akshay Abraham.</h1>
         <p className="page-intro">
           I’m Akshay Abraham, a student and builder from Kottayam. User empathy
           shapes how I work: understanding someone’s needs and thinking through
           the whole experience.
         </p>
       </header>
+      <section
+        className="building-note section-reveal"
+        aria-labelledby="profile-heading"
+      >
+        <div>
+          <p className="eyebrow">At a glance</p>
+          <h2 id="profile-heading">Who I am.</h2>
+        </div>
+        <div>
+          <p>
+            My full name is <strong>Akshay K Rooben Abraham</strong>. I’m based
+            in Kottayam, Kerala, India, and I build projects across AI learning,
+            voice tools, and connected devices.
+          </p>
+          <p className="mt-4">
+            My main project is <strong>Lyra</strong>, an AI learning system that
+            helps students reason through problems. I also work on{' '}
+            <strong>MNEMO</strong>, a voice-first knowledge companion, and{' '}
+            <strong>Mitra</strong>, a wearable caretaker system.
+          </p>
+          <p className="mt-4">
+            You can verify my work through my{' '}
+            <a href="https://github.com/akshay-abraham/">GitHub</a> and follow
+            my updates on{' '}
+            <a href="https://www.linkedin.com/in/akshayabraham37/">LinkedIn</a>.
+          </p>
+        </div>
+      </section>
       <section
         className="building-note section-reveal"
         aria-labelledby="building-heading"
