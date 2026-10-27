@@ -214,7 +214,7 @@ export default function MobileNav() {
     : TOGGLE_BUTTON_WIDTH;
 
   return (
-    <div ref={navRef} className="relative h-12">
+    <div ref={navRef} className="relative h-12" data-expanded={showIcons}>
       <nav
         ref={pillRef}
         className={cn(

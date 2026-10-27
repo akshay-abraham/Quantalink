@@ -3,7 +3,7 @@ export const journey = [
     title: 'The first presentation. The first spark.',
     tag: 'October 2025 · Community outreach',
     detail:
-      'My first-ever presentation was at the AI workshop and community outreach programme organised by our school. Lyra had come to life just 24 hours earlier. Teachers from the visiting community school immediately told me, “Call us when it’s ready.” It is still the first thing I hear when I present Lyra · and a reminder to build around the people who want to use it.',
+      'My first-ever presentation was at the AI workshop and community outreach programme organised by our school. Lyra had come to life just 24 hours earlier. Teachers from the visiting community school told me, “Call us when it’s ready. We need it for our children.” I still hear that kind of response when I present Lyra. Recently, Vineeth Rajagopal wrote, “I’ll wait for Lyra to come out and ask my kids to use it.” It keeps me focused on the people I’m building for.',
     photo: {
       src: '/events/first-presentation.webp',
       alt: 'Akshay presenting at his school’s AI workshop and community outreach programme',

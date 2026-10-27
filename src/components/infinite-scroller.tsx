@@ -1,4 +1,11 @@
-import { Children, type ReactNode, type CSSProperties } from 'react';
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  type ReactNode,
+  type ReactElement,
+  type CSSProperties,
+} from 'react';
 import { cn } from '@/lib/utils';
 
 interface InfiniteScrollerProps {
@@ -30,10 +37,15 @@ export function InfiniteScroller({
             key={copy}
             className="skill-track-group"
             aria-hidden={copy === 1 || undefined}
-            inert={copy === 1 || undefined}
           >
             {items.map((item, index) => (
-              <li key={index}>{item}</li>
+              <li key={index}>
+                {copy === 1 && isValidElement(item)
+                  ? cloneElement(item as ReactElement<{ tabIndex?: number }>, {
+                      tabIndex: -1,
+                    })
+                  : item}
+              </li>
             ))}
           </ul>
         ))}

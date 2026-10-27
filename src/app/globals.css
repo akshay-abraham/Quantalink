@@ -1792,6 +1792,13 @@ body {
   max-width: 100%;
   overflow-x: clip;
 }
+@media (max-width: 767px) {
+  .site-header:has(+ .mobile-nav-anchor [data-expanded='true']) .site-brand {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
 #main-content,
 .site-shell,
 .home-section,

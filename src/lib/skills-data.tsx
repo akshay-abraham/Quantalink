@@ -17,8 +17,7 @@ export interface SkillCategory {
 }
 
 const skillProjects: Record<string, string[]> = {
-  C: ['NEPHRA', 'Mitra'],
-  'C++': ['NEPHRA', 'Mitra'],
+  C: ['CS50', 'NEPHRA', 'Mitra'],
   Python: ['Driver Guard'],
   JavaScript: ['Quantalink', 'MNEMO'],
   TypeScript: ['Lyra', 'Mitra', 'MNEMO', 'Quantalink'],
@@ -74,7 +73,6 @@ export const skillsData: SkillCategory[] = [
     subtitle: 'From web interfaces and server logic to Android and firmware.',
     skills: [
       skill('C', 'c'),
-      skill('C++', 'cplusplus'),
       skill('Python', 'python'),
       skill('JavaScript', 'javascript'),
       skill('TypeScript', 'typescript'),
@@ -104,7 +102,7 @@ export const skillsData: SkillCategory[] = [
     subtitle:
       'AI orchestration, computer vision, and storage used in my projects.',
     skills: [
-      skill('LangChain', 'langchain'),
+      skill('LangChain', 'langchaincorporate'),
       skill('OpenCV', 'opencv'),
       skill('MediaPipe', 'mediapipe'),
       skill('Supabase', 'supabase'),
