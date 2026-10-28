@@ -44,34 +44,6 @@ export default function AboutPage() {
       </header>
       <section
         className="building-note section-reveal"
-        aria-labelledby="profile-heading"
-      >
-        <div>
-          <p className="eyebrow">At a glance</p>
-          <h2 id="profile-heading">Who I am.</h2>
-        </div>
-        <div>
-          <p>
-            My full name is <strong>Akshay K Rooben Abraham</strong>. I’m based
-            in Kottayam, Kerala, India, and I build projects across AI learning,
-            voice tools, and connected devices.
-          </p>
-          <p className="mt-4">
-            My main project is <strong>Lyra</strong>, an AI learning system that
-            helps students reason through problems. I also work on{' '}
-            <strong>MNEMO</strong>, a voice-first knowledge companion, and{' '}
-            <strong>Mitra</strong>, a wearable caretaker system.
-          </p>
-          <p className="mt-4">
-            You can verify my work through my{' '}
-            <a href="https://github.com/akshay-abraham/">GitHub</a> and follow
-            my updates on{' '}
-            <a href="https://www.linkedin.com/in/akshayabraham37/">LinkedIn</a>.
-          </p>
-        </div>
-      </section>
-      <section
-        className="building-note section-reveal"
         aria-labelledby="building-heading"
       >
         <div>
