@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function ProjectsPage() {
   return (
     <div className="site-shell inner-page relative z-10">
-      <header className="journey-header hero-enter">
+      <header className="journey-header">
         <p className="eyebrow">A few things I’m working on</p>
         <h1>Projects.</h1>
         <p className="page-intro">

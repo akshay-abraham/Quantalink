@@ -1,12 +1,25 @@
-export const journey = [
+interface JourneyEvent {
+  title: string;
+  tag: string;
+  detail: string;
+  highlight?: string;
+  photo: {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+  };
+}
+
+export const journey: JourneyEvent[] = [
   {
     title: 'The first presentation. The first spark.',
-    tag: 'October 2025 · Community outreach',
+    tag: '15 October 2025 · AI workshop',
     detail:
-      'My first-ever presentation was at the AI workshop and community outreach programme organised by our school. Lyra had come to life just 24 hours earlier. Teachers from the visiting community school told me, “Call us when it’s ready. We need it for our children.” I still hear that kind of response when I present Lyra. More recently, AIBoomi judge Vineeth Rajagopal wrote, “I’ll wait for Lyra to come out and ask my kids to use it.” Moments like these keep me working on Lyra.',
+      'Lyra was just 24 hours old when I gave my first presentation at an AI workshop and community outreach event. Educators told me, “Call us immediately. We need it for our children.” That kind of response is often the first thing I hear when I present Lyra. More recently, AIBoomi judge Vineeth Rajagopal wrote, “I’ll wait for Lyra to come out and ask my kids to use it.” Moments like these show me the impact Lyra could have.',
     photo: {
       src: '/events/akshay-abraham-first-presentation.webp',
-      alt: 'Akshay Abraham presenting Lyra at his school’s AI workshop and community outreach programme',
+      alt: 'Akshay Abraham presenting Lyra at an AI workshop and community outreach event',
       width: 798,
       height: 950,
     },
@@ -48,22 +61,10 @@ export const journey = [
     },
   },
   {
-    title: 'School Arts Captain',
-    tag: 'School life',
-    detail:
-      'Selected as Arts Captain of Girideepam Bethany Central School, Kottayam.',
-    photo: {
-      src: '/events/akshay-abraham-arts-captain.webp',
-      alt: 'Akshay Abraham with the student leadership team at a school ceremony',
-      width: 720,
-      height: 960,
-    },
-  },
-  {
     title: 'Y Combinator Startup School India',
-    tag: '2026 · A room full of builders',
+    tag: 'April 2026 · A room full of builders',
     detail:
-      'Selected for and attended YC Startup School India 2026. Learned from founders and other builders, with a few ideas that stayed with me: build with intention, launch, and listen closely to users.',
+      'Selected for and attended YC Startup School India in April 2026. Learned from founders and other builders, with a few ideas that stayed with me: build with intention, launch, and listen closely to users.',
     photo: {
       src: '/events/akshay-abraham-yc-startup-school-india.webp',
       alt: 'Akshay Abraham at Y Combinator Startup School India',
@@ -72,8 +73,21 @@ export const journey = [
     },
   },
   {
+    title: 'HackTVM Access Point',
+    tag: 'October 2026 · 1st place',
+    detail:
+      'At my first live hackathon, Chris V Jacob and I spent seven hours shaping the first versions of Mitra and MNEMO. Hosted by Good Shepherd School in Thiruvananthapuram, we finished first by points among the five teams advancing to Phase 2. Next, we’ll develop the projects further for the demo day in January.',
+    highlight: 'Chris V Jacob',
+    photo: {
+      src: '/events/akshay-abraham-hacktvm-access-point-2026.webp',
+      alt: 'Akshay Abraham and Chris V Jacob at HackTVM Access Point 2026',
+      width: 1440,
+      height: 1080,
+    },
+  },
+  {
     title: 'AIBoomi Startup Weekend Kochi',
-    tag: '1st place · Startup buildathon',
+    tag: '23–24 October 2026 · 1st place',
     detail:
       'Competed with Lyra as the youngest solo team in a 20-hour buildathon with 76 teams and around 140 participants. Won first place and received $10,000 in OpenAI API credits. The most meaningful part was seeing people connect with what I was building.',
     photo: {

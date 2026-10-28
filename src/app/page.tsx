@@ -21,20 +21,18 @@ export default function Home() {
       >
         <div className="journey-preview-copy">
           <p className="eyebrow">A few moments along the way</p>
-          <h2 id="journey-preview-heading">The journey so far.</h2>
-          <p>
-            From my first presentation to the people and projects that followed.
-          </p>
+          <h2 id="journey-preview-heading">Journey.</h2>
+          <p>The people and projects that shaped how I build.</p>
           <Link href="/about" className="action-text">
             Explore my journey <ArrowUpRight size={17} aria-hidden="true" />
           </Link>
         </div>
         <div className="journey-preview-photos">
           <Image
-            src="/events/akshay-abraham-first-presentation.webp"
-            alt="Akshay Abraham presenting Lyra at a school AI workshop"
-            width={798}
-            height={950}
+            src="/events/akshay-abraham-aiboomi-kochi.webp"
+            alt="Akshay Abraham receiving first prize at AIBoomi Startup Weekend Kochi"
+            width={1600}
+            height={1067}
             sizes="(max-width: 767px) 24vw, 120px"
           />
           <Image

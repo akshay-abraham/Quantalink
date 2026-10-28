@@ -935,6 +935,17 @@ body {
   letter-spacing: -0.06em;
   margin-top: 18px;
 }
+@media (prefers-reduced-motion: no-preference) {
+  .inner-page .journey-header > * {
+    animation: portfolio-enter 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  }
+  .inner-page .journey-header > h1 {
+    animation-delay: 100ms;
+  }
+  .inner-page .journey-header > .page-intro {
+    animation-delay: 200ms;
+  }
+}
 .page-intro {
   max-width: 620px;
   font-size: 16px;
@@ -958,6 +969,18 @@ body {
   width: 1px;
   background: hsl(var(--border));
 }
+.journey-timeline::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  bottom: 20px;
+  left: 17px;
+  width: 2px;
+  border-radius: 2px;
+  background: hsl(var(--primary) / 0.7);
+  transform: scaleY(0);
+  transform-origin: top;
+}
 .journey-item {
   position: relative;
   display: grid;
@@ -965,17 +988,28 @@ body {
   gap: 26px;
   padding-bottom: 56px;
 }
+.journey-item::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 36px;
+  width: 26px;
+  height: 1px;
+  background: hsl(var(--primary) / 0.45);
+}
 .journey-number {
   position: relative;
+  z-index: 1;
   display: grid;
   place-items: center;
   width: 36px;
   height: 36px;
   background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
+  border: 1px solid hsl(var(--primary) / 0.45);
   border-radius: 100%;
   font-size: 10px;
   color: hsl(var(--primary));
+  box-shadow: 0 0 0 4px hsl(var(--background));
 }
 .journey-event {
   display: grid;
@@ -987,6 +1021,15 @@ body {
   border-radius: 22px;
   background: hsl(var(--card) / 0.55);
   min-width: 0;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .journey-event:hover {
+    border-color: hsl(var(--primary) / 0.35);
+    box-shadow: 0 18px 42px hsl(var(--primary) / 0.08);
+  }
 }
 .journey-event-copy h3 {
   font-size: 27px;
@@ -1000,6 +1043,16 @@ body {
   line-height: 1.95;
   color: hsl(var(--foreground) / 0.65);
   margin-top: 18px;
+}
+.journey-collaborator {
+  font-weight: 600;
+  color: hsl(var(--primary));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .journey-collaborator.collaborator-name {
+    animation-duration: 3.2s;
+    filter: drop-shadow(0 0 5px hsl(var(--primary) / 0.3));
+  }
 }
 .journey-event > div,
 .journey-event > button {
@@ -1067,6 +1120,130 @@ body {
     animation: portfolio-enter linear both;
     animation-timeline: view();
     animation-range: entry 0% entry 16%;
+  }
+  .journey-timeline::after {
+    animation: journey-line-grow linear both;
+    animation-timeline: view(block);
+    animation-range: cover 0% cover 100%;
+  }
+  .journey-item {
+    animation: none;
+    view-timeline: --journey-reveal block;
+  }
+  .journey-number {
+    animation: journey-dot-in linear both;
+    animation-timeline: --journey-reveal;
+    animation-range: cover 0% cover 9%;
+  }
+  .journey-item::before {
+    animation: journey-connector-in linear both;
+    animation-timeline: --journey-reveal;
+    animation-range: cover 5% cover 14%;
+  }
+  .journey-event {
+    animation: journey-card-in linear both;
+    animation-timeline: --journey-reveal;
+    animation-range: cover 3% cover 21%;
+  }
+  .journey-event-copy {
+    animation: journey-copy-in linear both;
+    animation-timeline: --journey-reveal;
+    animation-range: cover 8% cover 25%;
+  }
+  .journey-event > button {
+    animation: journey-photo-in linear both;
+    animation-timeline: --journey-reveal;
+    animation-range: cover 12% cover 30%;
+  }
+  .project-card.section-reveal {
+    animation: journey-card-in linear both;
+    animation-timeline: view(block);
+    animation-range: entry 0% entry 35%;
+  }
+  .project-card:nth-child(3n + 2).section-reveal {
+    animation-range: entry 5% entry 45%;
+  }
+  .project-card:nth-child(3n).section-reveal {
+    animation-range: entry 10% entry 55%;
+  }
+  .journey-preview-photos img {
+    animation: preview-photo-in linear both;
+    animation-timeline: view(block);
+    animation-range: entry 0% entry 40%;
+  }
+  .journey-preview-photos img:nth-child(2) {
+    animation-range: entry 8% entry 50%;
+  }
+  .journey-preview-photos img:nth-child(3) {
+    animation-range: entry 16% entry 60%;
+  }
+}
+@keyframes preview-photo-in {
+  from {
+    opacity: 0;
+    filter: blur(7px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+@keyframes journey-line-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes journey-dot-in {
+  from {
+    opacity: 0;
+    transform: scale(0.65) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes journey-connector-in {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+@keyframes journey-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes journey-copy-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes journey-photo-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 @media (hover: hover) and (pointer: fine) {
@@ -1232,10 +1409,18 @@ body {
   .journey-timeline::before {
     left: 12px;
   }
+  .journey-timeline::after {
+    left: 12px;
+  }
   .journey-item {
     grid-template-columns: 26px minmax(0, 1fr);
     gap: 12px;
     padding-bottom: 28px;
+  }
+  .journey-item::before {
+    top: 13px;
+    left: 26px;
+    width: 12px;
   }
   .journey-number {
     width: 26px;
@@ -1308,6 +1493,9 @@ body {
   .section-reveal {
     opacity: 1 !important;
     transform: none !important;
+  }
+  .journey-timeline::after {
+    transform: scaleY(1) !important;
   }
 }
 .hero-tagline {
@@ -1451,6 +1639,31 @@ body {
   font-size: 14px;
   color: hsl(var(--foreground));
   font-weight: 500;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .collaborator-name {
+    background-image: linear-gradient(
+      105deg,
+      hsl(var(--foreground)) 35%,
+      hsl(var(--primary)) 48%,
+      hsl(var(--foreground)) 61%
+    );
+    background-size: 250% 100%;
+    background-position: 100% 50%;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: collaborator-glimmer 5s ease-in-out infinite;
+  }
+}
+@keyframes collaborator-glimmer {
+  0%,
+  20% {
+    background-position: 100% 50%;
+  }
+  55%,
+  100% {
+    background-position: -100% 50%;
+  }
 }
 .setup-section {
   display: grid;

@@ -5,14 +5,15 @@ import { ArrowUpRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { pageSocialMetadata, personJsonLd } from '@/lib/seo';
+import { Fragment } from 'react';
 
 export const metadata: Metadata = {
-  title: 'About Akshay Abraham | Journey & Projects',
+  title: 'Journey | Akshay Abraham',
   description:
-    'Learn about Akshay Abraham, a student and builder from Kottayam. Follow his journey from a school AI workshop to hackathons, Lyra, and YC Startup School India.',
+    'Follow Akshay Abraham’s journey through Lyra, hackathons, and YC Startup School India.',
   alternates: { canonical: '/about' },
   ...pageSocialMetadata(
-    'About Akshay Abraham | Journey & Projects',
+    'Journey | Akshay Abraham',
     'Follow Akshay Abraham’s journey through Lyra, hackathons, and YC Startup School India.',
     '/about'
   ),
@@ -33,9 +34,9 @@ export default function AboutPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(profileJsonLd) }}
       />
-      <header className="journey-header hero-enter">
-        <p className="eyebrow">The person behind the projects</p>
-        <h1>About Akshay Abraham.</h1>
+      <header className="journey-header">
+        <p className="eyebrow">About me</p>
+        <h1>Journey.</h1>
         <p className="page-intro">
           I’m Akshay Abraham, a student and builder from Kottayam. User empathy
           shapes how I work: understanding someone’s needs and thinking through
@@ -54,8 +55,8 @@ export default function AboutPage() {
           <p>
             <strong>Lyra is my primary focus</strong>, helping students reason
             through problems and build understanding. Alongside it, I’m building{' '}
-            <strong>MNEMO</strong> for voice-first knowledge and{' '}
-            <strong>Mitra</strong> for everyday care and companionship.
+            <strong>MNEMO</strong> and <strong>Mitra</strong>, both focused on
+            people living with memory challenges.
           </p>
           <Link href="/projects" className="action-text mt-4">
             Explore the projects <ArrowUpRight size={17} aria-hidden="true" />
@@ -70,7 +71,7 @@ export default function AboutPage() {
         <div className="section-heading">
           <div>
             <p className="eyebrow">The latest moments first</p>
-            <h2 id="journey-heading">The journey so far.</h2>
+            <h2 id="journey-heading">Along the way.</h2>
           </div>
           <p>People, projects, and the moments that changed how I build.</p>
         </div>
@@ -84,7 +85,22 @@ export default function AboutPage() {
                 <div className="journey-event-copy">
                   <p className="eyebrow">{event.tag}</p>
                   <h3>{event.title}</h3>
-                  <p>{event.detail}</p>
+                  <p>
+                    {event.highlight
+                      ? event.detail
+                          .split(event.highlight)
+                          .map((part, index) => (
+                            <Fragment key={index}>
+                              {index > 0 && (
+                                <strong className="journey-collaborator collaborator-name">
+                                  {event.highlight}
+                                </strong>
+                              )}
+                              {part}
+                            </Fragment>
+                          ))
+                      : event.detail}
+                  </p>
                 </div>
                 <EventPhoto title={event.title} {...event.photo} />
               </div>

@@ -19,14 +19,13 @@ This is a directory of facts published on the portfolio for agents that choose t
 - Location: Kottayam, Kerala, India.
 - Description: student and builder working across AI learning, voice tools, connected devices, web apps, and Android apps.
 - Approach described on the site: user empathy, guided learning, and building systems around people's needs.
-- School named on the site: Girideepam Bethany Central School, Kottayam. Akshay says he was selected as its Arts Captain.
 - [Portrait of Akshay Abraham](https://akshayabraham.vercel.app/akshay-abraham-aiboomi-portrait.webp).
 
 ## Current focus and featured projects
 
 - **Lyra:** Akshay's primary focus. An AI learning system intended to help students work through problems and develop their reasoning through guided learning, independent thinking, and feedback from students and educators. [Project description](https://akshayabraham.vercel.app/projects).
-- **MNEMO:** A voice-first knowledge companion for Obsidian. The portfolio describes recording to linked notes, multilingual transcription, spoken recall, guided practice, and an offline recording queue. The portfolio credits Chris V Jacob as a collaborator. [Project description](https://akshayabraham.vercel.app/projects).
-- **Mitra:** A wearable companion and caretaker system involving ESP32 devices, a home base, and a caretaker app. The portfolio describes motion and location events, panic alerts, care routines, and a personal AI companion. The portfolio credits Chris V Jacob as a collaborator. [Project description](https://akshayabraham.vercel.app/projects).
+- **MNEMO:** A project for people living with memory challenges. The portfolio credits Chris V Jacob as a collaborator. [Project description](https://akshayabraham.vercel.app/projects).
+- **Mitra:** A project for people living with memory challenges. The portfolio credits Chris V Jacob as a collaborator. [Project description](https://akshayabraham.vercel.app/projects).
 
 ## Other projects
 
@@ -41,13 +40,13 @@ For current project scope and licensing, use the [Projects page](https://akshaya
 
 The following milestones are described by Akshay on the [About page](https://akshayabraham.vercel.app/about). Awards and attendance are self-reported there.
 
-- **October 2025:** First presentation, at a school AI workshop and community outreach programme, shortly after starting Lyra. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-first-presentation.webp).
+- **15 October 2025:** Akshay gave his first presentation about Lyra at an AI workshop and community outreach event, one day after starting the project. He recalls educators asking to use it for their children. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-first-presentation.webp).
 - **November 2025:** Second place at Hack4Future in Kochi with Lyra; Akshay describes it as his first hackathon. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-hack4future-2025.webp).
 - **November 2025:** First place at Hackfinity in Anchal with Lyra. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-hackfinity-2025.webp).
 - **February 2026:** First place at SAMEEKSHA, part of SRISHTI at Saintgits College of Engineering, after presenting Lyra. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-sameeksha-2026.webp).
-- **School life:** Selected as Arts Captain of Girideepam Bethany Central School. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-arts-captain.webp).
-- **2026:** Selected for and attended Y Combinator Startup School India. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-yc-startup-school-india.webp).
-- **AIBoomi Startup Weekend Kochi:** The portfolio says Akshay competed with Lyra as the youngest solo team in a 20-hour buildathon, won first place, and received $10,000 in OpenAI API credits. No event date is given on the portfolio. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-aiboomi-kochi.webp).
+- **April 2026:** Selected for and attended Y Combinator Startup School India. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-yc-startup-school-india.webp).
+- **October 2026:** At his first live hackathon, HackTVM Access Point, Akshay says he and Chris V Jacob first shaped Mitra and MNEMO. They finished first by points among the five teams advancing to Phase 2, where they will develop the projects further for a demo day in January. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-hacktvm-access-point-2026.webp).
+- **23–24 October 2026, AIBoomi Startup Weekend Kochi:** The portfolio says Akshay competed with Lyra as the youngest solo team in a 20-hour buildathon, won first place, and received $10,000 in OpenAI API credits. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-aiboomi-kochi.webp).
 
 ## Skills and technologies
 

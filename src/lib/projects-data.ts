@@ -20,19 +20,17 @@ export const projects: Project[] = [
   },
   {
     title: 'Mitra',
-    category: 'Embedded systems & care',
+    category: 'Memory & care',
     collaborators: ['Chris V Jacob'],
-    description:
-      'A wearable companion and caretaker system built around ESP32 devices, a home base, and a responsive caretaker app. Connects motion and location events, panic alerts, care routines, and a personal AI companion.',
+    description: 'A project for people living with memory challenges.',
     isFeatured: true,
   },
   {
     title: 'MNEMO',
-    category: 'Voice & knowledge',
+    category: 'Memory & care',
     collaborators: ['Chris V Jacob'],
     isFeatured: true,
-    description:
-      'A voice-first knowledge companion for Obsidian. Turns recordings into organised, linked notes, with multilingual transcription, spoken recall, guided practice, and an offline recording queue.',
+    description: 'A project for people living with memory challenges.',
   },
   {
     title: 'Driver Guard',

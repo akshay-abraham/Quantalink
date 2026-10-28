@@ -6,7 +6,7 @@ export default function SkillsClientPage() {
   return (
     <div className="skills-categories">
       {skillsData.map((category, index) => (
-        <section key={category.title} className="skill-category">
+        <section key={category.title} className="skill-category section-reveal">
           <div className="skill-category-heading">
             <div className="text-primary" aria-hidden="true">
               {category.icon}

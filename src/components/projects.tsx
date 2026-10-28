@@ -18,8 +18,8 @@ export default function Projects({
             <h2>Selected systems.</h2>
           </div>
           <p>
-            Lyra leads the work. MNEMO and Mitra explore the same care for
-            people in different ways.
+            Lyra leads the work. MNEMO and Mitra focus on people living with
+            memory challenges.
           </p>
         </div>
       )}
@@ -42,7 +42,9 @@ export default function Projects({
             {project.collaborators && (
               <div className="project-credit">
                 <span>Built together with</span>
-                <strong>{project.collaborators.join(', ')}</strong>
+                <strong className="collaborator-name">
+                  {project.collaborators.join(', ')}
+                </strong>
               </div>
             )}
             {(project.githubUrl || project.license) && (
