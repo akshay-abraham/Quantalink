@@ -22,15 +22,9 @@ export const projects: Project[] = [
     title: 'Mitra',
     category: 'Memory & care',
     collaborators: ['Chris V Jacob'],
-    description: 'A project for people living with memory challenges.',
+    description:
+      'A complete caretaker system for people in the later stages of memory loss and those who care for them.',
     isFeatured: true,
-  },
-  {
-    title: 'MNEMO',
-    category: 'Memory & care',
-    collaborators: ['Chris V Jacob'],
-    isFeatured: true,
-    description: 'A project for people living with memory challenges.',
   },
   {
     title: 'Driver Guard',
@@ -41,10 +35,17 @@ export const projects: Project[] = [
   },
   {
     title: 'M57',
+    isFeatured: true,
     description:
       'A native Android app exploring focused digital habits through configurable AI-app redirection to Lyra, short-video controls, and on-device family browsing filters.',
     githubUrl: 'https://github.com/akshay-abraham/m57',
     license: 'AGPL v3 / GPL v3',
+  },
+  {
+    title: 'MNEMO',
+    category: 'Memory & care',
+    collaborators: ['Chris V Jacob'],
+    description: 'Designed for people in the early stages of memory loss.',
   },
   {
     title: 'NEPHRA  ·  Smart Water Bottle System',

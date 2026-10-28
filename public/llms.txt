@@ -24,13 +24,13 @@ This is a directory of facts published on the portfolio for agents that choose t
 ## Current focus and featured projects
 
 - **Lyra:** Akshay's primary focus. An AI learning system intended to help students work through problems and develop their reasoning through guided learning, independent thinking, and feedback from students and educators. [Project description](https://akshayabraham.vercel.app/projects).
-- **MNEMO:** A project for people living with memory challenges. The portfolio credits Chris V Jacob as a collaborator. [Project description](https://akshayabraham.vercel.app/projects).
-- **Mitra:** A project for people living with memory challenges. The portfolio credits Chris V Jacob as a collaborator. [Project description](https://akshayabraham.vercel.app/projects).
+- **Mitra:** A complete caretaker system for people in the later stages of memory loss and those who care for them. The portfolio credits Chris V Jacob as a collaborator. [Project description](https://akshayabraham.vercel.app/projects).
+- **M57:** Native Android app exploring focused digital habits through configurable AI-app redirection to Lyra, short-video controls, and on-device family browsing filters. [Source](https://github.com/akshay-abraham/m57).
 
 ## Other projects
 
 - **Driver Guard:** Local driver-monitoring dashboard using Python, OpenCV, MediaPipe, and FastAPI for webcam-based fatigue signs and alerts, with optional ESP32 integration. [Source](https://github.com/akshay-abraham/driver_guard).
-- **M57:** Native Android app exploring focused digital habits through configurable AI-app redirection to Lyra, short-video controls, and on-device family browsing filters. [Source](https://github.com/akshay-abraham/m57).
+- **MNEMO:** Designed for people in the early stages of memory loss. The portfolio credits Chris V Jacob as a collaborator. [Project description](https://akshayabraham.vercel.app/projects).
 - **NEPHRA:** Smart water bottle system using ESP32, copper tape sensor, and MPU6050, with mobile integration and hydration tracking. The portfolio credits Adwaith R Krishna US as a collaborator. [Source](https://github.com/akshay-abraham/NEPHRA).
 - **Quantalink:** This portfolio, built with Next.js and TypeScript to present Akshay's projects, skills, and journey. [Source](https://github.com/akshay-abraham/Quantalink).
 

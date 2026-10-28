@@ -55,8 +55,9 @@ export default function AboutPage() {
           <p>
             <strong>Lyra is my primary focus</strong>, helping students reason
             through problems and build understanding. Alongside it, I’m building{' '}
-            <strong>MNEMO</strong> and <strong>Mitra</strong>, both focused on
-            people living with memory challenges.
+            <strong>MNEMO</strong> for people in the early stages of memory
+            loss, and <strong>Mitra</strong> as a caretaker system for later
+            stages.
           </p>
           <Link href="/projects" className="action-text mt-4">
             Explore the projects <ArrowUpRight size={17} aria-hidden="true" />

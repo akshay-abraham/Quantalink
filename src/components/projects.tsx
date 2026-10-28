@@ -18,8 +18,8 @@ export default function Projects({
             <h2>Selected systems.</h2>
           </div>
           <p>
-            Lyra leads the work. MNEMO and Mitra focus on people living with
-            memory challenges.
+            Lyra leads the work. The other projects explore memory care and
+            focused digital habits.
           </p>
         </div>
       )}
