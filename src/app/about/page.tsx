@@ -118,6 +118,18 @@ export default function AboutPage() {
                           ))
                       : event.detail}
                   </p>
+                  {event.postUrl && (
+                    <a
+                      href={event.postUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="action-text mt-4"
+                      aria-label={`Read the LinkedIn post about ${event.title}`}
+                    >
+                      Read the LinkedIn post
+                      <ArrowUpRight size={17} aria-hidden="true" />
+                    </a>
+                  )}
                 </div>
                 <EventPhoto title={event.title} {...event.photo} />
               </div>

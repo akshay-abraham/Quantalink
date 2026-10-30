@@ -3,6 +3,7 @@ interface JourneyEvent {
   tag: string;
   detail: string;
   highlight?: string;
+  postUrl?: string;
   photo: {
     src: string;
     alt: string;
@@ -27,6 +28,7 @@ export const journey: JourneyEvent[] = [
   {
     title: 'My first hackathon · Hack4Future',
     tag: 'November 2025 · 2nd place',
+    postUrl: 'https://lnkd.in/p/d9rQNQ8v',
     detail:
       'Took Lyra to my first hackathon, organised by Saraswathi Vidyanikethan, Elamakkara, Kochi. Won second place, met other builders, and brought back new questions to work on.',
     photo: {
@@ -39,6 +41,7 @@ export const journey: JourneyEvent[] = [
   {
     title: 'Hackfinity · Taking Lyra further',
     tag: 'November 2025 · 1st place',
+    postUrl: 'https://lnkd.in/p/d9rQNQ8v',
     detail:
       'Won first place at Hackfinity, organised by HowNWhy Education at St. John’s Central School, Anchal. Another opportunity to share Lyra and listen to how people wanted to use it.',
     photo: {
@@ -51,6 +54,7 @@ export const journey: JourneyEvent[] = [
   {
     title: 'SAMEEKSHA · Building momentum',
     tag: 'February 2026 · 1st place',
+    postUrl: 'https://lnkd.in/p/d9rQNQ8v',
     detail:
       'Presented Lyra at SAMEEKSHA, part of SRISHTI at Saintgits College of Engineering, and won first place. Each conversation helped sharpen the system and the problem it was trying to solve.',
     photo: {
@@ -63,6 +67,7 @@ export const journey: JourneyEvent[] = [
   {
     title: 'Y Combinator Startup School India',
     tag: 'April 2026 · A room full of builders',
+    postUrl: 'https://lnkd.in/p/dJ3asZcv',
     detail:
       'Selected for and attended YC Startup School India in April 2026. Learned from founders and other builders, with a few ideas that stayed with me: build with intention, launch, and listen closely to users.',
     photo: {
@@ -88,6 +93,7 @@ export const journey: JourneyEvent[] = [
   {
     title: 'AIBoomi Startup Weekend Kochi',
     tag: '23–24 October 2026 · 1st place',
+    postUrl: 'https://lnkd.in/p/d3JYpKx4',
     detail:
       'Competed with Lyra as the youngest solo team in a 20-hour buildathon with 76 teams and around 140 participants. Won first place and received $10,000 in OpenAI API credits. The most meaningful part was seeing people connect with what I was building.',
     photo: {
