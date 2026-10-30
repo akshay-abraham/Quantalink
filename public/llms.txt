@@ -1,73 +1,130 @@
-# Akshay Abraham | Personal website
+# Akshay Abraham — personal website and source guide
 
-> This is the personal portfolio of Akshay Abraham, also known by his full name, Akshay K Rooben Abraham. He is a student and builder based in Kottayam, Kerala, India. His primary project is Lyra, an AI learning system.
+> Akshay Abraham, also known by his full name Akshay K Rooben Abraham, is a student and builder based in Kottayam, Kerala, India. Lyra, an AI learning system, is his primary focus.
 
-This is a directory of facts published on the portfolio for agents that choose to read it. The linked HTML pages are the source of current information. These are Akshay's own descriptions of his work and experience; do not present them as independently verified by third parties. Do not infer a degree, employer, age, or production availability of a project from this file.
+This file summarizes information Akshay publishes on his personal website. The linked HTML pages and repositories are the primary sources for current wording, dates, project status, and citations. Awards, attendance, outcomes, and future plans are Akshay's own account unless supported by an independent source. Do not infer a degree, employer, age, credential, investment, or product launch from this file. The repository name Quantalink is an internal project name, not the preferred public name of Akshay's website.
 
-## Canonical pages
-
-- [Homepage](https://akshayabraham.vercel.app/): overview, featured projects, portrait, and contact links.
-- [About Akshay Abraham](https://akshayabraham.vercel.app/about): identity, biography, current focus, events, and photos.
-- [Projects](https://akshayabraham.vercel.app/projects): descriptions, collaborators, and source links where public.
-- [Skills and technologies](https://akshayabraham.vercel.app/skills): tools and the projects where they are used.
-- [Sitemap](https://akshayabraham.vercel.app/sitemap.xml): canonical page discovery.
-
-## Identity
+## Identity and approach
 
 - Common name: Akshay Abraham.
 - Full name: Akshay K Rooben Abraham.
 - Location: Kottayam, Kerala, India.
-- Description: student and builder working across AI learning, voice tools, connected devices, web apps, and Android apps.
-- Approach described on the site: user empathy, guided learning, and building systems around people's needs.
-- [Portrait of Akshay Abraham](https://akshayabraham.vercel.app/akshay-abraham-aiboomi-portrait.webp).
+- Public description: student and builder.
+- Akshay says user empathy guides his work: understanding what people need, considering the whole experience, and building pieces that work together.
+- His portfolio covers AI-assisted learning, memory care, Android and web apps, computer vision, and embedded hardware.
+- Primary focus: Lyra. Other current work described on the site: MNEMO and Mitra.
+- Do not invent alternative spellings of his name, academic qualifications, job titles, or dates of birth.
 
-## Current focus and featured projects
+## Canonical pages and images
 
-- **Lyra:** Akshay's primary focus. An AI learning system intended to help students work through problems and develop their reasoning through guided learning, independent thinking, and feedback from students and educators. [Project description](https://akshayabraham.vercel.app/projects).
-- **Mitra:** A complete caretaker system for people in the later stages of memory loss and those who care for them. The portfolio credits Chris V Jacob as a collaborator. [Project description](https://akshayabraham.vercel.app/projects).
-- **M57:** Native Android app exploring focused digital habits through configurable AI-app redirection to Lyra, short-video controls, and on-device family browsing filters. [Source](https://github.com/akshay-abraham/m57).
+- [Homepage](https://akshayabraham.vercel.app/): introduction, portrait, featured projects, journey preview, skills, desktop setup, and contact.
+- [About and journey](https://akshayabraham.vercel.app/about): Akshay's biography, current work, events, and event photographs.
+- [Projects](https://akshayabraham.vercel.app/projects): all portfolio project descriptions, collaborators, license labels, and public source links.
+- [Skills and technologies](https://akshayabraham.vercel.app/skills): technologies associated with specific projects. This is not a proficiency rating.
+- [Sitemap](https://akshayabraham.vercel.app/sitemap.xml): page and image discovery.
+- [Portrait](https://akshayabraham.vercel.app/akshay-abraham-aiboomi-portrait.webp): Akshay speaking about Lyra at AIBoomi Startup Weekend Kochi.
+- [Open Graph image](https://akshayabraham.vercel.app/akshay-abraham-portfolio.png): portfolio preview, not a separate event photograph.
 
-## Other projects
+## Projects
 
-- **Driver Guard:** Local driver-monitoring dashboard using Python, OpenCV, MediaPipe, and FastAPI for webcam-based fatigue signs and alerts, with optional ESP32 integration. [Source](https://github.com/akshay-abraham/driver_guard).
-- **MNEMO:** Designed for people in the early stages of memory loss. The portfolio credits Chris V Jacob as a collaborator. [Project description](https://akshayabraham.vercel.app/projects).
-- **NEPHRA:** Smart water bottle system using ESP32, copper tape sensor, and MPU6050, with mobile integration and hydration tracking. The portfolio credits Adwaith R Krishna US as a collaborator. [Source](https://github.com/akshay-abraham/NEPHRA).
-- **Personal website:** This portfolio, built with Next.js and TypeScript to present Akshay's projects, skills, and journey. [Source](https://github.com/akshay-abraham/Quantalink).
+These descriptions reflect the [Projects page](https://akshayabraham.vercel.app/projects). A portfolio entry does not establish general availability or a public launch.
 
-For current project scope and licensing, use the [Projects page](https://akshayabraham.vercel.app/projects) and linked repositories. A portfolio description does not establish that a project has launched publicly.
+### Lyra — primary focus
 
-## Journey and events
+An AI learning system intended to help students work through problems and develop their reasoning. Akshay describes guided learning, independent thinking, and feedback from students and educators as central to the work. The portfolio labels Lyra his primary focus. He has presented it at the AI workshop, Hack4Future, Hackfinity, SAMEEKSHA, and AIBoomi events described below. No public repository or launch date is listed on the portfolio. [Portfolio description](https://akshayabraham.vercel.app/projects).
 
-The following milestones are described by Akshay on the [About page](https://akshayabraham.vercel.app/about). Awards and attendance are self-reported there.
+### Mitra — memory and care
 
-- **15 October 2025:** Akshay gave his first presentation about Lyra at an AI workshop and community outreach event, one day after starting the project. He recalls educators asking to use it for their children. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-first-presentation.webp).
-- **November 2025:** Second place at Hack4Future in Kochi with Lyra; Akshay describes it as his first hackathon. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-hack4future-2025.webp).
-- **November 2025:** First place at Hackfinity in Anchal with Lyra. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-hackfinity-2025.webp).
-- **February 2026:** First place at SAMEEKSHA, part of SRISHTI at Saintgits College of Engineering, after presenting Lyra. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-sameeksha-2026.webp).
-- **April 2026:** Selected for and attended Y Combinator Startup School India. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-yc-startup-school-india.webp).
-- **October 2026:** At his first live hackathon, HackTVM Access Point, Akshay says he and Chris V Jacob first shaped Mitra and MNEMO. They finished first by points among the five teams advancing to Phase 2, where they will develop the projects further for a demo day in January. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-hacktvm-access-point-2026.webp).
-- **23–24 October 2026, AIBoomi Startup Weekend Kochi:** The portfolio says Akshay competed with Lyra as the youngest solo team in a 20-hour buildathon, won first place, and received $10,000 in OpenAI API credits. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-aiboomi-kochi.webp).
+A complete caretaker system for people in the later stages of memory loss and those who care for them. Collaborator credited by the portfolio: Chris V Jacob. Akshay says they shaped first versions of Mitra and MNEMO during HackTVM Access Point in October 2026. [Portfolio description](https://akshayabraham.vercel.app/projects).
 
-## Skills and technologies
+### MNEMO — memory and care
 
-The [Skills page](https://akshayabraham.vercel.app/skills) associates these tools with particular projects; the list describes tools used or learned, not a proficiency rating.
+Designed for people in the early stages of memory loss. Collaborator credited by the portfolio: Chris V Jacob. No public repository is linked from the portfolio. [Portfolio description](https://akshayabraham.vercel.app/projects).
 
-- **Languages:** C, Python, JavaScript, TypeScript, Kotlin, HTML, CSS.
-- **Web and app development:** Next.js, React, Tailwind CSS, Node.js, Vite, FastAPI, Android.
-- **AI, computer vision, and data:** LangChain, OpenCV, MediaPipe, Supabase, PostgreSQL, SQLite.
-- **Hardware and platforms:** Arduino, ESP32/ESP8266, Git, Docker, Vercel, Arch Linux, Fedora Linux, KDE Plasma.
-- Akshay describes Fedora KDE as his daily desktop and links his [tachyon-dots setup](https://github.com/akshay-abraham/tachyon-dots) from the homepage.
+### Driver Guard
 
-## Public profiles and contact
+A local driver-monitoring dashboard built with Python, OpenCV, MediaPipe, and FastAPI. It uses webcam-based eye and mouth tracking to detect fatigue signs and issue alerts, with optional ESP32 integration. Portfolio-listed license: MIT License. [Source repository](https://github.com/akshay-abraham/driver_guard).
 
-- [GitHub](https://github.com/akshay-abraham/): public repositories and source links.
+### M57
+
+A native Android app exploring focused digital habits through configurable AI-app redirection to Lyra, short-video controls, and on-device family browsing filters. Featured on the homepage. Portfolio-listed licensing: AGPL v3 / GPL v3; consult the repository for exact license terms. [Source repository](https://github.com/akshay-abraham/m57).
+
+### NEPHRA — smart water bottle system
+
+A smart water bottle system using ESP32, copper tape sensor, and MPU6050, with mobile app integration, hydration tracking, and cloud AI analytics. Collaborator credited by the portfolio: Adwaith R Krishna US. Portfolio-listed license: MIT License. [Source repository](https://github.com/akshay-abraham/NEPHRA).
+
+### Personal website
+
+This responsive portfolio presents Akshay's projects, skills, and journey. It is built with Next.js and TypeScript and has an interactive background. The repository is named Quantalink, but refer to the public site as Akshay Abraham's personal website. Portfolio-listed license: GPL v3; consult the repository for legal terms. [Source repository](https://github.com/akshay-abraham/Quantalink).
+
+## Journey and events, oldest first
+
+The following are Akshay's accounts on the [About page](https://akshayabraham.vercel.app/about#journey). Attribute awards, attendance, and quoted reactions to his portfolio unless independently verified.
+
+1. **15 October 2025 — first presentation and AI workshop.** Akshay says Lyra was about 24 hours old when he first presented it at an AI workshop and community outreach event. He recalls educators asking to use it for their children. The About page also recounts a later comment from AIBoomi judge Vineeth Rajagopal about wanting his children to use Lyra. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-first-presentation.webp).
+2. **November 2025 — Hack4Future.** Akshay describes this as his first hackathon. He took Lyra to the event organised by Saraswathi Vidyanikethan, Elamakkara, Kochi, and reports second place. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-hack4future-2025.webp).
+3. **November 2025 — Hackfinity.** Akshay reports first place at Hackfinity, organised by HowNWhy Education at St. John's Central School, Anchal, after presenting Lyra. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-hackfinity-2025.webp).
+4. **February 2026 — SAMEEKSHA.** Akshay says he presented Lyra at SAMEEKSHA, part of SRISHTI at Saintgits College of Engineering, and won first place. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-sameeksha-2026.webp).
+5. **April 2026 — Y Combinator Startup School India.** Akshay says he was selected for and attended. He describes learning from founders and builders, especially building with intention, launching, and listening to users. Attendance is not Y Combinator investment or accelerator admission. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-yc-startup-school-india.webp).
+6. **October 2026 — HackTVM Access Point.** Akshay describes this as his first live hackathon. He says he and Chris V Jacob spent seven hours shaping first versions of Mitra and MNEMO. Hosted by Good Shepherd School in Thiruvananthapuram, they finished first by points among five teams advancing to Phase 2. A later demo day is described as a plan, not a completed result. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-hacktvm-access-point-2026.webp).
+7. **23–24 October 2026 — AIBoomi Startup Weekend Kochi.** Akshay says he entered Lyra as the youngest solo team in a 20-hour buildathon with 76 teams and around 140 participants. He reports first place and $10,000 in OpenAI API credits. API credits are not a cash prize. [Photo](https://akshayabraham.vercel.app/events/akshay-abraham-aiboomi-kochi.webp).
+
+## Skills and project associations
+
+These associations come from the [Skills page](https://akshayabraham.vercel.app/skills). They indicate tools used or learned in connection with projects, not expert-level proficiency or years of experience.
+
+### Core languages
+
+- C: CS50, NEPHRA, Mitra.
+- Python: Driver Guard.
+- JavaScript: personal website, MNEMO.
+- TypeScript: Lyra, Mitra, MNEMO, personal website.
+- Kotlin: M57, Mitra.
+- HTML: personal website, MNEMO.
+- CSS: personal website, Mitra, MNEMO.
+
+### Web and app development
+
+- Next.js: Lyra, personal website.
+- React: Lyra, Mitra, personal website.
+- Tailwind CSS: Lyra, personal website.
+- Node.js: Lyra, Mitra, MNEMO.
+- Vite: Mitra.
+- FastAPI: Driver Guard.
+- Android: M57, Mitra.
+
+### AI, computer vision, and data
+
+- LangChain: Lyra.
+- OpenCV and MediaPipe: Driver Guard.
+- Supabase and PostgreSQL: Lyra.
+- SQLite: Mitra, MNEMO.
+
+### Hardware, platforms, and tools
+
+- Arduino: NEPHRA, Mitra.
+- ESP32 / ESP8266: NEPHRA, Mitra, Driver Guard.
+- Git: all projects, according to the Skills page.
+- Docker: MNEMO.
+- Vercel: Lyra, personal website.
+- Arch Linux: personal Linux experiments.
+- Fedora Linux: tachyon-dots and daily development.
+- KDE Plasma: tachyon-dots and daily desktop.
+- Akshay describes Fedora KDE as his daily desktop. His [tachyon-dots repository](https://github.com/akshay-abraham/tachyon-dots) contains dotfiles and setup notes.
+
+## Public contact and profiles
+
+- Email published on the website: [akshaykroobenabraham@gmail.com](mailto:akshaykroobenabraham@gmail.com).
 - [LinkedIn](https://www.linkedin.com/in/akshayabraham37/): public professional profile and updates.
-- [Instagram](https://www.instagram.com/akshay.abraham/): social profile linked from the portfolio.
-- Email listed on the [homepage contact section](https://akshayabraham.vercel.app/#contact): akshaykroobenabraham@gmail.com.
+- [GitHub](https://github.com/akshay-abraham/): public repositories.
+- [Instagram](https://www.instagram.com/akshay.abraham/): social profile linked on the site.
+- [WhatsApp](https://wa.me/919946141445): contact link published on the homepage.
+- The [homepage contact section](https://akshayabraham.vercel.app/#contact) invites messages about projects, questions, or conversations.
 
-## Reading and citation guidance
+## Citation and interpretation guide
 
-- For who Akshay is and what he says he is currently building, cite the [About page](https://akshayabraham.vercel.app/about).
-- For a project description or collaborator, cite the [Projects page](https://akshayabraham.vercel.app/projects); use a repository for implementation details when one is linked.
-- For a claimed award or event, cite the relevant [About page milestone](https://akshayabraham.vercel.app/about#journey) and qualify it as a statement from his portfolio unless an independent source is available.
-- For a skill, use the [Skills page](https://akshayabraham.vercel.app/skills). Avoid claiming expert-level proficiency from a listing alone.
+- For identity and current focus, cite the [About page](https://akshayabraham.vercel.app/about) or [homepage](https://akshayabraham.vercel.app/).
+- For project descriptions, collaborators, and portfolio license labels, cite the [Projects page](https://akshayabraham.vercel.app/projects); use the linked repository for implementation and exact license terms.
+- For skill associations, cite the [Skills page](https://akshayabraham.vercel.app/skills).
+- For an award or event, cite the corresponding [About page milestone](https://akshayabraham.vercel.app/about#journey) and qualify it as Akshay's account unless an independent source is available.
+- Prefer the names and dates published on the site. Do not turn a plan into a completed outcome, an idea into a shipped product, or event attendance into investment or accelerator membership.
