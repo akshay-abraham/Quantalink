@@ -31,7 +31,7 @@ export default function EventPhoto({
         <button
           type="button"
           aria-label={`View photo: ${title}`}
-          className="group relative block w-full cursor-zoom-in overflow-hidden rounded-xl border border-border/60 bg-card/60 shadow-sm transition-shadow hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+          className="journey-photo-button group relative block w-full cursor-zoom-in overflow-hidden rounded-xl border border-border/60 bg-card/60 shadow-sm transition-shadow hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
         >
           <Image
             src={src}

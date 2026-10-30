@@ -218,7 +218,7 @@ export default function MobileNav() {
       <nav
         ref={pillRef}
         className={cn(
-          'absolute right-0 top-0 h-12 flex items-center justify-end rounded-full bg-card/50 border border-border/60 backdrop-blur-md transition-[width] motion-reduce:transition-none will-change-[width]'
+          'nav-glass absolute right-0 top-0 h-12 flex items-center justify-end rounded-full transition-[width] motion-reduce:transition-none will-change-[width]'
         )}
         style={{
           width: `${navWidth}px`,
@@ -231,7 +231,9 @@ export default function MobileNav() {
           id="mobile-nav-links"
           className={cn(
             'flex items-center gap-1 px-1 mr-12 h-full transition-opacity duration-300 motion-reduce:transition-none',
-            showIcons ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            showIcons
+              ? 'opacity-100 pointer-events-auto'
+              : 'opacity-0 pointer-events-none'
           )}
           aria-hidden={!showIcons}
         >

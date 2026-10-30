@@ -11,7 +11,7 @@ export default function MainNav() {
       <header className="site-header">
         <Link
           href="/"
-          className="site-brand"
+          className="site-brand nav-glass"
           aria-label="Akshay Abraham  ·  home"
         >
           <span className="brand-monogram">
