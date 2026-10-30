@@ -7,7 +7,7 @@ export const websiteJsonLd = {
   '@id': `${siteUrl}/#website`,
   url: siteUrl,
   name: 'Akshay Abraham',
-  alternateName: 'Quantalink',
+  alternateName: 'Akshay K Rooben Abraham',
 };
 
 export const personJsonLd = {

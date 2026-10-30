@@ -4,12 +4,12 @@ import type { Metadata } from 'next';
 import { pageSocialMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Projects by Akshay Abraham | Quantalink',
+  title: 'Projects by Akshay Abraham',
   description:
-    'Explore projects by Akshay Abraham, including Lyra, Mitra, MNEMO, Driver Guard, M57, NEPHRA, and Quantalink.',
+    'Explore projects by Akshay Abraham (Akshay K Rooben Abraham), including Lyra, Mitra, MNEMO, Driver Guard, M57, and NEPHRA.',
   alternates: { canonical: '/projects' },
   ...pageSocialMetadata(
-    'Projects by Akshay Abraham | Quantalink',
+    'Projects by Akshay Abraham',
     'Explore Lyra, Mitra, MNEMO, and other projects built by Akshay Abraham.',
     '/projects'
   ),

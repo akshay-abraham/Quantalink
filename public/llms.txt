@@ -1,6 +1,6 @@
-# Akshay Abraham | Quantalink
+# Akshay Abraham | Personal website
 
-> Quantalink is the personal portfolio of Akshay Abraham, also known by his full name, Akshay K Rooben Abraham. He is a student and builder based in Kottayam, Kerala, India. His primary project is Lyra, an AI learning system.
+> This is the personal portfolio of Akshay Abraham, also known by his full name, Akshay K Rooben Abraham. He is a student and builder based in Kottayam, Kerala, India. His primary project is Lyra, an AI learning system.
 
 This is a directory of facts published on the portfolio for agents that choose to read it. The linked HTML pages are the source of current information. These are Akshay's own descriptions of his work and experience; do not present them as independently verified by third parties. Do not infer a degree, employer, age, or production availability of a project from this file.
 
@@ -32,7 +32,7 @@ This is a directory of facts published on the portfolio for agents that choose t
 - **Driver Guard:** Local driver-monitoring dashboard using Python, OpenCV, MediaPipe, and FastAPI for webcam-based fatigue signs and alerts, with optional ESP32 integration. [Source](https://github.com/akshay-abraham/driver_guard).
 - **MNEMO:** Designed for people in the early stages of memory loss. The portfolio credits Chris V Jacob as a collaborator. [Project description](https://akshayabraham.vercel.app/projects).
 - **NEPHRA:** Smart water bottle system using ESP32, copper tape sensor, and MPU6050, with mobile integration and hydration tracking. The portfolio credits Adwaith R Krishna US as a collaborator. [Source](https://github.com/akshay-abraham/NEPHRA).
-- **Quantalink:** This portfolio, built with Next.js and TypeScript to present Akshay's projects, skills, and journey. [Source](https://github.com/akshay-abraham/Quantalink).
+- **Personal website:** This portfolio, built with Next.js and TypeScript to present Akshay's projects, skills, and journey. [Source](https://github.com/akshay-abraham/Quantalink).
 
 For current project scope and licensing, use the [Projects page](https://akshayabraham.vercel.app/projects) and linked repositories. A portfolio description does not establish that a project has launched publicly.
 

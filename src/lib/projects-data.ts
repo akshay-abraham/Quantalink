@@ -56,7 +56,7 @@ export const projects: Project[] = [
     license: 'MIT License',
   },
   {
-    title: 'Quantalink',
+    title: 'Personal website',
     description:
       'My personal portfolio, built with Next.js and TypeScript. Brings together projects, skills, and my journey with an interactive background and a responsive interface.',
     githubUrl: 'https://github.com/akshay-abraham/Quantalink',

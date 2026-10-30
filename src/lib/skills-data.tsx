@@ -19,14 +19,14 @@ export interface SkillCategory {
 const skillProjects: Record<string, string[]> = {
   C: ['CS50', 'NEPHRA', 'Mitra'],
   Python: ['Driver Guard'],
-  JavaScript: ['Quantalink', 'MNEMO'],
-  TypeScript: ['Lyra', 'Mitra', 'MNEMO', 'Quantalink'],
+  JavaScript: ['Personal website', 'MNEMO'],
+  TypeScript: ['Lyra', 'Mitra', 'MNEMO', 'Personal website'],
   Kotlin: ['M57', 'Mitra'],
-  HTML: ['Quantalink', 'MNEMO'],
-  CSS: ['Quantalink', 'Mitra', 'MNEMO'],
-  'Next.js': ['Lyra', 'Quantalink'],
-  React: ['Lyra', 'Mitra', 'Quantalink'],
-  'Tailwind CSS': ['Lyra', 'Quantalink'],
+  HTML: ['Personal website', 'MNEMO'],
+  CSS: ['Personal website', 'Mitra', 'MNEMO'],
+  'Next.js': ['Lyra', 'Personal website'],
+  React: ['Lyra', 'Mitra', 'Personal website'],
+  'Tailwind CSS': ['Lyra', 'Personal website'],
   'Node.js': ['Lyra', 'Mitra', 'MNEMO'],
   Vite: ['Mitra'],
   FastAPI: ['Driver Guard'],
@@ -41,7 +41,7 @@ const skillProjects: Record<string, string[]> = {
   'ESP32 / ESP8266': ['NEPHRA', 'Mitra', 'Driver Guard'],
   Git: ['All projects'],
   Docker: ['MNEMO'],
-  Vercel: ['Lyra', 'Quantalink'],
+  Vercel: ['Lyra', 'Personal website'],
   'Arch Linux': ['Personal Linux experiments'],
   'Fedora Linux': ['Tachyon dots', 'Daily development'],
   'KDE Plasma': ['Tachyon dots', 'Daily desktop'],
@@ -65,7 +65,7 @@ function skill(name: string, slug: string): Skill {
   };
 }
 
-// Technologies used across Lyra, Mitra, MNEMO, Driver Guard, M57, and Quantalink.
+// Technologies used across Lyra, Mitra, MNEMO, Driver Guard, M57, and this website.
 export const skillsData: SkillCategory[] = [
   {
     title: 'Core Languages',
