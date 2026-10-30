@@ -28,7 +28,7 @@ export const journey: JourneyEvent[] = [
   {
     title: 'My first hackathon · Hack4Future',
     tag: 'November 2025 · 2nd place',
-    postUrl: 'https://lnkd.in/p/d9rQNQ8v',
+    postUrl: 'https://lnkd.in/p/dcWbpKcx',
     detail:
       'Took Lyra to my first hackathon, organised by Saraswathi Vidyanikethan, Elamakkara, Kochi. Won second place, met other builders, and brought back new questions to work on.',
     photo: {
@@ -54,7 +54,7 @@ export const journey: JourneyEvent[] = [
   {
     title: 'SAMEEKSHA · Building momentum',
     tag: 'February 2026 · 1st place',
-    postUrl: 'https://lnkd.in/p/d9rQNQ8v',
+    postUrl: 'https://lnkd.in/p/dcWbpKcx',
     detail:
       'Presented Lyra at SAMEEKSHA, part of SRISHTI at Saintgits College of Engineering, and won first place. Each conversation helped sharpen the system and the problem it was trying to solve.',
     photo: {

@@ -1048,6 +1048,13 @@ body {
   color: hsl(var(--foreground) / 0.65);
   margin-top: 18px;
 }
+.journey-post-link {
+  width: 100%;
+  justify-content: space-between;
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid hsl(var(--border) / 0.8);
+}
 .journey-collaborator {
   font-weight: 600;
   color: hsl(var(--primary));
@@ -1998,7 +2005,7 @@ body {
 }
 .animated-skill-card:hover .skill-card-icon,
 .animated-skill-card:focus .skill-card-icon {
-  transform: translateY(-24px) rotate(-7deg);
+  transform: translateY(-24px);
 }
 .animated-skill-card:hover .skill-usage,
 .animated-skill-card:focus .skill-usage {
@@ -2069,12 +2076,10 @@ body {
   }
   .project-index {
     transition:
-      transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
       background 0.35s,
       border-color 0.35s;
   }
   .project-card:hover .project-index {
-    transform: rotate(-8deg) scale(1.1);
     background: hsl(var(--primary) / 0.1);
     border-color: hsl(var(--primary) / 0.5);
   }

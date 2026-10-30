@@ -123,7 +123,7 @@ export default function AboutPage() {
                       href={event.postUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="action-text mt-4"
+                      className="action-text journey-post-link"
                       aria-label={`Read the LinkedIn post about ${event.title}`}
                     >
                       Read the LinkedIn post
