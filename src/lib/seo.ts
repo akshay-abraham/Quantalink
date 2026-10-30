@@ -38,7 +38,7 @@ export function pageSocialMetadata(
           url: socialImage,
           width: 1200,
           height: 630,
-          alt: 'Akshay Abraham speaking at AIBoomi Startup Weekend Kochi',
+          alt: 'Akshay Abraham portfolio introduction with his AIBoomi portrait',
         },
       ],
       locale: 'en_US',
