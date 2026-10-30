@@ -23,6 +23,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
+  themeColor: '#f4fbfa',
 };
 
 // Define metadata for the website, used for SEO and browser tab information.
