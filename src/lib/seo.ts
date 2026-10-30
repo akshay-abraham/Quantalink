@@ -1,6 +1,15 @@
 export const siteUrl = 'https://akshayabraham.vercel.app';
 export const socialImage = '/akshay-abraham-portfolio.png';
 
+export const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${siteUrl}/#website`,
+  url: siteUrl,
+  name: 'Akshay Abraham',
+  alternateName: 'Quantalink',
+};
+
 export const personJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
@@ -49,7 +58,7 @@ export function pageSocialMetadata(
       title,
       description,
       url: `${siteUrl}${path}`,
-      siteName: 'Akshay Abraham | Quantalink',
+      siteName: 'Akshay Abraham',
       images: [image],
       locale: 'en_US',
       type: 'website' as const,
