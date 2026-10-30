@@ -6,19 +6,19 @@ const profiles = [
   {
     label: 'GitHub',
     url: 'https://github.com/akshay-abraham/',
-    display: 'github.com/akshay-abraham',
+    display: 'akshay-abraham',
     Icon: GithubIcon,
   },
   {
     label: 'Instagram',
     url: 'https://www.instagram.com/akshay.abraham/',
-    display: 'instagram.com/akshay.abraham',
+    display: 'akshay.abraham',
     Icon: InstagramIcon,
   },
   {
     label: 'LinkedIn',
     url: 'https://www.linkedin.com/in/akshayabraham37/',
-    display: 'linkedin.com/in/akshayabraham37',
+    display: 'akshayabraham37',
     Icon: LinkedinIcon,
   },
 ];
@@ -42,7 +42,6 @@ export default function Home() {
           <span>Abraham.</span>
         </h1>
         <p className="cover-tagline">Creating systems · Building Lyra</p>
-        <p className="cover-projects">Lyra · MNEMO · Mitra</p>
       </div>
       <aside
         className="cover-contact nav-glass"

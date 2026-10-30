@@ -77,6 +77,7 @@ const AnimatedBackground = () => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    const isCoverPage = Boolean(document.querySelector('.linkedin-cover'));
 
     /* ============================================================
        Palette (light theme only, matching the original design)
@@ -114,7 +115,7 @@ const AnimatedBackground = () => {
     const MAX_AREA = 1920 * 1080; // desktop reference
     const MIN_PARTICLES = 16;
     const MAX_PARTICLES = 80;
-    const MIN_LINKS = 5;// max connections drawn per particle, small screens
+    const MIN_LINKS = 5; // max connections drawn per particle, small screens
     const MAX_LINKS = 7; // max connections drawn per particle, large screens
     const MAX_VIRTUAL_MIN = 18;
     const MAX_VIRTUAL_MAX = 44;
@@ -163,14 +164,20 @@ const AnimatedBackground = () => {
       const particleCount = Math.round(
         (MIN_PARTICLES + t * (MAX_PARTICLES - MIN_PARTICLES)) * coreFactor
       );
+      const baseConnectionDistance = clamp(Math.min(w, h) * 0.16, 58, 170);
+      const baseLinks = Math.round(MIN_LINKS + t * (MAX_LINKS - MIN_LINKS));
       return {
         t,
-        particleCount: Math.max(10, particleCount),
-        maxLinks: Math.round(MIN_LINKS + t * (MAX_LINKS - MIN_LINKS)),
+        particleCount: isCoverPage
+          ? Math.min(170, Math.max(10, particleCount * 4))
+          : Math.max(10, particleCount),
+        maxLinks: isCoverPage ? Math.min(12, baseLinks * 2) : baseLinks,
         maxVirtual: Math.round(
           MAX_VIRTUAL_MIN + t * (MAX_VIRTUAL_MAX - MAX_VIRTUAL_MIN)
         ),
-        connectionDistance: clamp(Math.min(w, h) * 0.16, 58, 170),
+        connectionDistance: isCoverPage
+          ? Math.min(240, baseConnectionDistance * 2.2)
+          : baseConnectionDistance,
         forceRadius: clamp(Math.min(w, h) * 0.22, 90, 220),
         spawnRate: 0.16 + t * 0.14,
         // 1.4x on small phones, tapering to 1.0x on large desktops.
@@ -625,8 +632,7 @@ const AnimatedBackground = () => {
     const applyResize = () => {
       const newWidth = window.innerWidth;
       const newHeight = window.innerHeight;
-      const widthChanged =
-        Math.abs(newWidth - lastWidth) > DIMENSION_STABLE_PX;
+      const widthChanged = Math.abs(newWidth - lastWidth) > DIMENSION_STABLE_PX;
       const heightChanged =
         Math.abs(newHeight - lastHeight) > DIMENSION_STABLE_PX;
       if (!widthChanged && !heightChanged) return;
