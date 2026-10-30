@@ -2181,3 +2181,144 @@ body {
 .quantum-progress::-moz-progress-bar {
   background: hsl(var(--primary));
 }
+
+/* LinkedIn cover homepage: composed for a 1584 × 396 capture. */
+body:has(.linkedin-cover) .site-header,
+body:has(.linkedin-cover) .mobile-nav-anchor,
+body:has(.linkedin-cover) .skip-link,
+body:has(.linkedin-cover) #pet-container {
+  display: none;
+}
+
+.linkedin-cover {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(330px, 400px) minmax(0, 1fr) 390px;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+  min-height: 100svh;
+  padding: 20px 38px 20px 0;
+}
+
+.cover-copy,
+.cover-contact {
+  min-width: 0;
+}
+
+.cover-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 53px;
+  height: 46px;
+  margin-bottom: 16px;
+  border-radius: 14px;
+}
+
+.cover-mark .brand-monogram {
+  font-size: 27px;
+}
+
+.cover-copy > .eyebrow {
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.cover-copy .hero-title {
+  margin: 8px 0 12px;
+  font-size: clamp(64px, 5.2vw, 82px);
+  line-height: 0.88;
+}
+
+.cover-tagline {
+  color: hsl(var(--foreground) / 0.82);
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.cover-projects {
+  margin-top: 14px;
+  color: hsl(var(--primary));
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.cover-contact {
+  width: 100%;
+  padding: 22px 26px 14px;
+  border-radius: 24px;
+}
+
+.cover-contact > .eyebrow {
+  margin-bottom: 4px;
+}
+
+.cover-website {
+  display: block;
+  padding-bottom: 12px;
+  border-bottom: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  transition: color 0.25s;
+}
+
+.cover-website:hover {
+  color: hsl(var(--primary));
+}
+
+.cover-profile {
+  min-height: 53px;
+  gap: 13px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.cover-profile:last-child {
+  border-bottom: 0;
+}
+
+.cover-profile-icon {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 1100px) {
+  .linkedin-cover {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 390px);
+    gap: 36px;
+    padding-inline: 6vw;
+  }
+
+  .cover-avatar-space {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .linkedin-cover {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    align-content: center;
+    padding: 48px 24px;
+  }
+
+  .cover-copy > .eyebrow {
+    white-space: normal;
+  }
+
+  .cover-copy .hero-title {
+    font-size: clamp(64px, 12vw, 82px);
+  }
+
+  .cover-contact {
+    max-width: 390px;
+  }
+}
