@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: 'Akshay Abraham | Student & Builder',
   description:
-    'Meet Akshay Abraham (Akshay K Rooben Abraham), a student and builder from Kottayam creating Lyra, MNEMO, and Mitra. Explore his projects, skills, and journey.',
+    'Akshay Abraham (Akshay K Rooben Abraham) is a student and builder in Kottayam creating Lyra, MNEMO, and Mitra. Explore his work.',
   authors: [{ name: 'Akshay Abraham', url: siteUrl }],
   creator: 'Akshay Abraham',
   keywords: [
