@@ -67,7 +67,7 @@ export default function ProfileSection() {
           </div>
           <Image
             src="/akshay-abraham-aiboomi-portrait.webp"
-            alt="Akshay Abraham speaking about Lyra at AIBoomi Startup Weekend Kochi"
+            alt="Akshay Abraham (Akshay K Rooben Abraham) speaking about Lyra at AIBoomi Startup Weekend Kochi"
             width={640}
             height={640}
             sizes="(min-width: 1024px) 420px, (min-width: 640px) 380px, 85vw"

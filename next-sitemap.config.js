@@ -7,7 +7,7 @@ module.exports = {
     const imagesByPage = {
       '/': [
         '/akshay-abraham-aiboomi-portrait.webp',
-        '/events/akshay-abraham-first-presentation.webp',
+        '/events/akshay-abraham-aiboomi-kochi.webp',
         '/events/akshay-abraham-hack4future-2025.webp',
         '/events/akshay-abraham-yc-startup-school-india.webp',
       ],
@@ -16,8 +16,8 @@ module.exports = {
         '/events/akshay-abraham-hack4future-2025.webp',
         '/events/akshay-abraham-hackfinity-2025.webp',
         '/events/akshay-abraham-sameeksha-2026.webp',
-        '/events/akshay-abraham-arts-captain.webp',
         '/events/akshay-abraham-yc-startup-school-india.webp',
+        '/events/akshay-abraham-hacktvm-access-point-2026.webp',
         '/events/akshay-abraham-aiboomi-kochi.webp',
       ],
     };

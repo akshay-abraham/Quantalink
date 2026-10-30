@@ -4,18 +4,24 @@ import { journey } from '@/lib/journey-data';
 import { ArrowUpRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { pageSocialMetadata, personJsonLd } from '@/lib/seo';
+import { pageSocialMetadata, personJsonLd, siteUrl } from '@/lib/seo';
 import { Fragment } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Journey | Akshay Abraham',
+  title: 'About Akshay Abraham | Akshay K Rooben Abraham',
   description:
-    'Follow Akshay Abraham’s journey through Lyra, hackathons, and YC Startup School India.',
+    'Photos from the journey of Akshay Abraham (Akshay K Rooben Abraham): Lyra, hackathons, YC Startup School India, and more.',
   alternates: { canonical: '/about' },
   ...pageSocialMetadata(
-    'Journey | Akshay Abraham',
-    'Follow Akshay Abraham’s journey through Lyra, hackathons, and YC Startup School India.',
-    '/about'
+    'About Akshay Abraham | Akshay K Rooben Abraham',
+    'Photos from the journey of Akshay Abraham (Akshay K Rooben Abraham): Lyra, hackathons, YC Startup School India, and more.',
+    '/about',
+    {
+      url: '/events/akshay-abraham-aiboomi-kochi.webp',
+      width: 1600,
+      height: 1067,
+      alt: 'Akshay Abraham (Akshay K Rooben Abraham) receiving first prize at AIBoomi Startup Weekend Kochi',
+    }
   ),
 };
 
@@ -23,9 +29,19 @@ export default function AboutPage() {
   const profileJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ProfilePage',
-    '@id': 'https://akshayabraham.vercel.app/about#profile',
-    url: 'https://akshayabraham.vercel.app/about',
+    '@id': `${siteUrl}/about#profile`,
+    url: `${siteUrl}/about`,
+    primaryImageOfPage: `${siteUrl}/events/akshay-abraham-aiboomi-kochi.webp`,
     mainEntity: personJsonLd,
+    associatedMedia: journey.map((event) => ({
+      '@type': 'ImageObject',
+      contentUrl: `${siteUrl}${event.photo.src}`,
+      name: event.photo.alt,
+      caption: event.title,
+      width: event.photo.width,
+      height: event.photo.height,
+      about: { '@id': personJsonLd['@id'] },
+    })),
   };
 
   return (
@@ -38,9 +54,9 @@ export default function AboutPage() {
         <p className="eyebrow">About me</p>
         <h1>Journey.</h1>
         <p className="page-intro">
-          I’m Akshay Abraham, a student and builder from Kottayam. User empathy
-          shapes how I work: understanding someone’s needs and thinking through
-          the whole experience.
+          I’m Akshay Abraham (Akshay K Rooben Abraham), a student and builder
+          from Kottayam. User empathy shapes how I work: understanding someone’s
+          needs and thinking through the whole experience.
         </p>
       </header>
       <section

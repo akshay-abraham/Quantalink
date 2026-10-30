@@ -8,7 +8,13 @@ export const personJsonLd = {
   name: 'Akshay Abraham',
   alternateName: 'Akshay K Rooben Abraham',
   url: siteUrl,
-  image: `${siteUrl}/akshay-abraham-aiboomi-portrait.webp`,
+  image: {
+    '@type': 'ImageObject',
+    contentUrl: `${siteUrl}/akshay-abraham-aiboomi-portrait.webp`,
+    name: 'Portrait of Akshay Abraham (Akshay K Rooben Abraham)',
+    width: 640,
+    height: 640,
+  },
   description:
     'Student and builder from Kottayam creating Lyra, MNEMO, and Mitra.',
   homeLocation: {
@@ -25,7 +31,18 @@ export const personJsonLd = {
 export function pageSocialMetadata(
   title: string,
   description: string,
-  path: string
+  path: string,
+  image: {
+    url: string;
+    width: number;
+    height: number;
+    alt: string;
+  } = {
+    url: socialImage,
+    width: 1200,
+    height: 630,
+    alt: 'Akshay Abraham (Akshay K Rooben Abraham) portfolio introduction with his AIBoomi portrait',
+  }
 ) {
   return {
     openGraph: {
@@ -33,14 +50,7 @@ export function pageSocialMetadata(
       description,
       url: `${siteUrl}${path}`,
       siteName: 'Akshay Abraham | Quantalink',
-      images: [
-        {
-          url: socialImage,
-          width: 1200,
-          height: 630,
-          alt: 'Akshay Abraham portfolio introduction with his AIBoomi portrait',
-        },
-      ],
+      images: [image],
       locale: 'en_US',
       type: 'website' as const,
     },
@@ -48,7 +58,7 @@ export function pageSocialMetadata(
       card: 'summary_large_image' as const,
       title,
       description,
-      images: [socialImage],
+      images: [{ url: image.url, alt: image.alt }],
     },
   };
 }

@@ -30,21 +30,21 @@ export default function Home() {
         <div className="journey-preview-photos">
           <Image
             src="/events/akshay-abraham-aiboomi-kochi.webp"
-            alt="Akshay Abraham receiving first prize at AIBoomi Startup Weekend Kochi"
+            alt="Akshay Abraham (Akshay K Rooben Abraham) receiving first prize at AIBoomi Startup Weekend Kochi"
             width={1600}
             height={1067}
             sizes="(max-width: 767px) 24vw, 120px"
           />
           <Image
             src="/events/akshay-abraham-hack4future-2025.webp"
-            alt="Akshay Abraham at Hack4Future 2025 in Kochi"
+            alt="Akshay Abraham (Akshay K Rooben Abraham) at Hack4Future 2025 in Kochi"
             width={1600}
             height={1067}
             sizes="(max-width: 767px) 24vw, 120px"
           />
           <Image
             src="/events/akshay-abraham-yc-startup-school-india.webp"
-            alt="Akshay Abraham at Y Combinator Startup School India"
+            alt="Akshay Abraham (Akshay K Rooben Abraham) at Y Combinator Startup School India"
             width={1600}
             height={900}
             sizes="(max-width: 767px) 24vw, 120px"
