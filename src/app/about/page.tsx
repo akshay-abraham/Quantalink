@@ -55,8 +55,8 @@ export default function AboutPage() {
         <h1>Journey.</h1>
         <p className="page-intro">
           I’m Akshay Abraham (Akshay K Rooben Abraham), a student and builder
-          from Kottayam. User empathy shapes how I work: understanding someone’s
-          needs and thinking through the whole experience.
+          from Kottayam. I like finding the awkward parts of a problem and
+          building something that makes them easier.
         </p>
       </header>
       <section
@@ -69,11 +69,10 @@ export default function AboutPage() {
         </div>
         <div>
           <p>
-            <strong>Lyra is my primary focus</strong>, helping students reason
-            through problems and build understanding. Alongside it, I’m building{' '}
-            <strong>MNEMO</strong> for people in the early stages of memory
-            loss, and <strong>Mitra</strong> as a caretaker system for later
-            stages.
+            <strong>Lyra</strong> helps students think their way through a
+            problem. I’m also building <strong>MNEMO</strong> for people in the
+            early stages of memory loss, and <strong>Mitra</strong> as a
+            caretaker system for later stages.
           </p>
           <Link href="/projects" className="action-text mt-4">
             Explore the projects <ArrowUpRight size={17} aria-hidden="true" />
@@ -90,7 +89,7 @@ export default function AboutPage() {
             <p className="eyebrow">The latest moments first</p>
             <h2 id="journey-heading">Along the way.</h2>
           </div>
-          <p>People, projects, and the moments that changed how I build.</p>
+          <p>Small turning points and the people I met along the way.</p>
         </div>
         <ol className="journey-timeline">
           {[...journey].reverse().map((event, index) => (

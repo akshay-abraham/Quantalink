@@ -1533,12 +1533,15 @@ body {
   box-shadow: none;
   padding: 0;
   min-height: 48px;
+  align-items: center;
 }
 .site-header > * {
   pointer-events: auto;
 }
 .site-brand {
-  padding: 9px 16px;
+  height: 48px;
+  min-height: 48px;
+  padding: 0 16px;
   border-radius: 999px;
 }
 .nav-glass {
@@ -2155,7 +2158,7 @@ body {
       transform 0.28s ease,
       visibility 0.28s;
   }
-  .site-header:has(+ .mobile-nav-anchor [data-expanded='true']) .site-brand {
+  .site-header:has(.mobile-nav-anchor [data-expanded='true']) .site-brand {
     opacity: 0;
     transform: translateX(-10px) scale(0.96);
     visibility: hidden;
@@ -2320,5 +2323,145 @@ body:has(.linkedin-cover) #pet-container {
 
   .cover-contact {
     max-width: 390px;
+  }
+}
+
+/* The brand and both menus share one header baseline. */
+.desktop-nav {
+  min-height: 48px;
+}
+.desktop-nav-link[aria-current='page'] svg {
+  transform: translateY(-1px);
+}
+@media (hover: hover) and (pointer: fine) {
+  .desktop-nav-link:hover {
+    transform: translateY(-2px);
+  }
+  .site-brand:hover .brand-monogram span {
+    transform: translateY(-2px);
+  }
+}
+.brand-monogram span {
+  display: inline-block;
+  transition: transform 0.22s ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cover-mark {
+    animation: cover-pop 0.65s cubic-bezier(0.2, 0.8, 0.2, 1.2) both;
+  }
+  .cover-copy .hero-title {
+    animation: portfolio-enter 0.75s 0.1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .cover-tagline {
+    animation: portfolio-enter 0.75s 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .cover-contact {
+    animation: cover-panel-in 0.8s 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .cover-profile {
+    animation: portfolio-enter 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .cover-profile:nth-child(1) {
+    animation-delay: 0.4s;
+  }
+  .cover-profile:nth-child(2) {
+    animation-delay: 0.48s;
+  }
+  .cover-profile:nth-child(3) {
+    animation-delay: 0.56s;
+  }
+}
+@keyframes cover-pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes cover-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Touch screens keep press feedback without sticky hover motion. */
+@media (hover: none), (pointer: coarse) {
+  .btn-glow:hover::before {
+    opacity: 0;
+  }
+  .action-primary:hover {
+    background: hsl(var(--primary));
+    box-shadow: none;
+  }
+  .action-text:hover svg {
+    transform: none;
+  }
+  .journey-preview:hover .journey-preview-photos img {
+    transform: rotate(-5deg);
+  }
+  .journey-preview:hover .journey-preview-photos img:nth-child(2) {
+    transform: rotate(4deg) translateY(-5px);
+  }
+  .journey-preview:hover .journey-preview-photos img:nth-child(3) {
+    transform: rotate(-3deg) translateY(3px);
+  }
+  .contact-link:hover {
+    color: hsl(var(--foreground) / 0.7);
+    padding-inline: 0;
+  }
+  .journey-post-link:hover {
+    border-color: hsl(var(--border) / 0.8);
+  }
+  .cover-website:hover {
+    color: hsl(var(--foreground));
+  }
+  .pause-on-hover:hover .skill-track {
+    animation-play-state: running;
+  }
+  .journey-photo-button:hover {
+    box-shadow: 0 1px 2px hsl(var(--foreground) / 0.05);
+  }
+  .journey-photo-button:hover .group-hover\:bg-black\/85 {
+    background: rgb(0 0 0 / 0.7);
+  }
+  .project-card:hover {
+    transform: none;
+  }
+  .project-card:hover .project-card-line {
+    width: initial;
+  }
+  .animated-skill-card:hover:not(:focus) {
+    background: hsl(var(--card) / 0.7);
+    border-color: hsl(var(--border));
+  }
+  .animated-skill-card:hover:not(:focus) .skill-card-icon,
+  .animated-skill-card:hover:not(:focus) .skill-card-name,
+  .animated-skill-card:hover:not(:focus) .skill-usage {
+    transform: none;
+    filter: none;
+  }
+  .animated-skill-card:hover:not(:focus) .skill-usage,
+  .animated-skill-card:hover:not(:focus)::before {
+    opacity: 0;
+  }
+  .site-brand:hover .brand-monogram span {
+    transform: none;
+  }
+  .desktop-nav-link:hover {
+    transform: none;
+  }
+  .action-primary:active,
+  .cover-profile:active,
+  .cover-website:active {
+    opacity: 0.78;
   }
 }

@@ -26,7 +26,10 @@ export default function DesktopNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="nav-glass flex items-center gap-2 p-1 rounded-full">
+    <nav
+      className="desktop-nav nav-glass flex items-center gap-2 p-1 rounded-full"
+      aria-label="Primary navigation"
+    >
       {navLinks.map((link) => {
         const isActive = pathname === link.href;
         return (
@@ -35,7 +38,7 @@ export default function DesktopNav() {
             href={link.href}
             aria-current={isActive ? 'page' : undefined}
             className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors',
+              'desktop-nav-link flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-[color,background-color,transform] duration-200',
               'hover:bg-primary/10',
               // Apply active styles if the current path matches the link's href.
               isActive ? 'bg-primary/10 text-primary' : 'text-foreground/70'

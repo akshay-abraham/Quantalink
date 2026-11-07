@@ -19,11 +19,11 @@ export default function ProjectsPage() {
   return (
     <div className="site-shell inner-page relative z-10">
       <header className="journey-header">
-        <p className="eyebrow">A few things I’m working on</p>
+        <p className="eyebrow">Out of the sketchbook</p>
         <h1>Projects.</h1>
         <p className="page-intro">
-          Learning, care, knowledge, and a few experiments along the way. Public
-          source code is linked where available.
+          Some are out in the world. Some are still finding their feet. Source
+          code is linked where it’s public.
         </p>
       </header>
       <Projects />

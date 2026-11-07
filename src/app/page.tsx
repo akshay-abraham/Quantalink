@@ -33,21 +33,18 @@ export default function Home() {
             ak<span>.</span>
           </span>
         </div>
-        <p className="eyebrow">
-          Akshay K Rooben Abraham · Student &amp; builder
-        </p>
         <h1 id="cover-heading" className="hero-title">
           Akshay
           <br />
           <span>Abraham.</span>
         </h1>
-        <p className="cover-tagline">Creating systems · Building Lyra</p>
+        <p className="cover-tagline">I build things people can actually use.</p>
       </div>
       <aside
         className="cover-contact nav-glass"
         aria-label="Website and social profiles"
       >
-        <p className="eyebrow">Explore my work</p>
+        <p className="eyebrow">Find me around the internet</p>
         <a
           className="cover-website"
           href="https://akshayabraham.vercel.app/"

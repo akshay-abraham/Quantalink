@@ -6,9 +6,6 @@ export default function ProfileSection() {
   return (
     <section className="hero-grid" aria-labelledby="intro-heading">
       <div className="hero-copy">
-        <p className="eyebrow hero-enter">
-          Akshay K Rooben Abraham · Student &amp; builder
-        </p>
         <h1
           id="intro-heading"
           className="hero-title hero-enter"
@@ -39,20 +36,6 @@ export default function ProfileSection() {
           <Link href="/about" className="action-text">
             The story so far <ArrowUpRight size={17} aria-hidden="true" />
           </Link>
-        </div>
-        <div
-          className="hero-current hero-enter"
-          style={{ animationDelay: '360ms' }}
-        >
-          <span className="status-dot" aria-hidden="true" />
-          <p>
-            <span>
-              Primary focus: <strong>Lyra</strong>
-            </span>
-            <span className="block text-foreground/55">
-              Also building MNEMO &amp; Mitra
-            </span>
-          </p>
         </div>
       </div>
       <div

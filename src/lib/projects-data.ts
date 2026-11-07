@@ -13,9 +13,9 @@ export interface Project {
 export const projects: Project[] = [
   {
     title: 'Lyra',
-    category: 'AI & learning · Primary focus',
+    category: 'Learning',
     description:
-      'An AI learning system that helps students work through problems and develop their reasoning. Built around guided learning, independent thinking, and feedback from students and educators.',
+      'A learning space where students can work through a problem instead of skipping to the answer. Shaped with feedback from students and educators.',
     isFeatured: true,
   },
   {
