@@ -38,7 +38,7 @@ export default function LinkCards() {
         </p>
         <a
           href="mailto:akshaykroobenabraham@gmail.com"
-          className="contact-email"
+          className="contact-email action-text"
         >
           Say hello by email <ArrowUpRight size={20} aria-hidden="true" />
         </a>

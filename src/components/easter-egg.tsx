@@ -260,7 +260,10 @@ export default function EasterEgg() {
   }
   const progress = GAME_TARGETS - remaining;
   return (
-    <section id="quantum-conundrum-section" className="quantum-lobby">
+    <section
+      id="quantum-conundrum-section"
+      className="quantum-lobby section-reveal"
+    >
       <div className="quantum-lobby-icon">
         <Box size={30} aria-hidden="true" />
       </div>

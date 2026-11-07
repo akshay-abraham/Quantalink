@@ -528,7 +528,7 @@ body {
   line-height: 0.98;
   letter-spacing: -0.075em;
   font-weight: 600;
-  margin: 24px 0 28px;
+  margin: 0 0 28px;
 }
 .hero-title span {
   color: hsl(var(--primary));
@@ -578,6 +578,7 @@ body {
   transform: translateY(1px);
 }
 .action-text {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 12px;
@@ -586,11 +587,27 @@ body {
   font-weight: 500;
   color: hsl(var(--primary));
 }
+.action-text::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+.action-text:focus-visible::after {
+  transform: scaleX(1);
+}
 .action-text svg {
   transition: transform 0.25s;
 }
 .action-text:hover svg {
-  transform: translate(2px, -2px);
+  transform: translate(3px, -3px);
 }
 .hero-current {
   display: flex;
@@ -612,6 +629,15 @@ body {
 .hero-portrait {
   position: relative;
   padding: 16px 12px;
+}
+.portrait-link {
+  display: block;
+  border-radius: 24px;
+  cursor: pointer;
+}
+.portrait-link:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 8px;
 }
 .portrait-orbit {
   position: absolute;
@@ -649,7 +675,20 @@ body {
   object-fit: cover;
 }
 .portrait-caption {
-  padding: 19px 24px 24px;
+  padding: 19px 66px 24px 24px;
+}
+.portrait-link-icon {
+  position: absolute;
+  right: 20px;
+  bottom: 22px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid hsl(var(--primary) / 0.2);
+  border-radius: 50%;
+  color: hsl(var(--primary));
+  background: hsl(var(--background) / 0.9);
 }
 .portrait-caption p {
   font-size: 27px;
@@ -1327,11 +1366,7 @@ body {
   }
   .hero-title {
     font-size: clamp(62px, 15vw, 98px);
-    margin-block: 22px;
-  }
-  .hero-copy > .eyebrow {
-    max-width: 270px;
-    font-size: 9px;
+    margin-block: 0 22px;
   }
   .hero-lead {
     font-size: 15px;
@@ -1763,6 +1798,7 @@ body {
 }
 .quantum-lobby-icon,
 .quantum-mark {
+  position: relative;
   display: grid;
   place-items: center;
   padding: 16px;
@@ -1987,6 +2023,132 @@ body {
 @keyframes quantum-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .quantum-lobby-icon::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border: 1px solid hsl(var(--primary) / 0.16);
+    border-radius: 23px;
+    pointer-events: none;
+    animation: quantum-halo 3s ease-in-out infinite;
+  }
+  .quantum-lobby-icon svg {
+    animation: quantum-tilt 4s ease-in-out infinite;
+  }
+  .quantum-instruction-orb {
+    animation: quantum-orb-breathe 2.8s ease-in-out infinite;
+  }
+  .quantum-rules span {
+    animation: quantum-rule-enter 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .quantum-rules span:nth-child(2) {
+    animation-delay: 90ms;
+  }
+  .quantum-rules span:nth-child(3) {
+    animation-delay: 180ms;
+  }
+  .quantum-board {
+    animation: quantum-grid-drift 12s linear infinite;
+  }
+  .quantum-signal {
+    animation:
+      signal-in 0.25s ease-out,
+      quantum-signal-glow 1.8s ease-in-out 0.25s infinite;
+  }
+  .quantum-stats .time-low {
+    animation: quantum-urgent 0.8s ease-in-out infinite alternate;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .action-text:hover::after {
+    transform: scaleX(1);
+  }
+  .quantum-lobby {
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .quantum-lobby:hover {
+    border-color: hsl(var(--primary) / 0.32);
+    box-shadow: 0 18px 48px hsl(var(--primary) / 0.07);
+  }
+  .quantum-lobby:hover .quantum-lobby-icon svg {
+    animation-play-state: paused;
+    filter: drop-shadow(0 0 6px hsl(var(--primary) / 0.45));
+  }
+  .portrait-link-icon,
+  .portrait-link-icon svg {
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .portrait-link:hover .portrait-link-icon {
+    transform: translate(2px, -2px);
+  }
+  .portrait-link:hover .portrait-link-icon svg {
+    transform: rotate(8deg);
+  }
+}
+@keyframes quantum-halo {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+@keyframes quantum-tilt {
+  0%,
+  100% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(8deg);
+  }
+}
+@keyframes quantum-orb-breathe {
+  0%,
+  100% {
+    transform: scale(0.96);
+    box-shadow: 0 0 0 8px hsl(var(--primary) / 0.025);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 0 16px hsl(var(--primary) / 0.045);
+  }
+}
+@keyframes quantum-rule-enter {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes quantum-grid-drift {
+  to {
+    background-position: 20px 20px;
+  }
+}
+@keyframes quantum-signal-glow {
+  0%,
+  100% {
+    box-shadow: 0 4px 12px currentColor;
+  }
+  50% {
+    box-shadow: 0 5px 23px currentColor;
+  }
+}
+@keyframes quantum-urgent {
+  to {
+    opacity: 0.55;
   }
 }
 @media (max-width: 767px) {

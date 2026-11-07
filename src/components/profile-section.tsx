@@ -6,9 +6,6 @@ export default function ProfileSection() {
   return (
     <section className="hero-grid" aria-labelledby="intro-heading">
       <div className="hero-copy">
-        <p className="eyebrow hero-enter">
-          Akshay K Rooben Abraham · Student &amp; builder
-        </p>
         <h1
           id="intro-heading"
           className="hero-title hero-enter"
@@ -60,25 +57,34 @@ export default function ProfileSection() {
         style={{ animationDelay: '180ms' }}
       >
         <div className="portrait-orbit" aria-hidden="true" />
-        <div className="portrait-frame">
-          <div className="portrait-topline">
-            <span>A little about me</span>
-            <span>01 / AK</span>
+        <Link
+          href="/about#journey"
+          className="portrait-link"
+          aria-label="Explore Akshay’s journey"
+        >
+          <div className="portrait-frame">
+            <div className="portrait-topline">
+              <span>A little about me</span>
+              <span>01 / AK</span>
+            </div>
+            <Image
+              src="/akshay-abraham-aiboomi-portrait.webp"
+              alt="Akshay Abraham (Akshay K Rooben Abraham) speaking about Lyra at AIBoomi Startup Weekend Kochi"
+              width={640}
+              height={640}
+              sizes="(min-width: 1024px) 420px, (min-width: 640px) 380px, 85vw"
+              preload
+              className="portrait-image"
+            />
+            <div className="portrait-caption">
+              <span className="eyebrow">Student &amp; builder</span>
+              <p>Learning by building.</p>
+            </div>
+            <span className="portrait-link-icon" aria-hidden="true">
+              <ArrowUpRight size={17} />
+            </span>
           </div>
-          <Image
-            src="/akshay-abraham-aiboomi-portrait.webp"
-            alt="Akshay Abraham (Akshay K Rooben Abraham) speaking about Lyra at AIBoomi Startup Weekend Kochi"
-            width={640}
-            height={640}
-            sizes="(min-width: 1024px) 420px, (min-width: 640px) 380px, 85vw"
-            preload
-            className="portrait-image"
-          />
-          <div className="portrait-caption">
-            <span className="eyebrow">Student &amp; builder</span>
-            <p>Learning by building.</p>
-          </div>
-        </div>
+        </Link>
       </div>
     </section>
   );
