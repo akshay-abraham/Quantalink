@@ -11,10 +11,12 @@ export default function Skills() {
     <section id="skills-section">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">The tools in my tabs</p>
-          <h2>What I build with.</h2>
+          <p className="eyebrow">Tools I use and learn</p>
+          <h2>Across the stack.</h2>
         </div>
-        <p>Pick a tool to see where it shows up in my work.</p>
+        <p>
+          Hover or focus a skill to see where I use it. Tap a card on mobile.
+        </p>
       </div>
       <div className="space-y-4">
         <InfiniteScroller>

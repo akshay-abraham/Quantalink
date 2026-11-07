@@ -7,7 +7,7 @@ export default function ProfileSection() {
     <section className="hero-grid" aria-labelledby="intro-heading">
       <div className="hero-copy">
         <p className="eyebrow hero-enter">
-          Curious about what makes things click
+          Akshay K Rooben Abraham · Student &amp; builder
         </p>
         <h1
           id="intro-heading"
@@ -22,12 +22,12 @@ export default function ProfileSection() {
           className="hero-tagline hero-enter"
           style={{ animationDelay: '140ms' }}
         >
-          Making useful things feel human.
+          Creating systems · Building Lyra
         </p>
         <p className="hero-lead hero-enter" style={{ animationDelay: '180ms' }}>
-          I make tools that help people learn and care for each other. Lyra
-          started with a simple question: what if getting stuck felt less
-          lonely?
+          I’m a student who likes building useful things. User empathy guides
+          how I work: understanding what people need, then building the pieces
+          that work together for them.
         </p>
         <div
           className="hero-actions hero-enter"
@@ -39,6 +39,20 @@ export default function ProfileSection() {
           <Link href="/about" className="action-text">
             The story so far <ArrowUpRight size={17} aria-hidden="true" />
           </Link>
+        </div>
+        <div
+          className="hero-current hero-enter"
+          style={{ animationDelay: '360ms' }}
+        >
+          <span className="status-dot" aria-hidden="true" />
+          <p>
+            <span>
+              Primary focus: <strong>Lyra</strong>
+            </span>
+            <span className="block text-foreground/55">
+              Also building MNEMO &amp; Mitra
+            </span>
+          </p>
         </div>
       </div>
       <div
@@ -61,8 +75,8 @@ export default function ProfileSection() {
             className="portrait-image"
           />
           <div className="portrait-caption">
-            <span className="eyebrow">Currently making</span>
-            <p>Ideas you can use.</p>
+            <span className="eyebrow">Student &amp; builder</span>
+            <p>Learning by building.</p>
           </div>
         </div>
       </div>

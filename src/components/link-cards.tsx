@@ -32,9 +32,9 @@ export default function LinkCards() {
     >
       <div>
         <p className="eyebrow">Contact</p>
-        <h2 id="contact-heading">Say hello.</h2>
+        <h2 id="contact-heading">Get in touch.</h2>
         <p className="contact-intro">
-          Have a question or something you’d like to make together?
+          For a project, a question, or a conversation.
         </p>
         <a
           href="mailto:akshaykroobenabraham@gmail.com"

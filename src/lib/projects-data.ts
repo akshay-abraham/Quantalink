@@ -13,9 +13,9 @@ export interface Project {
 export const projects: Project[] = [
   {
     title: 'Lyra',
-    category: 'Learning',
+    category: 'AI & learning · Primary focus',
     description:
-      'Lyra helps students think through a problem instead of handing over an answer. I’m shaping it with feedback from students and educators.',
+      'An AI learning system that helps students work through problems and develop their reasoning. Built around guided learning, independent thinking, and feedback from students and educators.',
     isFeatured: true,
   },
   {
@@ -23,7 +23,7 @@ export const projects: Project[] = [
     category: 'Memory & care',
     collaborators: ['Chris V Jacob'],
     description:
-      'A caretaker system for people living with later stage memory loss and the people looking after them.',
+      'A complete caretaker system for people in the later stages of memory loss and those who care for them.',
     isFeatured: true,
   },
   {
@@ -58,7 +58,7 @@ export const projects: Project[] = [
   {
     title: 'Personal website',
     description:
-      'The place where I keep my work and the stories behind it. Built with Next.js and TypeScript.',
+      'My personal portfolio, built with Next.js and TypeScript. Brings together projects, skills, and my journey with an interactive background and a responsive interface.',
     githubUrl: 'https://github.com/akshay-abraham/Quantalink',
     license: 'GPL v3',
   },

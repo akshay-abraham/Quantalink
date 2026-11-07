@@ -24,7 +24,8 @@ export const personJsonLd = {
     width: 640,
     height: 640,
   },
-  description: 'Making Lyra and tools for memory care from Kottayam.',
+  description:
+    'Student and builder from Kottayam creating Lyra, MNEMO, and Mitra.',
   homeLocation: {
     '@type': 'Place',
     name: 'Kottayam, Kerala, India',
