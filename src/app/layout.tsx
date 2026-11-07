@@ -29,9 +29,9 @@ export const viewport: Viewport = {
 // Define metadata for the website, used for SEO and browser tab information.
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'Akshay Abraham | Student & Builder',
+  title: 'Akshay Abraham | Things I’m Making',
   description:
-    'Akshay Abraham (Akshay K Rooben Abraham) is a student and builder in Kottayam creating Lyra, MNEMO, and Mitra. Explore his work.',
+    'A look at what Akshay Abraham is making, from Lyra to tools for memory care.',
   authors: [{ name: 'Akshay Abraham', url: siteUrl }],
   creator: 'Akshay Abraham',
   keywords: [
@@ -47,8 +47,8 @@ export const metadata: Metadata = {
     'AI Builder',
   ],
   ...pageSocialMetadata(
-    'Akshay Abraham | Student & Builder',
-    'Explore the projects, skills, and journey of Akshay Abraham, a student and builder from Kottayam.',
+    'Akshay Abraham | Things I’m Making',
+    'Meet the projects and people behind Akshay Abraham’s work.',
     '/'
   ),
   robots: {

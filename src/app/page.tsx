@@ -20,9 +20,9 @@ export default function Home() {
         aria-labelledby="journey-preview-heading"
       >
         <div className="journey-preview-copy">
-          <p className="eyebrow">A few moments along the way</p>
+          <p className="eyebrow">A few stops along the way</p>
           <h2 id="journey-preview-heading">Journey.</h2>
-          <p>The people and projects that shaped how I build.</p>
+          <p>Rooms full of people who made me rethink the work.</p>
           <Link href="/about" className="action-text">
             Explore my journey <ArrowUpRight size={17} aria-hidden="true" />
           </Link>
@@ -76,8 +76,8 @@ export default function Home() {
           />
         </div>
         <div>
-          <p className="eyebrow">Fedora KDE · My daily desktop</p>
-          <h2 id="setup-heading">My everyday setup.</h2>
+          <p className="eyebrow">Where the tabs pile up</p>
+          <h2 id="setup-heading">My daily desktop.</h2>
           <p>
             Fedora KDE is where I do most of my work. My dotfiles and setup
             notes are in tachyon-dots, if you’d like to put together a similar

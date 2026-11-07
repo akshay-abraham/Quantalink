@@ -54,9 +54,8 @@ export default function AboutPage() {
         <p className="eyebrow">About me</p>
         <h1>Journey.</h1>
         <p className="page-intro">
-          I’m Akshay Abraham (Akshay K Rooben Abraham), a student and builder
-          from Kottayam. User empathy shapes how I work: understanding someone’s
-          needs and thinking through the whole experience.
+          I’m Akshay, from Kottayam. I like finding the moment a problem becomes
+          clear enough to build around, then making something people can use.
         </p>
       </header>
       <section
@@ -69,11 +68,10 @@ export default function AboutPage() {
         </div>
         <div>
           <p>
-            <strong>Lyra is my primary focus</strong>, helping students reason
-            through problems and build understanding. Alongside it, I’m building{' '}
-            <strong>MNEMO</strong> for people in the early stages of memory
-            loss, and <strong>Mitra</strong> as a caretaker system for later
-            stages.
+            <strong>Lyra</strong> helps students reason through problems.
+            Alongside it, I’m building <strong>MNEMO</strong> for people in the
+            early stages of memory loss, and <strong>Mitra</strong> as a
+            caretaker system for later stages.
           </p>
           <Link href="/projects" className="action-text mt-4">
             Explore the projects <ArrowUpRight size={17} aria-hidden="true" />
@@ -87,10 +85,10 @@ export default function AboutPage() {
       >
         <div className="section-heading">
           <div>
-            <p className="eyebrow">The latest moments first</p>
+            <p className="eyebrow">Starting with the latest</p>
             <h2 id="journey-heading">Along the way.</h2>
           </div>
-          <p>People, projects, and the moments that changed how I build.</p>
+          <p>Places where an idea met the people it was meant for.</p>
         </div>
         <ol className="journey-timeline">
           {[...journey].reverse().map((event, index) => (

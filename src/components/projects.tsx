@@ -14,12 +14,12 @@ export default function Projects({
       {featuredOnly && (
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Ideas, carried all the way through</p>
-            <h2>Selected systems.</h2>
+            <p className="eyebrow">From question to working thing</p>
+            <h2>Things I’m making.</h2>
           </div>
           <p>
-            Lyra leads the work. The other projects explore memory care and
-            focused digital habits.
+            Lyra helps with the hard parts of learning. The rest began with
+            questions I couldn’t leave alone.
           </p>
         </div>
       )}

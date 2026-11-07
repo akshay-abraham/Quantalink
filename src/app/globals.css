@@ -715,8 +715,10 @@ body {
 .journey-preview-photos img:nth-child(3) {
   transform: rotate(-3deg) translateY(3px);
 }
-.journey-preview:hover .journey-preview-photos img {
-  transform: rotate(0) translateY(-4px);
+@media (hover: hover) and (pointer: fine) {
+  .journey-preview:hover .journey-preview-photos img {
+    transform: rotate(0) translateY(-4px);
+  }
 }
 @media (max-width: 767px) {
   .journey-preview {
@@ -1527,6 +1529,7 @@ body {
 /* Shared glass surface for the floating brand and both navigation layouts. */
 .site-header {
   pointer-events: none;
+  z-index: 50;
   border: 0;
   background: transparent;
   backdrop-filter: none;
@@ -1538,8 +1541,25 @@ body {
   pointer-events: auto;
 }
 .site-brand {
-  padding: 9px 16px;
+  box-sizing: border-box;
+  height: 48px;
+  min-height: 48px;
+  padding: 0 16px;
   border-radius: 999px;
+}
+.desktop-nav,
+.desktop-nav-anchor {
+  height: 48px;
+}
+.desktop-nav-link {
+  position: relative;
+}
+.mobile-nav-anchor {
+  position: relative;
+  z-index: 1;
+  width: 48px;
+  height: 48px;
+  flex: none;
 }
 .nav-glass {
   border: 1px solid hsl(var(--primary) / 0.16);
@@ -2155,7 +2175,7 @@ body {
       transform 0.28s ease,
       visibility 0.28s;
   }
-  .site-header:has(+ .mobile-nav-anchor [data-expanded='true']) .site-brand {
+  .site-header:has(.mobile-nav-anchor [data-expanded='true']) .site-brand {
     opacity: 0;
     transform: translateX(-10px) scale(0.96);
     visibility: hidden;
@@ -2180,4 +2200,142 @@ body {
 }
 .quantum-progress::-moz-progress-bar {
   background: hsl(var(--primary));
+}
+
+/* Small responses for pointer devices, with the header controls on one baseline. */
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .site-brand,
+  .desktop-nav-link,
+  .action-text svg,
+  .contact-link svg {
+    transition: transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .site-brand:hover {
+    transform: translateY(-2px);
+  }
+  .desktop-nav-link:hover {
+    transform: translateY(-2px);
+  }
+  .desktop-nav-link[aria-current='page'] svg {
+    animation: nav-icon-settle 0.35s ease-out both;
+  }
+  .contact-link:hover svg:last-child {
+    transform: translate(2px, -2px);
+  }
+  .dialog-close:hover {
+    opacity: 1;
+  }
+}
+@keyframes nav-icon-settle {
+  from {
+    transform: translateY(3px);
+    opacity: 0.6;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .portrait-orbit {
+    animation: orbit-breathe 7s ease-in-out infinite alternate;
+  }
+}
+@keyframes orbit-breathe {
+  from {
+    transform: scale(0.985) rotate(-2deg);
+    opacity: 0.65;
+  }
+  to {
+    transform: scale(1.025) rotate(2deg);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .setup-icons {
+      animation: setup-icons-enter linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% entry 42%;
+    }
+    .contact-links .contact-link {
+      animation: contact-link-enter linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
+@keyframes setup-icons-enter {
+  from {
+    opacity: 0.45;
+    transform: translateY(16px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes contact-link-enter {
+  from {
+    opacity: 0.4;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Touch keeps tap feedback in skills and the menu without sticky hover motion. */
+@media (hover: none), (pointer: coarse) {
+  .action-primary,
+  .action-text svg,
+  .contact-link,
+  .contact-link svg,
+  .journey-preview-photos img,
+  .journey-photo-button img,
+  .portrait-frame,
+  .project-card,
+  .project-card-line,
+  .journey-post-link,
+  .btn-glow::before {
+    transition: none !important;
+  }
+  .action-primary:hover {
+    background: hsl(var(--primary));
+    box-shadow: none;
+  }
+  .action-primary:active {
+    transform: none;
+  }
+  .action-text:hover svg,
+  .contact-link:hover svg:last-child {
+    transform: none;
+  }
+  .contact-link:hover {
+    color: hsl(var(--foreground) / 0.7);
+    padding-inline: 0;
+  }
+  .journey-post-link:hover {
+    border-color: hsl(var(--border) / 0.8);
+  }
+  .btn-glow:hover::before {
+    opacity: 0;
+  }
+  .journey-photo-button:hover {
+    box-shadow: none;
+  }
+  .journey-photo-button:hover span {
+    background: rgb(0 0 0 / 0.7);
+  }
+  .desktop-nav-link:hover {
+    transform: none;
+  }
+  .journey-photo-button,
+  .journey-photo-button span,
+  .dialog-close {
+    transition: none !important;
+  }
 }

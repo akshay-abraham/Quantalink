@@ -216,6 +216,7 @@ export default function MobileNav() {
   return (
     <div ref={navRef} className="relative h-12" data-expanded={showIcons}>
       <nav
+        aria-label="Mobile navigation"
         ref={pillRef}
         className={cn(
           'nav-glass absolute right-0 top-0 h-12 flex items-center justify-end rounded-full transition-[width] motion-reduce:transition-none will-change-[width]'
@@ -245,10 +246,8 @@ export default function MobileNav() {
                 href={link.href}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-lg text-xs font-medium transition-[transform,opacity] duration-500 ease-in-out motion-reduce:transition-none motion-reduce:animate-none',
-                  isActive
-                    ? 'text-primary'
-                    : 'text-foreground/70 hover:text-primary',
+                  'flex flex-col items-center justify-center gap-1 w-14 h-12 rounded-lg text-xs font-medium transition-[transform,opacity] duration-500 ease-in-out motion-reduce:transition-none motion-reduce:animate-none',
+                  isActive ? 'text-primary' : 'text-foreground/70',
                   // Scale in/out animation for each icon.
                   showIcons ? 'animate-nav-item-in' : 'animate-nav-item-out'
                 )}
@@ -259,7 +258,7 @@ export default function MobileNav() {
                     ? `${ICON_ANIMATION_DELAYS_MS[index]}ms`
                     : '0ms',
                 }}
-                tabIndex={isOpen ? 0 : -1} // Make icons non-tabbable when closed.
+                tabIndex={showIcons ? 0 : -1}
               >
                 <link.icon className="h-5 w-5" />
                 <span className="truncate">{link.shortLabel}</span>

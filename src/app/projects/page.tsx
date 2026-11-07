@@ -22,8 +22,9 @@ export default function ProjectsPage() {
         <p className="eyebrow">A few things I’m working on</p>
         <h1>Projects.</h1>
         <p className="page-intro">
-          Learning, care, knowledge, and a few experiments along the way. Public
-          source code is linked where available.
+          Some started as a stubborn question. Others came from listening to
+          someone explain what they needed. Source code is linked where I can
+          share it.
         </p>
       </header>
       <Projects />

@@ -19,10 +19,10 @@ export default function SkillsPage() {
   return (
     <div className="site-shell inner-page relative z-10">
       <header className="journey-header">
-        <p className="eyebrow">The tools behind the projects</p>
+        <p className="eyebrow">The tools in the toolbox</p>
         <h1>Skills &amp; technologies.</h1>
         <p className="page-intro">
-          What I’ve been using and learning while building.
+          The tools I reach for, plus a few I’m still figuring out.
         </p>
       </header>
       <SkillsClientPage />

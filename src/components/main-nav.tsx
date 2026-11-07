@@ -19,13 +19,13 @@ export default function MainNav() {
           </span>
           <span className="brand-label">Akshay Abraham</span>
         </Link>
-        <div className="hidden md:block">
+        <div className="desktop-nav-anchor hidden md:block">
           <DesktopNav />
         </div>
+        <div className="mobile-nav-anchor md:hidden">
+          <MobileNav />
+        </div>
       </header>
-      <div className="mobile-nav-anchor fixed right-4 top-4 z-50 h-12 w-12 md:hidden">
-        <MobileNav />
-      </div>
     </>
   );
 }
