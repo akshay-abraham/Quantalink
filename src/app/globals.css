@@ -2521,7 +2521,7 @@ body {
     inset: 0;
     z-index: 10000;
     display: block;
-    background: linear-gradient(150deg, #243d59, #111923 65%);
+    background: #000;
   }
 
   .desktop-frame {
