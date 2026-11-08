@@ -44,7 +44,7 @@ export const choosePetType = (): PetType => {
       ? lastPetType === 'ghost'
         ? 'alive'
         : 'ghost'
-      : lastPetType ?? (Math.random() < 0.67 ? 'ghost' : 'alive');
+      : (lastPetType ?? (Math.random() < 0.67 ? 'ghost' : 'alive'));
 
   hasVisitedInMemory = true;
   lastPetTypeInMemory = nextType;

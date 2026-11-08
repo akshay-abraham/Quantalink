@@ -6,9 +6,10 @@
  */
 import React from 'react';
 import type { Metadata, Viewport } from 'next';
-import './globals.css';
+import '../globals.css';
 import AnimatedBackground from '@/components/animated-background';
 import MainNav from '@/components/main-nav';
+import EmbeddedHomeNavigation from '@/components/embedded-home-navigation';
 import GlobalPetRenderer from '@/components/global-pet-renderer';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -112,13 +113,13 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        {/* The AnimatedBackground component is rendered here to appear on all pages. */}
-        <AnimatedBackground />
-        {/* This component renders the roaming pet if one is active in the global state. */}
-        <GlobalPetRenderer />
-        {/* This div is the portal target for the roaming pet. */}
-        <div id="pet-container"></div>
-        <MainNav />
+        <EmbeddedHomeNavigation />
+        <div className="classic-chrome">
+          <AnimatedBackground />
+          <GlobalPetRenderer />
+          <div id="pet-container"></div>
+          <MainNav />
+        </div>
         {/* Renders the active page content. */}
         <main id="main-content">{children}</main>
         {/* The Toaster component handles pop-up notifications. */}

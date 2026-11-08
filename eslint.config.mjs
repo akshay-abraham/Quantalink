@@ -15,5 +15,12 @@ export default defineConfig([
       '@next/next/no-page-custom-font': 'off',
     },
   },
+  {
+    files: ['src/tahoe/**/*.{ts,tsx}'],
+    rules: {
+      'react-hooks/refs': 'off',
+      'react-hooks/preserve-manual-memoization': 'off',
+    },
+  },
   globalIgnores(['.next/**', 'public/sitemap*.xml']),
 ]);

@@ -1,4 +1,6 @@
-@import 'tailwindcss';
+@import 'tailwindcss' source(none);
+@source '../components';
+@source './(classic)';
 
 @plugin 'tailwindcss-animate';
 
@@ -2499,5 +2501,45 @@ body {
   .journey-photo-button span,
   .dialog-close {
     transition: none !important;
+  }
+}
+
+/* The canonical homepage keeps Quantalink's HTML for mobile visitors and search.
+   Tahoe is loaded only after the browser confirms a desktop viewport. */
+.desktop-frame-host {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  html:has(.desktop-frame-host) .classic-chrome,
+  html:has(.desktop-frame-host) .root-classic-home {
+    display: none;
+  }
+
+  .desktop-frame-host {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: block;
+    background: linear-gradient(150deg, #243d59, #111923 65%);
+  }
+
+  .desktop-frame {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    opacity: 0;
+    transition: opacity 380ms ease;
+  }
+
+  .desktop-frame.is-ready {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desktop-frame {
+    transition: none;
   }
 }

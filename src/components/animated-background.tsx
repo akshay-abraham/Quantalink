@@ -114,7 +114,7 @@ const AnimatedBackground = () => {
     const MAX_AREA = 1920 * 1080; // desktop reference
     const MIN_PARTICLES = 16;
     const MAX_PARTICLES = 80;
-    const MIN_LINKS = 5;// max connections drawn per particle, small screens
+    const MIN_LINKS = 5; // max connections drawn per particle, small screens
     const MAX_LINKS = 7; // max connections drawn per particle, large screens
     const MAX_VIRTUAL_MIN = 18;
     const MAX_VIRTUAL_MAX = 44;
@@ -625,8 +625,7 @@ const AnimatedBackground = () => {
     const applyResize = () => {
       const newWidth = window.innerWidth;
       const newHeight = window.innerHeight;
-      const widthChanged =
-        Math.abs(newWidth - lastWidth) > DIMENSION_STABLE_PX;
+      const widthChanged = Math.abs(newWidth - lastWidth) > DIMENSION_STABLE_PX;
       const heightChanged =
         Math.abs(newHeight - lastHeight) > DIMENSION_STABLE_PX;
       if (!widthChanged && !heightChanged) return;

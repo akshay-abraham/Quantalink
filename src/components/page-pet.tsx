@@ -139,8 +139,13 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     setIsMounted(true);
     const size = PET_SIZE[type ?? 'ghost'];
     setInitialRandomPosition({
-      x: PET_PADDING + Math.random() * Math.max(1, window.innerWidth - size - PET_PADDING * 2),
-      y: PET_PADDING + Math.random() * Math.max(1, window.innerHeight - size - PET_PADDING * 2),
+      x:
+        PET_PADDING +
+        Math.random() * Math.max(1, window.innerWidth - size - PET_PADDING * 2),
+      y:
+        PET_PADDING +
+        Math.random() *
+          Math.max(1, window.innerHeight - size - PET_PADDING * 2),
     });
 
     // The initial "fly-in" animation. After it completes, the physics-based
@@ -275,8 +280,14 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     if (isAnimatingIn || type !== 'alive') return;
 
     const chooseTarget = () => {
-      const maxX = Math.max(PET_PADDING, window.innerWidth - PET_SIZE.alive - PET_PADDING);
-      const maxY = Math.max(PET_PADDING, window.innerHeight - PET_SIZE.alive - PET_PADDING);
+      const maxX = Math.max(
+        PET_PADDING,
+        window.innerWidth - PET_SIZE.alive - PET_PADDING
+      );
+      const maxY = Math.max(
+        PET_PADDING,
+        window.innerHeight - PET_SIZE.alive - PET_PADDING
+      );
       catTarget.current = {
         x: PET_PADDING + Math.random() * Math.max(1, maxX - PET_PADDING),
         y: PET_PADDING + Math.random() * Math.max(1, maxY - PET_PADDING),
@@ -289,8 +300,14 @@ const PagePet = ({ type, startX, startY }: PetState) => {
     const animate = () => {
       let { vx, vy } = velocityRef.current;
       const size = PET_SIZE.alive;
-      const maxX = Math.max(PET_PADDING, window.innerWidth - size - PET_PADDING);
-      const maxY = Math.max(PET_PADDING, window.innerHeight - size - PET_PADDING);
+      const maxX = Math.max(
+        PET_PADDING,
+        window.innerWidth - size - PET_PADDING
+      );
+      const maxY = Math.max(
+        PET_PADDING,
+        window.innerHeight - size - PET_PADDING
+      );
 
       if (petRef.current && hasMousePosition.current) {
         const rect = petRef.current.getBoundingClientRect();
@@ -329,7 +346,10 @@ const PagePet = ({ type, startX, startY }: PetState) => {
         vx = (vx / speed) * CAT_MAX_SPEED;
         vy = (vy / speed) * CAT_MAX_SPEED;
       } else if (speed < CAT_MIN_SPEED) {
-        const angle = Math.atan2(vy || Math.random() - 0.5, vx || Math.random() - 0.5);
+        const angle = Math.atan2(
+          vy || Math.random() - 0.5,
+          vx || Math.random() - 0.5
+        );
         vx = Math.cos(angle) * CAT_MIN_SPEED;
         vy = Math.sin(angle) * CAT_MIN_SPEED;
       }

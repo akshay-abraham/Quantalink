@@ -1,0 +1,248 @@
+{
+  "site": {
+    "title": "Akshay Abraham — Student & Builder",
+    "description": "Explore the projects, learning journey, and ideas of Akshay Abraham, a student and builder from Kottayam creating Lyra, Mitra, and MNEMO."
+  },
+  "profile": {
+    "name": "Akshay Abraham",
+    "initials": "AK",
+    "username": "akshay-abraham",
+    "role": "Student & Builder",
+    "summary": "I’m a student and builder based in Kottayam, India — creating useful systems around learning and care. I listen to people, learn by making, and keep improving what I build.",
+    "intro": [
+      "I’m Akshay Abraham (Akshay K Rooben Abraham), a student and builder from Kottayam. User empathy shapes how I work: understanding someone’s needs and thinking through the whole experience.",
+      "Lyra is my primary focus. It helps students work through problems and develop their reasoning. Alongside it, I’m building Mitra as a wearable companion and caretaker system and MNEMO as a voice-first knowledge companion for Obsidian."
+    ],
+    "focus": [
+      "Lyra",
+      "TypeScript",
+      "React",
+      "Python",
+      "Kotlin",
+      "AI for learning"
+    ],
+    "careerStart": "2025-10",
+    "email": "akshaykroobenabraham@gmail.com",
+    "cv": "/Portfolio.pdf",
+    "links": {
+      "website": "https://akshayabraham.vercel.app",
+      "github": "https://github.com/akshay-abraham/",
+      "linkedin": "https://www.linkedin.com/in/akshayabraham37/",
+      "repository": "https://github.com/akshay-abraham/Quantalink"
+    }
+  },
+  "experiences": [
+    {
+      "id": "independent-builder",
+      "company": "Independent projects",
+      "role": "Student & Builder",
+      "start": "2025-10",
+      "description": "Building Lyra as a guided learning system, Mitra as a wearable caretaker companion, and MNEMO as a voice-first knowledge companion. I share early versions, listen to people, and use that feedback to shape the work.",
+      "projects": [
+        {
+          "id": "lyra",
+          "name": "Lyra",
+          "type": "AI & learning · Primary focus",
+          "role": "Creator",
+          "description": "An AI learning system that helps students work through problems and develop their reasoning. Built around guided learning, independent thinking, and feedback from students and educators.",
+          "tags": ["AI", "Learning", "TypeScript", "Next.js", "React"]
+        },
+        {
+          "id": "mitra",
+          "name": "Mitra",
+          "type": "Wearable companion & care · With Chris V Jacob",
+          "role": "Collaborator",
+          "description": "A wearable companion and caretaker system built around ESP32 devices, a home base, and a responsive caretaker app. Connects motion and location events, panic alerts, care routines, and a personal AI companion.",
+          "tags": ["Care", "ESP32", "Kotlin", "TypeScript", "React"]
+        },
+        {
+          "id": "mnemo",
+          "name": "MNEMO",
+          "type": "Voice & knowledge · With Chris V Jacob",
+          "role": "Collaborator",
+          "description": "A voice-first knowledge companion for Obsidian. Turns recordings into organised, linked notes, with multilingual transcription, spoken recall, guided practice, and an offline recording queue.",
+          "tags": ["Voice", "Obsidian", "TypeScript", "SQLite"]
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "lyra",
+      "name": "Lyra",
+      "company": "AI & learning · Primary focus",
+      "description": "An AI learning system that helps students work through problems and develop their reasoning. Built around guided learning, independent thinking, and feedback from students and educators.",
+      "tags": ["AI", "Learning", "TypeScript", "Next.js", "React"]
+    },
+    {
+      "id": "mitra",
+      "name": "Mitra",
+      "company": "Wearable companion & care · With Chris V Jacob",
+      "description": "A wearable companion and caretaker system built around ESP32 devices, a home base, and a responsive caretaker app. Connects motion and location events, panic alerts, care routines, and a personal AI companion.",
+      "tags": ["Care", "ESP32", "Kotlin", "TypeScript", "React"]
+    },
+    {
+      "id": "driver-guard",
+      "name": "Driver Guard",
+      "company": "Computer vision · Open source",
+      "description": "A local driver-monitoring dashboard built with Python, OpenCV, MediaPipe, and FastAPI. Uses webcam-based eye and mouth tracking to detect fatigue signs and issue alerts, with optional ESP32 integration.",
+      "tags": ["Python", "OpenCV", "MediaPipe", "FastAPI"],
+      "github": "https://github.com/akshay-abraham/driver_guard"
+    },
+    {
+      "id": "m57",
+      "name": "M57",
+      "company": "Android · Digital wellbeing",
+      "description": "A native Android app exploring focused digital habits through configurable AI-app redirection to Lyra, short-video controls, and on-device family browsing filters.",
+      "tags": ["Android", "Kotlin", "Digital wellbeing"],
+      "github": "https://github.com/akshay-abraham/m57"
+    },
+    {
+      "id": "mnemo",
+      "name": "MNEMO",
+      "company": "Voice & knowledge · With Chris V Jacob",
+      "description": "A voice-first knowledge companion for Obsidian. Turns recordings into organised, linked notes, with multilingual transcription, spoken recall, guided practice, and an offline recording queue.",
+      "tags": ["Voice", "Obsidian", "TypeScript", "SQLite"]
+    },
+    {
+      "id": "nephra",
+      "name": "NEPHRA · Smart Water Bottle System",
+      "company": "Hardware · With Adwaith R Krishna US",
+      "description": "A smart water bottle system with ESP32, copper tape sensor, and MPU6050, featuring mobile app integration, hydration tracking, and cloud AI analytics.",
+      "tags": ["ESP32", "Arduino", "IoT", "Hydration"],
+      "github": "https://github.com/akshay-abraham/NEPHRA"
+    },
+    {
+      "id": "personal-website",
+      "name": "Personal website",
+      "company": "Portfolio · Open source",
+      "description": "My personal portfolio, built with Next.js and TypeScript. Brings together projects, skills, and my journey with an interactive background and a responsive interface.",
+      "tags": ["Next.js", "TypeScript", "React"],
+      "link": "https://akshayabraham.vercel.app",
+      "github": "https://github.com/akshay-abraham/Quantalink"
+    }
+  ],
+  "contributions": [],
+  "awards": [
+    {
+      "title": "AIBoomi Startup Weekend Kochi · 1st place",
+      "event": "AIBoomi Startup Weekend Kochi",
+      "date": "October 2026",
+      "description": "Competed with Lyra as the youngest solo team in a 20-hour buildathon with 76 teams and around 140 participants. Won first place and received $10,000 in OpenAI API credits.",
+      "link": "https://lnkd.in/p/d3JYpKx4"
+    },
+    {
+      "title": "HackTVM Access Point · 1st place",
+      "event": "HackTVM Access Point",
+      "date": "October 2026",
+      "description": "With Chris V Jacob, shaped the first versions of Mitra and MNEMO in seven hours and finished first by points among the five teams advancing to Phase 2."
+    },
+    {
+      "title": "SAMEEKSHA · 1st place",
+      "event": "SAMEEKSHA 2026",
+      "date": "February 2026",
+      "description": "Presented Lyra at SAMEEKSHA, part of SRISHTI at Saintgits College of Engineering, and won first place."
+    },
+    {
+      "title": "Hackfinity · 1st place",
+      "event": "Hackfinity",
+      "date": "November 2025",
+      "description": "Shared Lyra at Hackfinity, organised by HowNWhy Education at St. John’s Central School, Anchal, and won first place.",
+      "link": "https://lnkd.in/p/d9rQNQ8v"
+    },
+    {
+      "title": "Hack4Future · 2nd place",
+      "event": "Hack4Future",
+      "date": "November 2025",
+      "description": "Took Lyra to my first hackathon in Kochi, won second place, and brought back new questions to work on.",
+      "link": "https://lnkd.in/p/dcWbpKcx"
+    }
+  ],
+  "skills": {
+    "Languages": [
+      "C",
+      "Python",
+      "JavaScript",
+      "TypeScript",
+      "Kotlin",
+      "HTML",
+      "CSS"
+    ],
+    "Web & apps": [
+      "Next.js",
+      "React",
+      "Tailwind CSS",
+      "Node.js",
+      "Vite",
+      "FastAPI",
+      "Android"
+    ],
+    "AI & data": [
+      "LangChain",
+      "OpenCV",
+      "MediaPipe",
+      "Supabase",
+      "PostgreSQL",
+      "SQLite"
+    ],
+    "Hardware & platforms": [
+      "Arduino",
+      "ESP32 / ESP8266",
+      "Git",
+      "Docker",
+      "Vercel",
+      "Fedora Linux",
+      "KDE Plasma"
+    ]
+  },
+  "system": {
+    "hostname": "akshay",
+    "defaultAppearance": "auto",
+    "defaultWallpaper": "dynamic-tahoe",
+    "wallpapers": [
+      {
+        "id": "dynamic-tahoe",
+        "name": "Dynamic Tahoe",
+        "gradient": "#17202d",
+        "preview": "/wallpapers/tahoe-day-thumb.webp"
+      },
+      {
+        "id": "tahoe-dawn",
+        "name": "Tahoe Dawn",
+        "src": "/wallpapers/tahoe-dawn.webp",
+        "preview": "/wallpapers/tahoe-dawn-thumb.webp",
+        "gradient": "#b5c4cf",
+        "isLight": true
+      },
+      {
+        "id": "tahoe-day",
+        "name": "Tahoe Day",
+        "src": "/wallpapers/tahoe-day.webp",
+        "preview": "/wallpapers/tahoe-day-thumb.webp",
+        "gradient": "#5eaccd",
+        "isLight": true
+      },
+      {
+        "id": "tahoe-dusk",
+        "name": "Tahoe Dusk",
+        "src": "/wallpapers/tahoe-dusk.webp",
+        "preview": "/wallpapers/tahoe-dusk-thumb.webp",
+        "gradient": "#234d6a"
+      },
+      {
+        "id": "tahoe-night",
+        "name": "Tahoe Night",
+        "src": "/wallpapers/tahoe-night.webp",
+        "preview": "/wallpapers/tahoe-night-thumb.webp",
+        "gradient": "#0b1825"
+      }
+    ],
+    "welcome": {
+      "title": "Welcome to Akshay’s desktop 👋",
+      "body": "Explore my projects in Finder, moments in Photos, and more from the Dock. Press ⌘K or Ctrl+K to search."
+    },
+    "browser": {
+      "homepage": "https://akshayabraham.vercel.app"
+    }
+  }
+}

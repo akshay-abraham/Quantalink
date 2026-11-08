@@ -1,7 +1,7 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: 'https://akshayabraham.vercel.app',
-  exclude: ['/icon.svg'],
+  exclude: ['/icon.svg', '/site', '/os', '/api/portfolio'],
   generateRobotsTxt: true,
   transform: async (config, path) => {
     const imagesByPage = {
