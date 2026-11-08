@@ -8,6 +8,7 @@ import moments from "../../../../data/moments.json";
 import { useWindows } from "../../../context/window-context";
 import { cn } from "../../../lib/utils";
 import Symbol from "../../symbol";
+import Sidebar, { type SidebarSection } from "../../window/sidebar";
 import { Toolbar, ToolbarButton, ToolbarGroup } from "../../window/toolbar";
 
 type Moment = {
@@ -21,10 +22,21 @@ type Moment = {
 
 const entries: Moment[] = [...moments].reverse();
 const years = [...new Set(entries.map((entry) => entry.date.slice(0, 4)))];
+const sidebarSections: SidebarSection[] = [
+  {
+    title: "Library",
+    items: [{ id: "all", label: "All Photos", symbol: "photo" }],
+  },
+  {
+    title: "Years",
+    items: years.map((year) => ({ id: year, label: year, symbol: "clock" })),
+  },
+];
 
 export default function Photos() {
   const [year, setYear] = useState("all");
   const [query, setQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
   const reduceMotion = useReducedMotion();
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -76,100 +88,96 @@ export default function Photos() {
   };
 
   return (
-    <div className="photos-app relative flex h-full flex-col bg-[#f8f8fa] text-[#242329] dark:bg-[#241f26] dark:text-white">
-      <Toolbar
-        hasControls
-        title="Photos"
-        className="border-b border-black/[0.07] bg-white/75 backdrop-blur-xl dark:border-white/[0.08] dark:bg-white/[0.04]"
-        trailing={
-          <div className="flex items-center gap-3 pr-2">
-            <span className="text-11 text-black/45 dark:text-white/45">
-              {entries.length} photos
-            </span>
-            <ToolbarGroup>
-              <ToolbarButton
-                symbol={
-                  isMaximized
-                    ? "arrow-down-right-and-arrow-up-left"
-                    : "arrow-up-left-and-arrow-down-right"
-                }
-                title={
-                  isMaximized ? "Restore Photos window" : "Expand Photos window"
-                }
-                onClick={() => toggleMaximize("photos")}
-              />
-            </ToolbarGroup>
+    <div className="photos-app relative flex h-full text-[#242329] dark:text-white">
+      <Sidebar
+        className="photos-sidebar"
+        sections={sidebarSections}
+        selectedId={year}
+        onSelect={chooseYear}
+        header={
+          <div className="px-4 pb-5 pt-2">
+            <p className="text-19 font-semibold tracking-tight">Photos</p>
+            <p className="mt-0.5 text-11 text-black/45 dark:text-white/45">
+              Your moments, in one place
+            </p>
           </div>
         }
       />
-      <div className="flex min-h-0 flex-1">
-        <aside className="photos-sidebar hidden w-44 shrink-0 flex-col border-r border-black/[0.07] bg-[#f0eff3]/80 px-3 py-5 dark:border-white/[0.07] dark:bg-[#2b252e]/80">
-          <p className="px-3 text-10 font-semibold uppercase tracking-[.15em] text-black/40 dark:text-white/40">
-            Library
-          </p>
-          <button
-            type="button"
-            onClick={() => chooseYear("all")}
-            className={cn(
-              "mt-2 flex h-9 items-center gap-2 rounded-lg px-3 text-left text-12 transition-colors",
-              year === "all"
-                ? "bg-white font-semibold shadow-sm dark:bg-white/15"
-                : "hover:bg-white/60 dark:hover:bg-white/10"
-            )}
-          >
-            <Symbol name="photo" className="h-4 w-4" />
-            All Photos
-            <span className="ml-auto text-10 opacity-45">{entries.length}</span>
-          </button>
-          <p className="mt-6 px-3 text-10 font-semibold uppercase tracking-[.15em] text-black/40 dark:text-white/40">
-            Years
-          </p>
-          {years.map((item) => (
-            <button
-              key={item}
-              type="button"
-              onClick={() => chooseYear(item)}
-              className={cn(
-                "mt-1 flex h-9 items-center justify-between rounded-lg px-3 text-left text-12 transition-colors",
-                year === item
-                  ? "bg-white font-semibold shadow-sm dark:bg-white/15"
-                  : "hover:bg-white/60 dark:hover:bg-white/10"
-              )}
-            >
-              {item}
-              <span className="text-10 opacity-45">
-                {entries.filter((entry) => entry.date.startsWith(item)).length}
+      <div className="photos-content flex min-w-0 flex-1 flex-col bg-white dark:bg-[#282025]">
+        <Toolbar
+          hasControls
+          title={year === "all" ? "All Photos" : year}
+          className="photos-toolbar border-b border-black/[0.06] dark:border-white/[0.07]"
+          trailing={
+            <div className="flex items-center gap-2 pr-1">
+              <span className="photos-count text-11 text-black/45 dark:text-white/45">
+                {visible.length} {visible.length === 1 ? "photo" : "photos"}
               </span>
-            </button>
-          ))}
-        </aside>
-        <div className="min-w-0 flex-1 overflow-y-auto px-5 pb-8 pt-6 md:px-7">
+              {isSearching ? (
+                <ToolbarGroup className="gap-1.5 px-3 ring-[3px] ring-[#0a84ff]/40">
+                  <Symbol
+                    name="magnifyingglass"
+                    className="h-3.5 w-3.5 opacity-60"
+                  />
+                  <input
+                    autoFocus
+                    type="search"
+                    aria-label="Search photos"
+                    placeholder="Search photos"
+                    value={query}
+                    onChange={(event) => {
+                      setSelected(null);
+                      setQuery(event.target.value);
+                    }}
+                    onBlur={() => !query && setIsSearching(false)}
+                    onKeyDown={(event) => {
+                      if (event.key !== "Escape") return;
+                      setQuery("");
+                      setIsSearching(false);
+                    }}
+                    className="w-28 min-w-0 bg-transparent text-12 outline-none placeholder:text-black/40 dark:placeholder:text-white/40"
+                  />
+                </ToolbarGroup>
+              ) : (
+                <ToolbarGroup>
+                  <ToolbarButton
+                    symbol="magnifyingglass"
+                    title="Search photos"
+                    onClick={() => setIsSearching(true)}
+                  />
+                </ToolbarGroup>
+              )}
+              <ToolbarGroup>
+                <ToolbarButton
+                  symbol={
+                    isMaximized
+                      ? "arrow-down-right-and-arrow-up-left"
+                      : "arrow-up-left-and-arrow-down-right"
+                  }
+                  title={
+                    isMaximized
+                      ? "Restore Photos window"
+                      : "Expand Photos window"
+                  }
+                  onClick={() => toggleMaximize("photos")}
+                />
+              </ToolbarGroup>
+            </div>
+          }
+        />
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-8 pt-6 md:px-7">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-4 border-b border-black/[0.07] pb-5 dark:border-white/[0.08]">
             <div>
-              <p className="text-10 font-semibold uppercase tracking-[.18em] text-[#997569] dark:text-[#e1b3a5]">
-                Akshay’s journey
+              <p className="text-10 font-semibold uppercase tracking-[.18em] text-[#817184] dark:text-[#c8accb]">
+                {year === "all" ? "The collection" : "From the archive"}
               </p>
               <h2 className="mt-1 text-28 font-semibold tracking-tight">
-                {year === "all" ? "Along the way" : year}
+                {year === "all" ? "Along the way" : `Moments from ${year}`}
               </h2>
               <p className="mt-1 text-12 text-black/50 dark:text-white/50">
                 People, projects, and moments worth remembering.
               </p>
             </div>
-            <label className="flex h-9 w-full max-w-[210px] items-center gap-2 rounded-full border border-black/10 bg-white/85 px-3 text-black/45 shadow-sm focus-within:border-[#0a84ff] dark:border-white/10 dark:bg-white/10 dark:text-white/45">
-              <Symbol name="magnifyingglass" className="h-3.5 w-3.5" />
-              <input
-                type="search"
-                aria-label="Search photos"
-                placeholder="Search photos"
-                value={query}
-                onChange={(event) => {
-                  setSelected(null);
-                  setQuery(event.target.value);
-                }}
-                className="min-w-0 flex-1 bg-transparent text-12 text-[#242329] outline-none placeholder:text-black/40 dark:text-white dark:placeholder:text-white/40"
-              />
-            </label>
           </div>
           <div className="mb-4 flex gap-2 photos-mobile-years">
             {["all", ...years].map((item) => (
@@ -189,27 +197,38 @@ export default function Photos() {
             ))}
           </div>
           {visible.length ? (
-            <div className="photos-grid grid gap-3">
+            <div
+              className="photos-grid grid gap-2.5"
+              data-curated={
+                year === "all" && !query.trim() ? "true" : undefined
+              }
+            >
               {visible.map((event) => (
                 <button
                   key={event.photo.src}
                   type="button"
                   onClick={() => setSelected(event.photo.src)}
                   aria-label={`View ${event.title}`}
-                  className="photos-tile group relative overflow-hidden rounded-2xl bg-[#ded9d5] text-left shadow-[0_2px_12px_rgba(0,0,0,0.08)] ring-1 ring-black/[0.04] outline-none transition-transform duration-200 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[#0a84ff] dark:ring-white/[0.08]"
+                  className="photos-tile group relative overflow-hidden rounded-xl bg-[#ded9d5] text-left shadow-[0_3px_12px_rgba(0,0,0,0.09)] ring-1 ring-black/[0.04] outline-none transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(0,0,0,0.16)] focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-[#0a84ff] dark:ring-white/[0.08]"
                 >
                   <Image
                     src={event.photo.src}
                     alt={event.photo.alt}
                     fill
-                    sizes="(max-width: 720px) 50vw, 28vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                    sizes="(max-width: 720px) 50vw, (max-width: 1100px) 32vw, 25vw"
+                    className={cn(
+                      "object-cover transition-transform duration-500 group-hover:scale-[1.035]",
+                      event.photo.src.includes("yc-startup-school") &&
+                        "object-bottom",
+                      event.photo.src.includes("first-presentation") &&
+                        "object-top"
+                    )}
                   />
-                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent px-4 pb-4 pt-12 text-white">
-                    <span className="block text-10 text-white/75">
+                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent px-3.5 pb-3.5 pt-12 text-white">
+                    <span className="block truncate text-10 font-medium text-white/80">
                       {event.tag}
                     </span>
-                    <strong className="mt-1 block text-13 leading-tight">
+                    <strong className="mt-1 block line-clamp-2 text-13 leading-tight drop-shadow-sm">
                       {event.title}
                     </strong>
                   </span>

@@ -1827,27 +1827,78 @@ textarea,
   }
 }
 
-/* Photos follows its window size, not the browser viewport. */
+/* The gallery and sidebar follow the Photos window, including when it is resized. */
 .photos-app {
   container-type: inline-size;
 }
+.photos-app .photos-sidebar,
+.photos-app .mobile-sidebar-select,
+.photos-count {
+  display: none;
+}
 .photos-grid {
-  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .photos-tile {
   aspect-ratio: 4 / 3;
+  min-width: 0;
 }
-.photos-tile:first-child {
+.photos-grid[data-curated="true"] .photos-tile:first-child {
   grid-column: span 2;
-  grid-row: span 2;
-  aspect-ratio: auto;
-  min-height: 220px;
+  aspect-ratio: 2 / 1;
 }
 @container (min-width: 720px) {
-  .photos-sidebar {
+  .photos-app .photos-sidebar {
     display: flex;
+  }
+  .photos-app .photos-toolbar {
+    padding-left: 10px;
   }
   .photos-mobile-years {
     display: none;
+  }
+  .photos-count {
+    display: inline;
+  }
+  .photos-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .photos-grid[data-curated="true"] {
+    grid-auto-rows: clamp(120px, 14cqw, 170px);
+  }
+  .photos-grid[data-curated="true"] .photos-tile {
+    aspect-ratio: auto;
+  }
+  .photos-grid[data-curated="true"] .photos-tile:nth-child(1) {
+    grid-area: 1 / 1 / 3 / 3;
+  }
+  .photos-grid[data-curated="true"] .photos-tile:nth-child(2) {
+    grid-area: 3 / 3;
+  }
+  .photos-grid[data-curated="true"] .photos-tile:nth-child(3) {
+    grid-area: 3 / 1 / 4 / 3;
+  }
+  .photos-grid[data-curated="true"] .photos-tile:nth-child(7) {
+    grid-area: 1 / 3 / 3 / 4;
+  }
+}
+@container (min-width: 880px) {
+  .photos-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .photos-grid[data-curated="true"] .photos-tile:nth-child(2) {
+    grid-area: 1 / 3;
+  }
+  .photos-grid[data-curated="true"] .photos-tile:nth-child(4) {
+    grid-area: 2 / 3;
+  }
+  .photos-grid[data-curated="true"] .photos-tile:nth-child(5) {
+    grid-area: 3 / 3;
+  }
+  .photos-grid[data-curated="true"] .photos-tile:nth-child(6) {
+    grid-area: 3 / 4;
+  }
+  .photos-grid[data-curated="true"] .photos-tile:nth-child(7) {
+    grid-area: 1 / 4 / 3 / 5;
   }
 }
