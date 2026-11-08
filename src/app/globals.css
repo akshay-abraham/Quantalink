@@ -2524,7 +2524,30 @@ body {
     background: #000;
   }
 
+  .desktop-boot-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 56px;
+  }
+
+  .desktop-boot-placeholder img {
+    filter: invert(1);
+  }
+
+  .desktop-boot-placeholder::after {
+    content: '';
+    width: 192px;
+    height: 5px;
+    border-radius: 999px;
+    background: #404040;
+  }
+
   .desktop-frame {
+    position: relative;
     display: block;
     width: 100%;
     height: 100%;
