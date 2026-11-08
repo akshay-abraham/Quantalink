@@ -3,20 +3,23 @@
 import React, { useState } from "react";
 import { useContent } from "../../../context/content-context";
 import { Toolbar, ToolbarButton, ToolbarGroup } from "../../window/toolbar";
+import { gmailComposeUrl } from "./compose-url";
 
 const Mail: React.FC = () => {
   const { profile } = useContent();
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
 
-  const canSend = subject.trim() && message.trim();
+  const canSend = Boolean(subject.trim() && message.trim());
+  const draftUrl = gmailComposeUrl(
+    profile.email,
+    subject.trim(),
+    message.trim()
+  );
 
   const handleSend = () => {
     if (!canSend) return;
-    const params = new URLSearchParams({ subject, body: message });
-    window.location.href = `mailto:${profile.email}?${params
-      .toString()
-      .replace(/\+/g, "%20")}`;
+    window.open(draftUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -28,7 +31,7 @@ const Mail: React.FC = () => {
           <ToolbarGroup>
             <ToolbarButton
               symbol="paperplane"
-              title="Send"
+              title="Continue in Gmail"
               disabled={!canSend}
               onClick={handleSend}
               className="enabled:text-[#0a84ff]"
@@ -37,8 +40,11 @@ const Mail: React.FC = () => {
         }
       />
       <MailField label="To:">
-        <span className="px-2 py-0.5 rounded-full bg-[#0a84ff]/15 text-[#0a84ff]">
-          {profile.name}
+        <span
+          title={profile.name}
+          className="max-w-full truncate rounded-full bg-[#0a84ff]/15 px-2 py-0.5 text-[#0a84ff]"
+        >
+          {profile.email}
         </span>
       </MailField>
       <MailField label="Subject:">
@@ -60,7 +66,17 @@ const Mail: React.FC = () => {
         className="flex-grow resize-none bg-transparent outline-none p-4 text-14 leading-relaxed placeholder:text-black/30 dark:placeholder:text-white/30"
       />
       <div className="px-4 py-2 text-11 text-black/40 dark:text-white/40 border-t border-black/5 dark:border-white/5">
-        Sending opens your mail app with this message ready to go.
+        <span>Continue in Gmail to send this message.</span>
+        {canSend && (
+          <a
+            href={draftUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-2 text-[#0a84ff] underline underline-offset-2"
+          >
+            Open draft
+          </a>
+        )}
       </div>
     </div>
   );

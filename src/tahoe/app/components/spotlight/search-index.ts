@@ -41,7 +41,7 @@ export const buildSearchIndex = ({
   {
     id: "open-source",
     title: "Open Source",
-    subtitle: "Contributions · Pull requests",
+    subtitle: "Repositories · Pull requests",
     category: "Folders",
     icon: FolderIcon,
     target: { type: "app", app: "finder", payload: "contributions" },

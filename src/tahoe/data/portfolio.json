@@ -120,6 +120,14 @@
       "tags": ["Next.js", "TypeScript", "React"],
       "link": "https://akshayabraham.vercel.app",
       "github": "https://github.com/akshay-abraham/Quantalink"
+    },
+    {
+      "id": "tachyon-dots",
+      "name": "Tachyon Dots",
+      "company": "Fedora KDE · Open source",
+      "description": "My Fedora KDE desktop configuration and setup notes, shared for anyone building a similar daily workspace.",
+      "tags": ["Fedora Linux", "KDE Plasma", "Dotfiles"],
+      "github": "https://github.com/akshay-abraham/tachyon-dots"
     }
   ],
   "contributions": [],

@@ -186,7 +186,10 @@ export const buildFileEntries = ({
     icon: FolderIcon,
     canTrash: true,
     canRename: true,
-    open: project.link ? { type: "url", url: project.link } : { type: "none" },
+    open:
+      project.link || project.github
+        ? { type: "url", url: project.link ?? project.github! }
+        : { type: "none" },
     info: {
       subtitle: project.company,
       description: project.description,
@@ -194,6 +197,28 @@ export const buildFileEntries = ({
       link: project.link,
     },
   }));
+
+  const openSourceProjects = projects.flatMap<FileEntry>((project) =>
+    project.github
+      ? [
+          {
+            id: `repo:${project.id}`,
+            name: project.name,
+            kind: "GitHub Repository",
+            icon: FolderIcon,
+            canTrash: true,
+            canRename: true,
+            open: { type: "url", url: project.github },
+            info: {
+              subtitle: "GitHub Repository",
+              description: project.description,
+              tags: project.tags,
+              link: project.github,
+            },
+          },
+        ]
+      : []
+  );
 
   const applications = apps.map<FileEntry>((app) => ({
     id: app.id,
@@ -210,6 +235,7 @@ export const buildFileEntries = ({
     about,
     experiences: experienceEntries,
     projects: projectEntries,
+    openSourceProjects,
     contributions: contributions.map<FileEntry>((contribution) => ({
       id: contribution.id,
       name: `${contribution.repository} #${contribution.number}`,
@@ -288,7 +314,7 @@ export const listLocation = (
     case "experience":
       return visible(entries.experiences);
     case "contributions":
-      return visible(entries.contributions);
+      return visible([...entries.openSourceProjects, ...entries.contributions]);
     case "projects":
       return visible(entries.projects);
     case "trash":
@@ -297,6 +323,7 @@ export const listLocation = (
         entries.about,
         ...entries.experiences,
         ...entries.projects,
+        ...entries.openSourceProjects,
         ...entries.contributions,
       ].filter((e) => trashed.includes(e.id));
   }

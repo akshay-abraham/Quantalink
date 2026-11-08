@@ -38,18 +38,18 @@ describe("open-source contributions", () => {
         (e) => e.id === "contributions"
       )
     ).toBe(true);
-    const [contribution] = listLocation(
+    const contribution = listLocation(
       "contributions",
       entries,
       content.profile.username,
       state
-    );
-    expect(contribution.open).toEqual({
+    ).find((entry) => entry.id === "sample-contribution");
+    expect(contribution?.open).toEqual({
       type: "app",
       app: "notes",
       payload: "sample-contribution",
     });
-    expect(contribution.info?.link).toBe(
+    expect(contribution?.info?.link).toBe(
       "https://github.com/example/repo/pull/1"
     );
   });

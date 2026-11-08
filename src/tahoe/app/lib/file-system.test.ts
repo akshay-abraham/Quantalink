@@ -6,6 +6,8 @@ import {
   listLocation,
 } from "./file-system";
 import { createContent } from "../../test/fixtures";
+import portfolio from "../../data/portfolio.json";
+import { parsePortfolio } from "./content/schema";
 
 const content = createContent();
 const entries = buildFileEntries(content);
@@ -96,5 +98,37 @@ describe("file system", () => {
     expect(ids(tagItems)).toContain("rocket");
     expect(ids(tagItems)).toContain("experience-project:acme:rocket");
     expect(new Set(ids(tagItems)).size).toBe(tagItems.length);
+  });
+
+  it("lists every public repository in Open Source", () => {
+    const actualContent = parsePortfolio(portfolio);
+    const actualEntries = buildFileEntries(actualContent);
+    const openSource = listLocation(
+      "contributions",
+      actualEntries,
+      "akshay-abraham",
+      fileState()
+    );
+    const repositories = actualContent.projects.filter(
+      (project) => project.github
+    );
+
+    expect(openSource).toHaveLength(
+      repositories.length + actualContent.contributions.length
+    );
+    expect(ids(openSource)).toEqual(
+      expect.arrayContaining([
+        "repo:nephra",
+        "repo:m57",
+        "repo:personal-website",
+        "repo:tachyon-dots",
+      ])
+    );
+    expect(
+      openSource.find((entry) => entry.id === "repo:tachyon-dots")?.open
+    ).toEqual({
+      type: "url",
+      url: "https://github.com/akshay-abraham/tachyon-dots",
+    });
   });
 });

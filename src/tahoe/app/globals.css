@@ -1826,3 +1826,28 @@ textarea,
     }
   }
 }
+
+/* Photos follows its window size, not the browser viewport. */
+.photos-app {
+  container-type: inline-size;
+}
+.photos-grid {
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+}
+.photos-tile {
+  aspect-ratio: 4 / 3;
+}
+.photos-tile:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+  aspect-ratio: auto;
+  min-height: 220px;
+}
+@container (min-width: 720px) {
+  .photos-sidebar {
+    display: flex;
+  }
+  .photos-mobile-years {
+    display: none;
+  }
+}
